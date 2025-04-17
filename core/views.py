@@ -18,9 +18,15 @@ def home_view(request):
         "title": "News & Events",
         "items": items,
     }
+    return render(request, "index.html", context)
+
+def new_event(request):
+    items = NewsAndEvents.objects.all().order_by("-updated_date")
+    context = {
+        "title": "News & Events",
+        "items": items,
+    }
     return render(request, "core/index.html", context)
-
-
 @login_required
 @admin_required
 def dashboard_view(request):

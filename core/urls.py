@@ -13,13 +13,14 @@ from .views import (
     semester_add_view,
     semester_update_view,
     semester_delete_view,
-    dashboard_view,
+    dashboard_view, new_event,
 )
 
 
 urlpatterns = [
     # Accounts url
     path("", home_view, name="home"),
+    path("news_event/",new_event,name="news_event"),
     path("add_item/", post_add, name="add_item"),
     path("item/<int:pk>/edit/", edit_post, name="edit_post"),
     path("item/<int:pk>/delete/", delete_post, name="delete_post"),

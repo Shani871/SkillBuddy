@@ -26,18 +26,26 @@
 		{% url 'course_registration' as cr %} {% url 'edit_profile' as ep %} {% url 'change_password' as cp %}
 		{% url 'quiz_progress' as qpr %} {% url 'quiz_marking' as qce %} {% url 'user_course_list' as ucl %}
 		{% url 'admin_panel' as admin_p %}
-		
+
 
 
 		<ul>
+        <li class="{% if request.path == hom %}active{% endif %}">
+				<a href="{% url 'index' %}"><i class="fas fa-home"></i>{% trans 'Home' %}</a>
+			</li>
 			{% if request.user.is_superuser %}
 			<li class="{% if request.path == dash %}active{% endif %}">
 				<a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt"></i>{% trans 'Dashboard' %}</a>
 			</li>
 			{% endif %}
-			<li class="{% if request.path == hom %}active{% endif %}">
-				<a href="{% url 'home' %}"><i class="fas fa-home"></i>{% trans 'Home' %}</a>
+
+        <li class="{% if request.path == hom %}{% endif %}">
+				<a href="{% url 'chatbot' %}"><i class="fas fa-microchip"></i>{% trans 'ChatBot' %}</a>
 			</li>
+			<li class="{% if request.path == hom %}{% endif %}">
+				<a href="{% url 'news_event' %}"><i class="fas fa-newspaper"></i>{% trans 'News & Event' %}</a>
+			</li>
+
 			<li class="{% if request.path == prof %}active{% endif %}">
 				<a href="{% url 'profile' %}"><i class="fas fa-user"></i>{% trans 'Profile' %}</a>
 			</li>
@@ -121,19 +129,19 @@
 	<footer class="card-footer mt-5 pt-3 pb-5 px-2">
 		<div class="col-12">
 
-{#			<form action="{% url 'set_language' %}" method="post" id="lang-form">{% csrf_token %}#}
-{#				<input name="next" type="hidden" value="{{ redirect_to }}">#}
-{#				<select class="small" name="language" id="lang-select">#}
-{#					{% get_current_language as LANGUAGE_CODE %}#}
-{#					{% get_available_languages as LANGUAGES %}#}
-{#					{% get_language_info_list for LANGUAGES as languages %}#}
-{#					{% for language in languages %}#}
-{#						<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>#}
-{#							{{ language.name_local }} ({{ language.code }})#}
-{#						</option>#}
-{#					{% endfor %}#}
-{#				</select>#}
-{#			</form>#}
+			<form action="{% url 'set_language' %}" method="post" id="lang-form">{% csrf_token %}
+				<input name="next" type="hidden" value="{{ redirect_to }}">
+				<select class="small" name="language" id="lang-select">
+					{% get_current_language as LANGUAGE_CODE %}
+					{% get_available_languages as LANGUAGES %}
+					{% get_language_info_list for LANGUAGES as languages %}
+					{% for language in languages %}
+						<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+							{{ language.name_local }} ({{ language.code }})
+						</option>
+					{% endfor %}
+				</select>
+			</form>
 
 			<p class="small m-0">
 				{% trans 'Read our' %} <a href="#"> {% trans 'Privacy' %} </a> {% trans 'and' %} <a href="#"> {% trans 'Terms of use.' %} </a>

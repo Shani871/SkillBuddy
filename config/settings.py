@@ -40,6 +40,7 @@ DJANGO_APPS = [
     "modeltranslation",  # Translation
     "jet.dashboard",
     "jet",
+    'chatbot',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -270,3 +271,8 @@ SEMESTER_CHOICES = (
     (SECOND, _("Second")),
     (THIRD, _("Third")),
 )
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+GEMINI_API_KEY = os.getenv("AIzaSyDmZZR-GpCrnLjRz62PcxHqClsd1eWZffE")
