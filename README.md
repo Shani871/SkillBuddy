@@ -1,55 +1,72 @@
 # 🎓 SkillBuddy AI
 
-SkillBuddy AI is a comprehensive AI-driven education management system that integrates academic tools with emotional support features, tailored for Admins, Teachers, and Students.
+**SkillBuddy AI** is an AI-powered education management platform that merges academic efficiency with emotional intelligence. Designed for Admins, Teachers, and Students, it streamlines campus management, boosts engagement, and supports students’ mental well-being.
 
 ---
 
-## 🚀 Features
+## 💡 Problem
 
-- 🎭 Emotion Detection via Webcam (OpenCV, TensorFlow)
-- 🤖 AI Chatbot for academic & emotional support
-- 📊 GPA & Performance Tracking
-- 📝 Quiz & Course Management
-- 🗂️ News/Event Posting & File Uploads
-- 🔐 Role-based Authentication with Django
-- 📁 Session/Semester Management
+Current educational platforms are fragmented:
+- Admins juggle multiple systems
+- Teachers lack tools to engage and evaluate efficiently
+- Students suffer from academic burnout with little emotional support
+
+---
+
+## ✅ Solution
+
+**SkillBuddy AI** solves this with a unified, intelligent system:
+- Combines academic management and emotional analysis
+- Delivers role-based dashboards and personalized insights
+- Includes an AI chatbot and emotion recognition for better support
+
+---
+
+## 🔑 Key Features
+
+- 🎓 **Role-based Dashboards** (Admin / Teacher / Student)
+- 🤖 **AI Chatbot** – Academic queries & motivational support
+- 📸 **Emotion Detection** – Real-time via webcam (OpenCV + TensorFlow)
+- 📈 **GPA Tracking** – Performance analytics & insights
+- 🧠 **Quiz, File, Video, and Event Management**
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer        | Tools/Frameworks                        |
-|--------------|-----------------------------------------|
-| Backend      | Django, Django REST Framework, MySQL    |
-| Frontend     | HTML5, CSS3, JavaScript, Bootstrap      |
-| AI/ML        | OpenCV, MediaPipe (optional), NLP       |
-| Security     | Django Auth, CSRF, Hashed Passwords     |
-| Deployment   | GitHub, Postman, Render/Hostinger       |
+| Layer       | Tools/Frameworks                           |
+|-------------|---------------------------------------------|
+| Backend     | Django, Django REST Framework, MySQL       |
+| Frontend    | HTML5, CSS3, Bootstrap, JavaScript, Chart.js |
+| AI/ML Tools | OpenCV, TensorFlow, NLTK, MediaPipe (optional) |
+| Deployment  | GitHub, Render, Heroku, Hostinger          |
 
 ---
 
-## 📊 Testing & Results
+## 📊 Impact
 
-- ✅ Unit & integration tests passed
-- 💬 Positive UAT: User-friendly UI and insightful analytics
-- 📈 High success rate for emotion detection, chatbot, GPA module
+- 🕹️ Simplifies Admin Operations  
+- 📚 Enhances Teaching Efficiency  
+- 😊 Supports Students Emotionally and Academically  
 
----
 
-## 🌱 Future Enhancements
+## 🧪 Testing & Feedback
 
-- 📱 Mobile App Version (React Native or Flutter)
-- 🗣️ Multilingual Support
-- 🤖 GPT-powered Advanced Chatbot
-- 📉 Deep Learning for Emotion & Academic Prediction
+- ✅ Unit, Integration & UAT testing conducted
+- 🎯 High accuracy in Emotion Detection & Chatbot responses
+- 👍 Positive feedback for UI/UX and ease of use
 
 ---
 
-## 🧑‍💻 Team
+## 👤 Author
 
-**Project Lead:** Shani Chauhan  
-BSC-MSCs (Computer Science), St. Joseph’s Degree & PG College, Hyderabad  
-CGPA: 8.83 | 2022–2025  
+**Shani Chauhan**  
+BSC-MSCs (Computer Science), St. Joseph's Degree & PG College  
+Graduated in 2025 | CGPA: 8.83  
+📧 chauhanshani145@gmail.com
+🔗 https://www.linkedin.com/in/shani-chauhan-403789323/ 
 
+## 🎥 Demo Video
 
+[![Watch the video]([https://img.youtube.com/vi/YOUR_VIDEO_ID_HERE/0.jpg](https://youtu.be/lHjCAjIz7wU?si=ODah1c2jJv9vmdaP))])
 
