@@ -1,6 +1,7 @@
 # 🎓 SkillBuddy AI
  
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 **SkillBuddy AI** is an AI-powered education management platform that merges academic efficiency with emotional intelligence. Designed for Admins, Teachers, and Students, it streamlines campus management, boosts engagement, and supports students’ mental well-being.
 
 ---
