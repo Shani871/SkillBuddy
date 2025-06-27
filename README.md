@@ -38,8 +38,8 @@ Current educational platforms are fragmented:
 |-------------|---------------------------------------------|
 | Backend     | Django, Django REST Framework, MySQL       |
 | Frontend    | HTML5, CSS3, Bootstrap, JavaScript, Chart.js |
-| AI/ML Tools | OpenCV, TensorFlow, NLTK, MediaPipe (optional) |
-| Deployment  | GitHub, Render, Heroku, Hostinger          |
+| AI/ML Tools | OpenCV, TensorFlow, |
+| Deployment  | GitHub         |
 
 ---
 
@@ -62,11 +62,10 @@ Current educational platforms are fragmented:
 
 **Shani Chauhan**  
 BSC-MSCs (Computer Science), St. Joseph's Degree & PG College  
-Graduated in 2025 | CGPA: 8.83  
 📧 chauhanshani145@gmail.com
 🔗 https://www.linkedin.com/in/shani-chauhan-403789323/ 
 
 ## 🎥 Demo Video
 
-[![Watch the video]([https://img.youtube.com/vi/YOUR_VIDEO_ID_HERE/0.jpg](https://youtu.be/lHjCAjIz7wU?si=ODah1c2jJv9vmdaP))])
+[![Watch the video](https://img.youtube.com/vi/lHjCAjIz7wU/0.jpg)](https://youtu.be/lHjCAjIz7wU)
 
