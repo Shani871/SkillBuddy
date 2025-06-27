@@ -1,1 +1,23 @@
--r requirements/local.txt
+# Backend
+Django==4.2
+djangorestframework==3.14.0
+mysqlclient==2.2.0
+
+# AI/ML
+opencv-python==4.8.0.76
+tensorflow==2.15.0
+nltk==3.8.1
+mediapipe==0.10.9
+
+# Frontend helpers (for templates, if needed)
+django-bootstrap-v5==1.0.11
+chartjs==0.5.0
+
+# Utilities
+gunicorn==21.2.0         # For deployment (e.g., Heroku/Render)
+whitenoise==6.6.0        # Static file handling in production
+python-decouple==3.8     # For managing environment variables
+Pillow==10.2.0           # Image handling (if needed for profile uploads, etc.)
+
+# CORS (if using APIs with frontend JS)
+django-cors-headers==4.3.1
