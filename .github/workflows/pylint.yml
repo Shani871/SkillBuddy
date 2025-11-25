@@ -17,7 +17,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install pylint
       - name: Analysing the code with pylint
         run: |
-          pylint --disable=missing-function-docstring --disable=missing-module-docstring --disable=missing-class-docstring --disable=too-few-public-methods $(git ls-files '*.py' | grep -v '/migrations/')
+          FILES=$(git ls-files '*.py' | grep -v '/migrations/' | grep -v '/venv/' | grep -v '/.venv/' || true)
+          if [ -n "$FILES" ]; then
+            pylint --disable=missing-function-docstring,missing-module-docstring,missing-class-docstring,too-few-public-methods $FILES
+          else
+            echo "No Python files to lint."
+          fi
