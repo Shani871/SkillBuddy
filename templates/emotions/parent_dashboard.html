@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Parent Child Monitoring' %}{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-heart me-2"></i>{% trans 'Emotional Well-being Summary' %}</h4>
+                </div>
+                <div class="card-body text-center py-5">
+                    {% if latest_record %}
+                    <div class="mb-4">
+                        <h5 class="text-muted">{% trans 'Today your child appeared' %}</h5>
+                        <h1 class="display-4 text-primary fw-bold">{{ latest_record.emotion }}</h1>
+                    </div>
+
+                    <div class="alert alert-info py-3" role="alert">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        {% if latest_record.emotion == 'Happy' %}
+                            {% trans 'Great! Your child seems to be in a good mood for learning.' %}
+                        {% elif latest_record.emotion == 'Stressed' or latest_record.emotion == 'Anxious' %}
+                            {% trans 'Your child showed signs of stress today. Encourage rest and open communication.' %}
+                        {% elif latest_record.emotion == 'Tired' %}
+                            {% trans 'Your child appears a bit tired. Make sure they get enough sleep.' %}
+                        {% else %}
+                            {% trans 'Everything seems normal. Keep supporting your childs learning journey.' %}
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">{% trans 'No emotion data available for your child yet.' %}</p>
+                    {% endif %}
+
+                    {% if alerts %}
+                    <hr>
+                    <div class="mt-4 text-start">
+                        <h6 class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>{% trans 'Important Notifications' %}</h6>
+                        <ul class="list-group list-group-flush">
+                            {% for alert in alerts %}
+                            <li class="list-group-item small">{{ alert.message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-light text-center small text-muted">
+                    {% trans 'Helping you support your childs mental health and education.' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

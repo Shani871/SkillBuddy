@@ -10,18 +10,19 @@ def post_save_account_receiver(instance=None, created=False, *args, **kwargs):
     Send email notification
     """
     if created:
-        if instance.is_student:
+        password = None
+        if instance.is_student and (not instance.username or instance.username.startswith('ugr-')):
             username, password = generate_student_credentials()
             instance.username = username
             instance.set_password(password)
-            instance.save()
+            instance.save(update_fields=['username', 'password'])
             # Send email with the generated credentials
             send_new_account_email(instance, password)
 
-        if instance.is_lecturer:
+        elif instance.is_lecturer and (not instance.username or instance.username.startswith('lec-')):
             username, password = generate_lecturer_credentials()
             instance.username = username
             instance.set_password(password)
-            instance.save()
+            instance.save(update_fields=['username', 'password'])
             # Send email with the generated credentials
             send_new_account_email(instance, password)

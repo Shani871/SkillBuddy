@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Teacher Emotion Dashboard' %}{% endblock title %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4"><i class="fas fa-users-cog me-2"></i>{% trans 'Student Emotional Trends' %}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Alerts Section -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4 border-0">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-bell me-2"></i>{% trans 'Emotional Alerts' %}</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for alert in alerts %}
+                        <li class="list-group-item {% if not alert.is_read %}bg-light{% endif %}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1 text-primary">{{ alert.student.student.get_full_name }}</h6>
+                                <small class="text-muted">{{ alert.timestamp|date:"M d, H:i" }}</small>
+                            </div>
+                            <p class="mb-1 small">{{ alert.message }}</p>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-center text-muted">{% trans 'No pending alerts' %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trends Section -->
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>{% trans 'Recent Emotions' %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{% trans 'Student' %}</th>
+                                    <th>{% trans 'Dominant Emotion' %}</th>
+                                    <th>{% trans 'Time' %}</th>
+                                    <th>{% trans 'Status' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in recent_records %}
+                                <tr>
+                                    <td>{{ record.student.student.get_full_name }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if record.emotion == 'Happy' %}bg-success
+                                            {% elif record.emotion == 'Neutral' %}bg-info
+                                            {% elif record.emotion == 'Stressed' %}bg-warning
+                                            {% elif record.emotion == 'Sad' or record.emotion == 'Anxious' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ record.emotion }}
+                                        </span>
+                                    </td>
+                                    <td>{{ record.timestamp|date:"H:i" }}</td>
+                                    <td>
+                                        {% if record.confidence > 0.7 %}
+                                        <i class="fas fa-check-circle text-success" title="High Confidence"></i>
+                                        {% else %}
+                                        <i class="fas fa-exclamation-triangle text-muted" title="Low Confidence"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">{% trans 'No data yet' %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

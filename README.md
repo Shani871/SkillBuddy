@@ -26,11 +26,14 @@ Current educational platforms are fragmented:
 
 ## 🔑 Key Features
 
-- 🎓 **Role-based Dashboards** (Admin / Teacher / Student)
-- 🤖 **AI Chatbot** – Academic queries & motivational support
-- 📸 **Emotion Detection** – Real-time via webcam (OpenCV + TensorFlow)
-- 📈 **GPA Tracking** – Performance analytics & insights
-- 🧠 **Quiz, File, Video, and Event Management**
+- 🎓 **Role-based Dashboards**: Specialized interfaces for Admin, Teacher, and Student.
+- 🤖 **AI Chatbot**: Real-time academic query resolution and motivational support via Gemini AI.
+- 📸 **Emotion Analytics**: Facial expression analysis during login to monitor well-being.
+- 🧠 **Stakeholder Feedback**: 
+    - **Teachers**: High-stress alerts and emotional trend dashboards.
+    - **Parents**: Simple, child-safe emotional summaries and early-warning alerts.
+- 📈 **GPA & Academic Tracking**: Automated performance analytics and grade management.
+- 📂 **LMS Core**: Course management, file/video uploads, and quiz engine.
 
 ---
 
@@ -38,36 +41,38 @@ Current educational platforms are fragmented:
 
 | Layer       | Tools/Frameworks                           |
 |-------------|---------------------------------------------|
-| Backend     | Django, Django REST Framework, MySQL       |
-| Frontend    | HTML5, CSS3, Bootstrap, JavaScript, Chart.js |
-| AI/ML Tools | OpenCV, TensorFlow, |
-| Deployment  | GitHub         |
+| **Core**    | Django (Python), Django REST Framework      |
+| **Frontend**| Vanilla JS, Bootstrap 5, FontAwesome, Chart.js|
+| **AI/ML**   | MediaPipe, OpenCV, TensorFlow, Gemini API   |
+| **Database**| SQLite (Development) / MySQL                |
 
 ---
 
-## 📊 Impact
+## 🚀 Quick Run
 
-- 🕹️ Simplifies Admin Operations  
-- 📚 Enhances Teaching Efficiency  
-- 😊 Supports Students Emotionally and Academically  
+To run the project on your local machine using the pre-configured virtual environment:
 
+```bash
+# 1. Access the project directory
+cd SkillBuddy
 
-## 🧪 Testing & Feedback
+# 2. Run the development server
+./venv/bin/python manage.py runserver
+```
+Access the platform at: `http://127.0.0.1:8000/`
 
-- ✅ Unit, Integration & UAT testing conducted
-- 🎯 High accuracy in Emotion Detection & Chatbot responses
-- 👍 Positive feedback for UI/UX and ease of use
+---
+
+## 📸 Emotion Detection Flow
+
+1. **Student Login**: Student inputs credentials and grants optional webcam consent.
+2. **AI Analysis**: System captures facial data and processes it using **MediaPipe**.
+3. **Data Recording**: Emotion (Happy, Neutral, Stressed, etc.) is recorded securely.
+4. **Alert Trigger**: If negative trends (e.g., 3 days of stress) are detected, alerts are sent to teachers and parents.
 
 ---
 
 ## 👤 Author
 
 **Shani Chauhan**  
-BSC-MSCs (Computer Science), St. Joseph's Degree & PG College  
-📧 chauhanshani145@gmail.com
-🔗 https://www.linkedin.com/in/shani-chauhan-403789323/ 
-
-## 🎥 Demo Video
-
-[![Watch the video](https://img.youtube.com/vi/lHjCAjIz7wU/0.jpg)](https://youtu.be/lHjCAjIz7wU)
 

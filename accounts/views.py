@@ -221,7 +221,7 @@ def staff_add_view(request):
             messages.success(
                 request,
                 f"Account for lecturer {full_name} has been created. "
-                f"An email with account credentials will be sent to {email} within a minute.",
+                f"Check your server console/logs for the credentials if email is not configured.",
             )
             return redirect("lecturer_list")
     else:
@@ -306,7 +306,7 @@ def student_add_view(request):
             messages.success(
                 request,
                 f"Account for {full_name} has been created. "
-                f"An email with account credentials will be sent to {email} within a minute.",
+                f"Check your server console/logs for the credentials if email is not configured.",
             )
             return redirect("student_list")
         messages.error(request, "Correct the error(s) below.")

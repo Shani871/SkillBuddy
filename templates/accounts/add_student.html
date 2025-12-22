@@ -39,6 +39,11 @@
             <div class="card">
                 <p class="form-title">{% trans 'Others' %}</p>
                 <div class="card-body">
+                    <div class="mb-2 text-end">
+                        <a href="{% url 'add_program' %}" class="btn btn-sm btn-outline-primary" title="{% trans 'Add New Program' %}">
+                            <i class="fas fa-plus"></i> {% trans 'Add Program' %}
+                        </a>
+                    </div>
                     {{ form.program|as_crispy_field }}
                     {{ form.level|as_crispy_field }}
                 </div>
