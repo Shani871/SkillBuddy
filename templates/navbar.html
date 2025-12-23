@@ -1,5 +1,5 @@
 {% load i18n%}
-<div id="top-navbar" class="glass-nav py-2 sticky-top shadow-sm">
+<div id="top-navbar" class="glass-nav py-3 sticky-top shadow-sm">
 	<div class="container-fluid px-4">
 		<div class="nav-wrapper d-flex justify-content-between align-items-center">
 
@@ -8,20 +8,20 @@
 			</div>
 
 			<form class="form-header mx-auto d-none d-md-flex w-50" action="{% url 'query' %}" method="GET">
-				<div class="input-group">
-					<span class="input-group-text bg-white border-end-0 rounded-start-pill px-3">
+				<div class="input-group search-container">
+					<span class="input-group-text bg-white border-end-0 rounded-start-pill ps-4 border-0 shadow-sm">
 						<i class="fas fa-search text-muted"></i>
 					</span>
-					<input id="primary-search" class="form-control border-start-0 rounded-end-pill py-2" type="text" name="q" value="{{ request.GET.q }}"
+					<input id="primary-search" class="form-control border-start-0 rounded-end-pill py-2 border-0 shadow-sm" type="text" name="q" value="{{ request.GET.q }}"
 						placeholder="{% trans 'Search courses, skills, events...' %}" required />
 				</div>
 			</form>
 
 			<div class="dropdown">
-				<div class="avatar border border-2 border-primary-subtle rounded-circle p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<img src="{{ request.user.picture.url }}" class="rounded-circle shadow-sm" style="width: 32px; height: 32px; object-fit: cover;">
+				<div class="avatar border border-2 border-primary-light rounded-circle p-1 cursor-pointer transition" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<img src="{{ request.user.picture.url }}" class="rounded-circle shadow-sm" style="width: 38px; height: 38px; object-fit: cover;">
 				</div>
-				<div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-3 rounded-4" style="min-width: 16rem !important;">
+				<div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-3 rounded-4 overflow-hidden" style="min-width: 18rem !important;">
 					<div class="d-flex flex-column align-items-center mb-3">
 						<div class="avatar avatar-md border border-2 border-primary-subtle rounded-circle p-1 mb-2">
 							<img src="{{ request.user.picture.url }}" class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;">

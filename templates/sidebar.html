@@ -1,161 +1,144 @@
 {% load static %}
 {% load i18n %}
 
-<div id="side-nav" class="bg-white border-end shadow-sm h-100 d-flex flex-column">
-	<div class="main-menu flex-grow-1 overflow-auto">
-		<div class="top-side text-center py-5 border-bottom mb-4">
-			<div class="desktop-hide px-3 text-start">
-				<div class="toggle-btn cursor-pointer fs-4 text-muted" onclick="toggleSidebar()">
-					<i class="fas fa-times"></i>
+<div id="side-nav" class="d-flex flex-column shadow-lg" style="width: 280px; transition: var(--transition);">
+	<!-- Sidebar Header -->
+	<div class="sidebar-header p-4 mb-2">
+		<div class="d-flex align-items-center justify-content-between mb-4">
+			<a href="/" class="d-flex align-items-center text-decoration-none">
+				<div class="logo-box bg-white p-2 rounded-3 shadow-sm me-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+					<img src="{% static 'img/skillBuddy.png' %}" style="max-width: 100%; max-height: 100%; object-fit: contain;" alt="SkillBuddy">
+				</div>
+				<span class="fw-bold fs-5 text-dark">SkillBuddy<span class="text-primary">.AI</span></span>
+			</a>
+			<div class="desktop-hide">
+				<div class="toggle-btn cursor-pointer fs-5 text-muted hover-text-primary transition" onclick="toggleSidebar()">
+					<i class="fas fa-xmark"></i>
 				</div>
 			</div>
-			<a href="/" class="d-block mb-3">
-				<img src="{% static 'img/skillBuddy.png' %}" width="160px" alt="SkillBuddy" class="img-fluid">
-			</a>
-			<div class="role-badge px-3">
-				<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-medium">
-					{{ request.user.get_user_role }}
-				</span>
+		</div>
+		
+		<div class="role-badge">
+			<div class="d-inline-flex align-items-center bg-primary-light text-primary rounded-pill px-3 py-1 fw-bold small">
+				<span class="d-inline-block bg-primary rounded-circle me-2 animate-pulse" style="width: 6px; height: 6px;"></span>
+				{{ request.user.get_user_role }}
 			</div>
 		</div>
+	</div>
 
-		{% url 'home' as hom %} {% url 'dashboard' as dash %} {% url 'profile' as prof %}
-		{% url 'lecturer_list' as lec %}
-		{% url 'student_list' as stu %} {% url 'course_allocation_view' as cav %}
-		{% url 'programs' as pro %} {% url 'session_list' as sess %} {% url 'semester_list' as sem %}
-		{% url 'add_score' as ascore %} {% url 'grade_results' as vr %}{% url 'ass_results' as ar %}
-		{% url 'course_registration' as cr %} {% url 'edit_profile' as ep %} {% url 'change_password' as cp %}
-		{% url 'quiz_progress' as qpr %} {% url 'quiz_marking' as qce %} {% url 'user_course_list' as ucl %}
-		{% url 'admin_panel' as admin_p %}
-
-		<ul class="nav flex-column px-3 list-unstyled">
-			<li class="nav-item mb-1">
-				<a href="{% url 'index' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 {% if request.path == hom %}bg-primary text-white shadow-sm{% else %}text-secondary hover-bg-light{% endif %}">
-					<i class="fas fa-home me-3"></i><span>{% trans 'Home' %}</span>
+	<!-- Navigation Menu -->
+	<div class="main-menu flex-grow-1 overflow-auto px-3 pe-2">
+		<ul class="nav flex-column gap-1 list-unstyled">
+			{% url 'home' as hom %} {% url 'dashboard' as dash %} {% url 'profile' as prof %}
+			{% url 'lecturer_list' as lec %} {% url 'student_list' as stu %}
+			{% url 'chatbot' as chat %} {% url 'news_event' as news %}
+			
+			<li class="nav-item">
+				<a href="{% url 'index' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 shadow-sm {% if request.path == hom %}bg-primary text-white{% else %}text-secondary hover-bg-white hover-shadow-sm{% endif %} fw-medium transition">
+					<i class="fas fa-home me-3 opacity-75"></i><span>{% trans 'Home' %}</span>
 				</a>
 			</li>
 
 			{% if request.user.is_superuser %}
-			<li class="nav-item mb-1">
-				<a href="{% url 'dashboard' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 {% if request.path == dash %}bg-primary text-white shadow-sm{% else %}text-secondary hover-bg-light{% endif %}">
-					<i class="fas fa-chart-line me-3"></i><span>{% trans 'Dashboard' %}</span>
+			<li class="nav-item">
+				<a href="{% url 'dashboard' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if request.path == dash %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<i class="fas fa-chart-pie me-3 opacity-75"></i><span>{% trans 'Insights' %}</span>
 				</a>
 			</li>
 			{% endif %}
 
-			<li class="nav-item mb-1">
-				<a href="{% url 'chatbot' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-secondary hover-bg-light">
-					<i class="fas fa-robot me-3"></i><span>{% trans 'AI ChatBot' %}</span>
+			<li class="nav-item">
+				<a href="{% url 'chatbot' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if request.resolver_match.url_name == 'chatbot' %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<div class="bg-primary-light rounded-circle p-1 me-3 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
+						<i class="fas fa-robot text-primary small"></i>
+					</div>
+					<span>{% trans 'AI Assistant' %}</span>
 				</a>
 			</li>
 
-			<li class="nav-item mb-1">
-				<a href="{% url 'news_event' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-secondary hover-bg-light">
-					<i class="fas fa-bullhorn me-3"></i><span>{% trans 'News & Events' %}</span>
-				</a>
-			</li>
-
-			<li class="nav-header small text-uppercase text-muted fw-bold mt-4 mb-2 ms-3">{% trans 'User' %}</li>
-
-			<li class="nav-item mb-1">
-				<a href="{% url 'profile' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 {% if request.path == prof %}bg-primary text-white shadow-sm{% else %}text-secondary hover-bg-light{% endif %}">
-					<i class="fas fa-user-circle me-3"></i><span>{% trans 'Profile' %}</span>
-				</a>
-			</li>
-
-			{% if request.user.is_superuser %}
-			<li class="nav-item mb-1">
-				<a href="{% url 'admin_panel' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 {% if request.path == admin_p %}bg-primary text-white shadow-sm{% else %}text-secondary hover-bg-light{% endif %}">
-					<i class="fas fa-tools me-3"></i><span>{% trans 'Admin Panel' %}</span>
-				</a>
-			</li>
-			<li class="nav-item mb-1">
-				<a href="{% url 'lecturer_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 {% if request.path == lec %}active{% endif %} text-secondary hover-bg-light">
-					<i class="fas fa-chalkboard-teacher me-3"></i><span>{% trans 'Lecturers' %}</span>
-				</a>
-			</li>
-			<li class="nav-item mb-1">
-				<a href="{% url 'student_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 {% if request.path == stu %}active{% endif %} text-secondary hover-bg-light">
-					<i class="fas fa-user-graduate me-3"></i><span>{% trans 'Students' %}</span>
-				</a>
-			</li>
-			{% endif %}
+			<li class="nav-header small text-uppercase text-muted fw-bold mt-4 mb-2 ms-3">{% trans 'Academia' %}</li>
 
 			{% if request.user.is_lecturer or request.user.is_student %}
-			<li class="nav-item mb-1">
-				<a href="{% url 'user_course_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 {% if request.path == ucl %}bg-primary text-white shadow-sm{% else %}text-secondary hover-bg-light{% endif %}">
-					<i class="fas fa-book me-3"></i><span>{% trans 'My Courses' %}</span>
+			<li class="nav-item">
+				<a href="{% url 'user_course_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if '/courses/' in request.path %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<i class="fas fa-book-bookmark me-3 opacity-75"></i><span>{% trans 'My Library' %}</span>
 				</a>
 			</li>
 			{% endif %}
 
 			{% if request.user.is_superuser or request.user.is_lecturer %}
-			<li class="nav-header small text-uppercase text-muted fw-bold mt-4 mb-2 ms-3">{% trans 'Management' %}</li>
-			<li class="nav-item mb-1">
-				<a href="{% url 'programs' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-secondary hover-bg-light">
-					<i class="fas fa-graduation-cap me-3"></i><span>{% trans 'Academic Content' %}</span>
-				</a>
-			</li>
-			<li class="nav-item mb-1">
-				<a href="{% url 'quiz_marking' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-secondary hover-bg-light">
-					<i class="fas fa-clipboard-check me-3"></i><span>{% trans 'Exams' %}</span>
+			<li class="nav-item">
+				<a href="{% url 'programs' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 text-secondary hover-bg-white fw-medium transition">
+					<i class="fas fa-graduation-cap me-3 opacity-75"></i><span>{% trans 'Programs' %}</span>
 				</a>
 			</li>
 			{% endif %}
 
 			{% if request.user.is_superuser %}
-			<li class="nav-item mb-1">
-				<a href="{% url 'course_allocation_view' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-secondary hover-bg-light">
-					<i class="fas fa-project-diagram me-3"></i><span>{% trans 'Allocations' %}</span>
-				</a>
-			</li>
-			<li class="nav-item mb-1">
-				<a href="{% url 'session_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-secondary hover-bg-light">
-					<i class="fas fa-history me-3"></i><span>{% trans 'Sessions' %}</span>
+			<li class="nav-header small text-uppercase text-muted fw-bold mt-4 mb-2 ms-3">{% trans 'System' %}</li>
+			<li class="nav-item">
+				<a href="{% url 'student_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 text-secondary hover-bg-white fw-medium transition">
+					<i class="fas fa-users-viewfinder me-3 opacity-75"></i><span>{% trans 'User Directory' %}</span>
 				</a>
 			</li>
 			{% endif %}
-
-			<li class="nav-header small text-uppercase text-muted fw-bold mt-4 mb-2 ms-3">{% trans 'Settings' %}</li>
-			<li class="nav-item mb-1">
-				<a href="{% url 'edit_profile' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-secondary hover-bg-light">
-					<i class="fas fa-user-cog me-3"></i><span>{% trans 'Account' %}</span>
-				</a>
-			</li>
-			<li class="nav-item mb-1">
-				<a href="{% url 'change_password' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-secondary hover-bg-light">
-					<i class="fas fa-lock me-3"></i><span>{% trans 'Security' %}</span>
-				</a>
-			</li>
 		</ul>
 	</div>
 
-	<footer class="p-4 border-top bg-light">
-		<form action="{% url 'set_language' %}" method="post" id="lang-form" class="mb-3">
-			{% csrf_token %}
-			<input name="next" type="hidden" value="{{ redirect_to }}">
-			<select class="form-select form-select-sm rounded-pill" name="language" id="lang-select">
-				{% get_current_language as LANGUAGE_CODE %}
-				{% get_available_languages as LANGUAGES %}
-				{% get_language_info_list for LANGUAGES as languages %}
-				{% for language in languages %}
-					<option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
-						{{ language.name_local }}
-					</option>
-				{% endfor %}
-			</select>
-		</form>
-
-		<div class="text-center">
-			<p class="small text-muted mb-2">
-				&copy; {% now "Y" %} SkillBuddy AI
-			</p>
-			<a href="https://github.com/skillBuddy" target="_blank" class="text-secondary">
-				<i class="fab fa-github fs-4"></i>
+	<!-- Sidebar Footer (User Info & Lang) -->
+	<div class="sidebar-footer p-3 bg-white bg-opacity-50 border-top">
+		<div class="user-pill d-flex align-items-center p-3 mb-3 bg-white rounded-4 shadow-sm">
+			<img src="{{ request.user.picture.url }}" class="rounded-circle shadow-sm me-3 border border-2 border-primary-light" style="width: 40px; height: 40px; object-fit: cover;">
+			<div class="flex-grow-1 overflow-hidden">
+				<h6 class="mb-0 fw-bold text-truncate">{{ request.user.get_full_name|title }}</h6>
+				<p class="small text-muted mb-0 text-truncate">{{ request.user.email }}</p>
+			</div>
+			<a href="{% url 'logout' %}" class="text-danger hover-bg-danger-light p-2 rounded-circle transition ms-2" title="{% trans 'Logout' %}">
+				<i class="fas fa-power-off"></i>
 			</a>
 		</div>
-	</footer>
+
+		<div class="d-flex align-items-center justify-content-between px-2">
+			<form action="{% url 'set_language' %}" method="post" id="lang-form" class="w-100 me-2">
+				{% csrf_token %}
+				<input name="next" type="hidden" value="{{ redirect_to }}">
+				<div class="input-group input-group-sm">
+					<span class="input-group-text bg-light border-0"><i class="fas fa-globe text-muted"></i></span>
+					<select class="form-select border-0 bg-light fw-medium" name="language" id="lang-select">
+						{% get_current_language as LANGUAGE_CODE %}
+						{% get_available_languages as LANGUAGES %}
+						{% get_language_info_list for LANGUAGES as languages %}
+						{% for language in languages %}
+							<option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
+								{{ language.name_local|title }}
+							</option>
+						{% endfor %}
+					</select>
+				</div>
+			</form>
+			<a href="https://github.com/skillBuddy" target="_blank" class="text-secondary hover-text-dark transition">
+				<i class="fab fa-github fs-5"></i>
+			</a>
+		</div>
+	</div>
 </div>
+
+<style>
+	.animate-pulse {
+		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+	@keyframes pulse {
+		0%, 100% { opacity: 1; transform: scale(1); }
+		50% { opacity: .5; transform: scale(1.2); }
+	}
+	.hover-bg-white:hover { background: var(--white); }
+	.hover-bg-danger-light:hover { background: rgba(239, 68, 68, 0.1); }
+	.hover-shadow-sm:hover { box-shadow: var(--shadow-sm); }
+	.hover-text-primary:hover { color: var(--primary) !important; }
+	.nav-link.bg-primary { box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+	.main-menu { scrollbar-width: none; }
+	.main-menu::-webkit-scrollbar { display: none; }
+</style>
 
 {% block js %}
 <script>

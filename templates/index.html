@@ -14,19 +14,19 @@
 <main class="main">
 
   <!-- Hero Section -->
-  <section id="hero" class="hero section">
+  <section id="hero" class="hero section py-5" style="background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);">
     <div class="container">
-      <div class="row gy-4">
+      <div class="row gy-5 align-items-center">
         <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
-          <h1 data-aos="fade-up">We Empower Your Learning Journey with AI Solutions</h1>
-          <p data-aos="fade-up" data-aos-delay="100">We are a team of skilled innovators dedicated to transforming education through cutting-edge technology. SkillBuddy AI offers personalized, AI-driven platforms to enhance your skills and achieve your goals effortlessly.</p>
-          <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
-            <a href="#about" class="btn-get-started btn btn-primary px-4 py-2">Get Started <i class="bi bi-arrow-right"></i></a>
-            <a href="#" class="glightbox btn-watch-video d-flex align-items-center justify-content-center ms-0 ms-md-4 mt-4 mt-md-0 btn btn-outline-secondary px-4 py-2"><i class="bi bi-play-circle me-2"></i><span>Watch Video</span></a>
+          <h1 data-aos="fade-up" class="display-3 fw-bolder mb-4">Empower Your Learning with <span class="text-primary">AI Innovation</span></h1>
+          <p data-aos="fade-up" data-aos-delay="100" class="lead text-secondary mb-5">SkillBuddy AI offers personalized, adaptive learning platforms designed to help you master new skills effortlessly using state-of-the-art AI solutions.</p>
+          <div class="d-flex flex-column flex-md-row gap-3" data-aos="fade-up" data-aos-delay="200">
+            <a href="#about" class="btn-premium px-5 py-3 fs-5">Get Started <i class="bi bi-arrow-right-short ms-2"></i></a>
+            <a href="#" class="glightbox btn btn-outline-primary px-5 py-3 fs-5 border-2 rounded-4 d-flex align-items-center justify-content-center transition"><i class="bi bi-play-circle me-2"></i><span>Watch Demo</span></a>
           </div>
         </div>
-        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out">
-          <img src="{% static 'assets/img/hero-img.png' %}" class="img-fluid animated" alt="">
+        <div class="col-lg-6 order-1 order-lg-2 hero-img text-center" data-aos="zoom-in" data-aos-delay="300">
+          <img src="{% static 'assets/img/hero-img.png' %}" class="img-fluid animated floating-img" style="max-height: 500px;" alt="">
         </div>
       </div>
     </div>
@@ -67,24 +67,30 @@
     <div class="container">
       <div class="row gy-4">
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="card h-100 border-0 shadow-sm p-4 text-center">
-            <img src="{% static 'assets/img/values-1.png' %}" class="img-fluid mb-4" alt="">
-            <h3>Empowering Individual Growth</h3>
-            <p>We believe in unlocking the potential of every learner. SkillBuddy AI is committed to fostering growth through personalized and adaptive learning experiences.</p>
+          <div class="premium-card h-100 p-5 text-center">
+            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle bg-primary-light" style="width: 80px; height: 80px;">
+                <i class="bi bi-person-up fs-2 text-primary"></i>
+            </div>
+            <h3 class="h4 mb-3">Individual Growth</h3>
+            <p class="text-muted">Unlocking the potential of every learner through personalized and adaptive learning experiences.</p>
           </div>
         </div>
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="card h-100 border-0 shadow-sm p-4 text-center">
-            <img src="{% static 'assets/img/values-2.png' %}" class="img-fluid mb-4" alt="">
-            <h3>Innovation with Purpose</h3>
-            <p>Our focus is on creating cutting-edge AI-driven solutions that inspire and empower. We value progress that leads to meaningful results for our users.</p>
+          <div class="premium-card h-100 p-5 text-center">
+            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle bg-primary-light" style="width: 80px; height: 80px;">
+                <i class="bi bi-lightbulb fs-2 text-primary"></i>
+            </div>
+            <h3 class="h4 mb-3">Purposeful Innovation</h3>
+            <p class="text-muted">Creating cutting-edge AI-driven solutions that inspire and empower meaningful results.</p>
           </div>
         </div>
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
-          <div class="card h-100 border-0 shadow-sm p-4 text-center">
-            <img src="{% static 'assets/img/values-3.png' %}" class="img-fluid mb-4" alt="">
-            <h3>Building a Better Tomorrow</h3>
-            <p>At SkillBuddy AI, we prioritize sustainable learning practices that create opportunities and pave the way for a brighter, more knowledgeable future.</p>
+          <div class="premium-card h-100 p-5 text-center">
+            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle bg-primary-light" style="width: 80px; height: 80px;">
+                <i class="bi bi-globe fs-2 text-primary"></i>
+            </div>
+            <h3 class="h4 mb-3">Brighter Future</h3>
+            <p class="text-muted">Prioritizing sustainable practices that pave the way for a more knowledgeable tomorrow.</p>
           </div>
         </div>
       </div>

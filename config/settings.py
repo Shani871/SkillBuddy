@@ -272,8 +272,5 @@ SEMESTER_CHOICES = (
     (SECOND, _("Second")),
     (THIRD, _("Third")),
 )
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# AI / GEMINI CONFIG
+GEMINI_API_KEY = config("GEMINI_API_KEY", default="")
