@@ -66,6 +66,7 @@ PROJECT_APPS = [
     "quiz.apps.QuizConfig",
     "payments.apps.PaymentsConfig",
     "emotions.apps.EmotionsConfig",
+    "ai_tutor",
 ]
 
 # Combine all apps

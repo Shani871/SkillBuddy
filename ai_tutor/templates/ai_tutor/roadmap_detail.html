@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-map text-primary"></i> {{ roadmap.topic }}</h2>
+        <a href="{% url 'roadmap_list' %}" class="btn btn-outline-primary"><i class="fas fa-chevron-left"></i> All Roadmaps</a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card premium-card mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">Learning Journey</h5>
+                </div>
+                <div class="card-body p-4" id="roadmap-content">
+                    {{ roadmap.roadmap_content }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card premium-card mb-4 bg-primary text-white">
+                <div class="card-body">
+                    <h5><i class="fas fa-rocket"></i> Recommended Projects</h5>
+                    <p class="small mb-0">Apply what you've learned with these hands-on projects.</p>
+                </div>
+            </div>
+
+            {% for project in roadmap.project_ideas.all %}
+            <div class="card premium-card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="fw-bold mb-0">{{ project.title }}</h6>
+                        <span class="badge {% if project.difficulty == 'Beginner' %}bg-success{% elif project.difficulty == 'Intermediate' %}bg-warning{% else %}bg-danger{% endif %} small">
+                            {{ project.difficulty }}
+                        </span>
+                    </div>
+                    <p class="small text-muted">{{ project.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="card premium-card mt-4 border-primary">
+                <div class="card-body text-center">
+                    <h6>Need dynamic help?</h6>
+                    <p class="small text-muted">Ask our AI chatbot for clarifications on any topic in this roadmap.</p>
+                    <a href="{% url 'chatbot' %}" class="btn btn-premium btn-sm">Chat with AI</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    const contentDiv = document.getElementById('roadmap-content');
+    const rawMarkdown = contentDiv.innerText;
+    contentDiv.innerHTML = marked.parse(rawMarkdown);
+</script>
+<style>
+    #roadmap-content h1, #roadmap-content h2, #roadmap-content h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    #roadmap-content ul {
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}

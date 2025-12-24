@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="fas fa-history text-primary"></i> Your Roadmaps</h2>
+            <p class="text-muted">Return to your learning journeys anytime.</p>
+        </div>
+        <a href="{% url 'generate_roadmap' %}" class="btn btn-premium"><i class="fas fa-plus"></i> New Roadmap</a>
+    </div>
+
+    {% if roadmaps %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for roadmap in roadmaps %}
+        <div class="col">
+            <div class="card premium-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><i class="fas fa-map"></i> {{ roadmap.topic }}</h5>
+                    <p class="text-muted small mb-3">Generated on {{ roadmap.created_at|date:"M d, Y" }}</p>
+                    <div class="mb-3">
+                        <span class="badge bg-primary-light text-primary">{{ roadmap.project_ideas.count }} Projects</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3">
+                    <a href="{{ roadmap.get_absolute_url }}" class="btn btn-outline-primary btn-sm w-100">View Roadmap</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="bg-primary-light rounded-circle p-4 d-inline-block mb-3">
+            <i class="fas fa-scroll text-primary fa-3x"></i>
+        </div>
+        <h4>No roadmaps yet</h4>
+        <p class="text-muted">Start your first learning journey with SkillBuddy AI!</p>
+        <a href="{% url 'generate_roadmap' %}" class="btn btn-premium mt-3">Generate My First Roadmap</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

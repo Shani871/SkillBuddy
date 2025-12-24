@@ -27,6 +27,7 @@ urlpatterns += i18n_patterns(
     path("quiz/", include("quiz.urls")),
     path("payments/", include("payments.urls")),
     path("emotions/", include("emotions.urls")),
+    path("ai-tutor/", include("ai_tutor.urls")),
     path("", include("chatbot.urls")),
 )
 

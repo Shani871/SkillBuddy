@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-8">
+        <div class="card premium-card">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4"><i class="fas fa-magic text-primary"></i> AI Study Roadmap</h2>
+                <p class="text-center text-muted mb-5">Enter any topic or course name, and SkillBuddy AI will generate a structured learning path and project ideas for you.</p>
+
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="topic" class="form-label fw-bold">What do you want to learn?</label>
+                        <input type="text" class="form-control form-control-lg rounded-3" id="topic" name="topic" placeholder="e.g. Data Science with Python, Quantum Computing, Photography..." required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-premium btn-lg" id="generateBtn">
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            Generate Roadmap
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <h4 class="mb-3">How it works?</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="bg-primary-light rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-lightbulb text-primary fa-2x"></i>
+                        </div>
+                        <h5>Idea</h5>
+                        <p class="small text-muted">Enter any concept you're curious about.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="bg-primary-light rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-brain text-accent fa-2x"></i>
+                        </div>
+                        <h5>AI Processing</h5>
+                        <p class="small text-muted">Gemini AI analyzes and structures the content.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="bg-primary-light rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-route text-success fa-2x"></i>
+                        </div>
+                        <h5>Roadmap</h5>
+                        <p class="small text-muted">Get a week-by-week guide and projects.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.querySelector('form').addEventListener('submit', function() {
+        const btn = document.getElementById('generateBtn');
+        btn.disabled = true;
+        btn.querySelector('.spinner-border').classList.remove('d-none');
+    });
+</script>
+{% endblock %}
