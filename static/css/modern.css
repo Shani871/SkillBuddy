@@ -1,0 +1,76 @@
+/* Modern UI Design System */
+:root {
+  /* Color Palette */
+  --primary-h: 240; /* hue */
+  --primary-s: 80%;
+  --primary-l: 55%;
+  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+  --accent-h: 280;
+  --accent-s: 70%;
+  --accent-l: 60%;
+  --accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+  --bg-light: hsl(0, 0%, 98%);
+  --bg-dark: hsl(210, 15%, 10%);
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --radius-lg: 1rem;
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --transition: all 0.3s ease;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+}
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px -3px rgba(0,0,0,0.15);
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  border: none;
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  transition: var(--transition);
+}
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* Navbar */
+.glass-nav {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Forms */
+.glass-form {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --bg-light: var(--bg-dark);
+  color: #fff;
+}
+
+/* Utility */
+.full-width {
+  width: 100%;
+}

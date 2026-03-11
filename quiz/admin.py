@@ -62,7 +62,7 @@ class QuizAdmin(TranslationAdmin):
     # )
 
 
-class MCQuestionAdmin(TranslationAdmin):
+class MCQuestionAdmin(admin.ModelAdmin):
     list_display = ("content",)
     # list_filter = ('category',)
     fieldsets = [

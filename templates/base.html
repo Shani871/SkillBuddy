@@ -9,206 +9,87 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <title>{% block title %}SkillBuddy AI{% endblock title %}</title>
-
     <link rel="shortcut icon" href="{% static 'img/skillBuddy.png' %}" type="image/x-icon">
 
-    <!-- Google Fonts: Inter & Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Fontawesome icons -->
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/fontawesome-6.5.1/css/all.min.css' %}">
-
-    <!-- Bootstrap5 -->
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap-5.3.2/css/bootstrap.min.css' %}">
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/ui-refresh.css' %}">
 
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --primary-light: #e0e7ff;
-            --accent: #8b5cf6;
-            --accent-light: #f5f3ff;
-            --dark: #1e1b4b;
-            --secondary: #64748b;
-            --light: #f8fafc;
-            --white: #ffffff;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --radius-sm: 0.375rem;
-            --radius: 0.5rem;
-            --radius-md: 0.75rem;
-            --radius-lg: 1rem;
-            --radius-xl: 1.5rem;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --glass: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --primary: var(--ui-primary);
+            --primary-dark: var(--ui-primary-strong);
+            --primary-light: var(--ui-primary-soft);
+            --accent: var(--ui-accent);
+            --accent-light: var(--ui-accent-soft);
+            --dark: var(--ui-text);
+            --secondary: var(--ui-text-muted);
+            --light: var(--ui-bg);
+            --white: var(--ui-surface);
+            --success: var(--ui-success);
+            --danger: var(--ui-danger);
+            --warning: var(--ui-warning);
+            --shadow-sm: var(--ui-shadow-sm);
+            --shadow: var(--ui-shadow-md);
+            --shadow-lg: var(--ui-shadow-lg);
+            --radius-sm: var(--ui-radius-sm);
+            --radius: 12px;
+            --radius-md: var(--ui-radius-md);
+            --radius-lg: var(--ui-radius-lg);
+            --transition: all 0.24s ease;
+            --glass: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(215, 226, 238, 0.85);
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--light);
-            color: var(--dark);
             -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            letter-spacing: -0.025em;
+        .bg-primary-light {
+            background: var(--primary-light) !important;
         }
 
-        #main {
+        .text-primary {
+            color: var(--primary-dark) !important;
+        }
+
+        .rounded-4 {
+            border-radius: var(--radius-md) !important;
+        }
+
+        .rounded-5 {
+            border-radius: var(--radius-lg) !important;
+        }
+
+        .hover-bg-white:hover {
+            background: #fff !important;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .transition {
             transition: var(--transition);
         }
 
-        .glass-nav {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border) !important;
+        .smaller {
+            font-size: 0.82rem;
         }
-
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow-md);
-        }
-
-        .auth-box {
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            padding: 3rem;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        /* Floating Sidebar Layout Adjustments */
-        #side-nav {
-            position: fixed;
-            left: 1.5rem;
-            top: 1.5rem;
-            bottom: 1.5rem;
-            height: calc(100vh - 3rem) !important;
-            border-radius: var(--radius-xl) !important;
-            margin-right: 1.5rem;
-            z-index: 1050;
-            border: 1px solid var(--glass-border) !important;
-            background: var(--glass) !important;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-        }
-
-        #main-wrapper {
-            margin-left: 280px;
-            padding-left: 1.5rem;
-            transition: var(--transition);
-        }
-
-        @media (max-width: 991.98px) {
-            #side-nav {
-                left: -320px;
-                top: 0;
-                bottom: 0;
-                height: 100vh !important;
-                border-radius: 0 !important;
-                margin: 0;
-            }
-            #side-nav.active {
-                left: 0;
-            }
-            #main-wrapper {
-                margin-left: 0;
-                padding-left: 0;
-            }
-        }
-        .premium-card {
-            background: var(--white);
-            border: 1px solid rgba(0,0,0,0.05);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-
-        .premium-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn-premium {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            padding: 0.6rem 1.5rem;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .btn-premium:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-            color: white;
-        }
-
-        .hover-bg-light:hover {
-            background-color: var(--primary-light);
-            color: var(--primary) !important;
-        }
-        .btn-primary {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            border-radius: var(--radius-md);
-            padding: 0.6rem 1.5rem;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            border-color: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-outline-primary {
-            border-color: var(--primary);
-            color: var(--primary);
-            border-radius: var(--radius-md);
-            padding: 0.6rem 1.5rem;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .btn-outline-primary:hover {
-            background-color: var(--primary);
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .rounded-4 { border-radius: var(--radius-lg) !important; }
-        .rounded-5 { border-radius: var(--radius-xl) !important; }
-        .shadow-md { box-shadow: var(--shadow) !important; }
     </style>
+
     {% block header %}{% endblock %}
 </head>
 
-<body>
-    {% block sidebar %}
-        {% include 'sidebar.html' %}
-    {% endblock %}
-
+<body class="{% block body_class %}{% endblock %}">
     {% block maincontent %}
     <div id="main">
         {% block topbar %}
@@ -216,19 +97,21 @@
         {% endblock %}
 
         <div class="container-fluid" id="main-content">
-            {% block content %}{% endblock content %}
+            {% block content_wrapper %}
+            <div class="main-content-shell">
+                {% block content %}{% endblock content %}
+            </div>
+            {% endblock %}
         </div>
-
     </div>
     {% endblock %}
+
     <script src="{% url 'javascript-catalog' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/jquery-3.7.1/jquery-3.7.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/bootstrap-5.3.2/js/bootstrap.bundle.min.js' %}"></script>
-
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
 
-    {% block js %}
-    {% endblock js %}
+    {% block js %}{% endblock js %}
 </body>
 
 </html>

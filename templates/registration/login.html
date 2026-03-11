@@ -5,95 +5,104 @@
 
 {% block content %}
 <div class="auth-box">
-    <div class="text-center mb-5">
-        <div class="bg-primary-light d-inline-flex p-3 rounded-circle mb-3">
-            <i class="fas fa-user-lock text-primary fs-3"></i>
+    <div class="row g-4 align-items-stretch">
+        <div class="col-lg-5">
+            <div class="auth-highlight h-100 d-flex flex-column justify-content-center p-4">
+                <span class="stats-pill align-self-start mb-3">SkillBuddy AI</span>
+                <h1 class="h3 fw-bold mb-3">{% trans 'Welcome back' %}</h1>
+                <p class="text-muted mb-4">{% trans 'Sign in to continue your personalized learning journey and access your dashboard.' %}</p>
+                <div class="d-flex align-items-center gap-2 text-muted small">
+                    <i class="fas fa-shield-heart text-primary"></i>
+                    <span>{% trans 'Secure login with optional well-being analysis' %}</span>
+                </div>
+            </div>
         </div>
-        <h2 class="fw-bold text-dark">{% trans 'Welcome Back' %}</h2>
-        <p class="text-secondary">{% trans 'Enter your details to access your account' %}</p>
+
+        <div class="col-lg-7">
+            <form action="" method="POST" id="login-form" class="h-100 d-flex flex-column">
+                {% csrf_token %}
+
+                <div class="form-group mb-3">
+                    <label class="form-label fw-semibold" for="username_id">{% trans 'ID Number' %}</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        <input type="text" name="username" id="username_id" class="form-control" placeholder="e.g. UGR-1234-56" required>
+                    </div>
+                    <div id="message-wrapper" class="pt-1"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label fw-semibold" for="password_id">{% trans 'Password' %}</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        <input type="password" name="password" id="password_id" class="form-control" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="{% url 'password_reset' %}" class="small text-primary text-decoration-none fw-semibold">
+                        {% trans 'Forgot password?' %}
+                    </a>
+                </div>
+
+                {% if form.errors %}
+                <div class="alert alert-danger py-2 px-3 small mb-3">
+                    <i class="fas fa-circle-exclamation me-2"></i>{% trans 'Invalid ID or Password.' %}
+                </div>
+                {% endif %}
+
+                <div class="auth-highlight mb-3" id="emotion-detection-section">
+                    <div class="form-check d-flex align-items-center mb-0">
+                        <input class="form-check-input me-2" type="checkbox" id="consent-checkbox" style="width: 18px; height: 18px;">
+                        <label class="form-check-label small text-muted" for="consent-checkbox">
+                            {% trans 'Enable emotional well-being analysis' %}
+                        </label>
+                    </div>
+                    <div id="webcam-container" class="mt-3 overflow-hidden rounded-3" style="display: none;">
+                        <video id="webcam" width="100%" height="auto" autoplay playsinline class="bg-dark"></video>
+                        <canvas id="capture-canvas" style="display: none;"></canvas>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-premium w-100 py-2 mt-auto" id="login-btn">
+                    <i class="fas fa-arrow-right-to-bracket me-2"></i>{% trans 'Sign In' %}
+                </button>
+            </form>
+        </div>
     </div>
 
-    <form action="" method="POST" id="login-form">
-        {% csrf_token %}
-        
-        <div class="form-group mb-4">
-            <label class="form-label fw-semibold small text-uppercase text-muted" for="username_id">
-                {% trans 'ID Number' %}
-            </label>
-            <div class="input-group">
-                <span class="input-group-text border-0 bg-light rounded-start-pill ps-3">
-                    <i class="fas fa-id-card text-muted"></i>
-                </span>
-                <input type="text" name="username" id="username_id" class="form-control border-0 bg-light rounded-end-pill py-2 pe-3" placeholder="e.g. UGR-1234-56" required>
-            </div>
-            <div id="message-wrapper"></div>
-        </div>
-
-        <div class="form-group mb-3">
-            <label class="form-label fw-semibold small text-uppercase text-muted" for="password_id">
-                {% trans 'Password' %}
-            </label>
-            <div class="input-group">
-                <span class="input-group-text border-0 bg-light rounded-start-pill ps-3">
-                    <i class="fas fa-key text-muted"></i>
-                </span>
-                <input type="password" name="password" id="password_id" class="form-control border-0 bg-light rounded-end-pill py-2 pe-3" placeholder="••••••••" required>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-end mb-4">
-            <a href="{% url 'password_reset' %}" class="small text-primary text-decoration-none fw-medium hover-underline">
-                {% trans 'Forgot password?' %}
-            </a>
-        </div>
-
-        {% if form.errors %}
-        <div class="alert alert-soft-danger border-0 rounded-4 mb-4 py-2 px-3 small">
-            <i class="fas fa-circle-exclamation me-2"></i> {% trans 'Invalid ID or Password.' %}
-        </div>
-        {% endif %}
-
-        <!-- Emotion Detection Area -->
-        <div class="bg-light p-3 rounded-4 mb-4" id="emotion-detection-section">
-            <div class="form-check d-flex align-items-center mb-0">
-                <input class="form-check-input me-3" type="checkbox" id="consent-checkbox" style="width: 20px; height: 20px;">
-                <label class="form-check-label small text-muted" for="consent-checkbox">
-                    {% trans 'Enable emotional well-being analysis' %}
-                </label>
-            </div>
-            <div id="webcam-container" class="mt-3 overflow-hidden rounded-3 shadow-sm" style="display: none;">
-                <video id="webcam" width="100%" height="auto" autoplay playsinline class="bg-dark"></video>
-                <canvas id="capture-canvas" style="display: none;"></canvas>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-premium w-100 py-3 rounded-pill fw-bold mb-4" id="login-btn">
-            <i class="fas fa-arrow-right-to-bracket me-2"></i> {% trans 'SIGN IN' %}
-        </button>
-    </form>
-
-    <div class="text-center">
+    <div class="text-center mt-4 pt-3 border-top">
         <p class="text-muted small mb-0">
-            {% trans "Don't have an account?" %} 
-            <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">
-                {% trans 'Create one now' %}
-            </a>
+            {% trans "Don't have an account?" %}
+            <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">{% trans 'Create one now' %}</a>
         </p>
     </div>
 </div>
-
-<style>
-    .alert-soft-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-</style>
 {% endblock content %}
 
 {% block js %}
 <script>
+  const isAuthenticated = {{ request.user.is_authenticated|yesno:"true,false" }};
   const video = document.getElementById('webcam');
   const canvas = document.getElementById('capture-canvas');
   const consentCheckbox = document.getElementById('consent-checkbox');
   const webcamContainer = document.getElementById('webcam-container');
   let stream = null;
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
 
   consentCheckbox.addEventListener('change', async function() {
     if (this.checked) {
@@ -120,9 +129,7 @@
     loginBtn.addClass('disabled');
     loginBtn.html(`<span class="spinner-border spinner-border-sm me-2"></span> {% trans "Signing in..." %}`);
 
-    const username = $('#username_id').val();
-    
-    if (consentCheckbox.checked && stream) {
+    if (isAuthenticated && consentCheckbox.checked && stream) {
         const context = canvas.getContext('2d');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -134,10 +141,10 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken'),
                 },
                 body: JSON.stringify({
-                    image: imageData,
-                    username: username
+                    image: imageData
                 })
             });
         } catch (err) {
@@ -160,9 +167,9 @@
       dataType: 'json',
       success: function (data) {
         if (data.is_taken) {
-          $('#message-wrapper').html(`<div class="mt-2 small text-success px-2 font-monospace"><i class="fas fa-check-circle me-1"></i> ID found: ${username}</div>`)
+          $('#message-wrapper').html(`<div class="mt-1 small text-success px-1"><i class="fas fa-check-circle me-1"></i> ID found: ${username}</div>`)
         } else {
-          $('#message-wrapper').html(`<div class="mt-2 small text-warning px-2 font-monospace"><i class="fas fa-circle-question me-1"></i> ID not recognized</div>`)
+          $('#message-wrapper').html(`<div class="mt-1 small text-warning px-1"><i class="fas fa-circle-question me-1"></i> ID not recognized</div>`)
         }
       }
     })

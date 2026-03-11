@@ -11,13 +11,13 @@ class QuizTranslationOptions(TranslationOptions):
     empty_values = None
 
 
-@register(Question)
-class QuestionTranslationOptions(TranslationOptions):
-    fields = (
-        "content",
-        "explanation",
-    )
-    empty_values = None
+# @register(Question)
+# class QuestionTranslationOptions(TranslationOptions):
+#     fields = (
+#         "content",
+#         "explanation",
+#     )
+#     empty_values = None
 
 
 @register(Choice)
@@ -26,6 +26,6 @@ class ChoiceTranslationOptions(TranslationOptions):
     empty_values = None
 
 
-@register(MCQuestion)
-class MCQuestionTranslationOptions(TranslationOptions):
-    pass
+# @register(MCQuestion)
+# class MCQuestionTranslationOptions(TranslationOptions):
+#     pass

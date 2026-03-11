@@ -17,140 +17,159 @@
 
 {% include 'snippets/messages.html' %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-	<h1 class="title-1">{% trans 'Dashboard' %}</h1>
-	<div class="dropdown">
-		<button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
-			aria-expanded="false">
-			<i class="fas fa-cog"></i>
-		</button>
-		<div class="dropdown-menu">
-			<h6 class="dropdown-header">{% trans 'Dashboard settings' %}</h6>
-			<button class="dropdown-item active" type="button">{% trans 'Display grid' %}</button>
-			<button class="dropdown-item" type="button">{% trans 'Display table' %}</button>
-			<hr>
-			<button class="dropdown-item" type="button">{% trans 'Manage dashboard' %}</button>
+<section class="page-hero mb-4">
+	<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+		<div>
+			<h1 class="h3 fw-bold mb-2">{% trans 'Dashboard' %}</h1>
+			<p>{% trans 'Track users, engagement, and learning outcomes in one place.' %}</p>
+		</div>
+		<div class="dropdown">
+			<button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				<i class="fas fa-sliders me-2"></i>{% trans 'View Options' %}
+			</button>
+			<div class="dropdown-menu">
+				<h6 class="dropdown-header">{% trans 'Dashboard settings' %}</h6>
+				<button class="dropdown-item active" type="button">{% trans 'Display grid' %}</button>
+				<button class="dropdown-item" type="button">{% trans 'Display table' %}</button>
+				<hr>
+				<button class="dropdown-item" type="button">{% trans 'Manage dashboard' %}</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div class="row g-3 mb-4">
+	<div class="col-6 col-lg-3">
+		<div class="stat-card">
+			<div class="d-flex align-items-center justify-content-between mb-2">
+				<span class="icon-chip"><i class="fas fa-user-graduate"></i></span>
+				<span class="small text-muted">{% trans 'Active users' %}</span>
+			</div>
+			<p class="small text-muted mb-1">{% trans 'Students' %}</p>
+			<h2 class="h3 fw-bold mb-0">{{ student_count }}</h2>
+		</div>
+	</div>
+	<div class="col-6 col-lg-3">
+		<div class="stat-card">
+			<div class="d-flex align-items-center justify-content-between mb-2">
+				<span class="icon-chip"><i class="fas fa-chalkboard-user"></i></span>
+				<span class="small text-muted">{% trans 'Faculty' %}</span>
+			</div>
+			<p class="small text-muted mb-1">{% trans 'Lecturers' %}</p>
+			<h2 class="h3 fw-bold mb-0">{{ lecturer_count }}</h2>
+		</div>
+	</div>
+	<div class="col-6 col-lg-3">
+		<div class="stat-card">
+			<div class="d-flex align-items-center justify-content-between mb-2">
+				<span class="icon-chip"><i class="fas fa-user-shield"></i></span>
+				<span class="small text-muted">{% trans 'Access control' %}</span>
+			</div>
+			<p class="small text-muted mb-1">{% trans 'Administrators' %}</p>
+			<h2 class="h3 fw-bold mb-0">{{ superuser_count }}</h2>
+		</div>
+	</div>
+	<div class="col-6 col-lg-3">
+		<div class="stat-card">
+			<div class="d-flex align-items-center justify-content-between mb-2">
+				<span class="icon-chip"><i class="fas fa-flask"></i></span>
+				<span class="small text-muted">{% trans 'Support' %}</span>
+			</div>
+			<p class="small text-muted mb-1">{% trans 'Lab Assistance' %}</p>
+			<h2 class="h3 fw-bold mb-0">500</h2>
 		</div>
 	</div>
 </div>
 
-<div class="row users-count g-4 px-2">
-	<div class="col-6 col-md-3">
-		<div class="premium-card p-4 h-100 d-flex align-items-center">
-			<div class="icon-box me-3 rounded-circle bg-primary-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                <i class="fas fa-user-graduate fs-3 text-primary"></i>
-            </div>
-			<div>
-				<p class="text-muted small mb-1">{% trans 'Students' %}</p>
-				<h2 class="fw-bold mb-0">{{ student_count }}</h2>
-			</div>
-		</div>
-	</div>
-	<div class="col-6 col-md-3">
-		<div class="premium-card p-4 h-100 d-flex align-items-center">
-			<div class="icon-box me-3 rounded-circle bg-primary-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                <i class="fas fa-chalkboard-teacher fs-3 text-primary"></i>
-            </div>
-			<div>
-				<p class="text-muted small mb-1">{% trans 'Lecturers' %}</p>
-				<h2 class="fw-bold mb-0">{{ lecturer_count }}</h2>
-			</div>
-		</div>
-	</div>
-	<div class="col-6 col-md-3">
-		<div class="premium-card p-4 h-100 d-flex align-items-center">
-			<div class="icon-box me-3 rounded-circle bg-primary-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                <i class="fas fa-user-shield fs-3 text-primary"></i>
-            </div>
-			<div>
-				<p class="text-muted small mb-1">{% trans 'Administrators' %}</p>
-				<h2 class="fw-bold mb-0">{{ superuser_count }}</h2>
-			</div>
-		</div>
-	</div>
-	<div class="col-6 col-md-3">
-		<div class="premium-card p-4 h-100 d-flex align-items-center">
-			<div class="icon-box me-3 rounded-circle bg-primary-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                <i class="fas fa-flask fs-3 text-primary"></i>
-            </div>
-			<div>
-				<p class="text-muted small mb-1">{% trans 'Lab Assistance' %}</p>
-				<h2 class="fw-bold mb-0">500</h2>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="row g-4 px-2 mt-2">
-	<div class="col-md-6">
-		<div class="premium-card p-4 h-100 shadow-sm">
+<div class="row g-4">
+	<div class="col-12 col-xl-6 chart-col">
+		<div class="chart-wrap">
 			<div class="d-flex justify-content-between align-items-center mb-3">
 				<h5 class="fw-bold mb-0">{% trans 'Website Traffic' %}</h5>
 				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
 			</div>
-			<div class="chart-container" style="position: relative; height:300px;">
+			<div style="height: 300px;">
 				<canvas id="traffic"></canvas>
 			</div>
 		</div>
 	</div>
-	<div class="col-md-6">
-		<div class="premium-card p-4 h-100 shadow-sm">
+
+	<div class="col-12 col-xl-6 chart-col">
+		<div class="chart-wrap">
 			<div class="d-flex justify-content-between align-items-center mb-3">
 				<h5 class="fw-bold mb-0">{% trans 'Enrollment per course' %}</h5>
 				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
 			</div>
-			<div class="chart-container" style="position: relative; height:300px;">
+			<div style="height: 300px;">
 				<canvas id="enrollement"></canvas>
 			</div>
 		</div>
 	</div>
-	<div class="col-md-6">
-		<div class="premium-card p-4 h-100 shadow-sm">
+
+	<div class="col-12 col-xl-6 chart-col">
+		<div class="chart-wrap">
 			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h5 class="fw-bold mb-0">{% trans 'Students average grade (performance)' %}</h5>
+				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
+			</div>
+			<div style="height: 300px;">
+				<canvas id="students_grade"></canvas>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-12 col-xl-6">
+		<div class="panel-card p-3 p-md-4 h-100">
+			<div class="d-flex justify-content-between align-items-center mb-2">
 				<h5 class="fw-bold mb-0">{% trans 'Latest Activities' %}</h5>
-				<a href="#" class="btn btn-sm btn-light border-0 rounded-pill px-3">View all</a>
+				<span class="stats-pill">{% trans 'Last 10' %}</span>
 			</div>
-			<div class="activity-list">
-				<ul class="list-unstyled mb-0">
-					{% for log in logs %}
-					<li class="d-flex align-items-start mb-3">
-						<div class="bg-primary-light rounded-circle p-2 me-3">
-							<i class="fas fa-circle-info text-primary small"></i>
-						</div>
-						<div>
-							<p class="mb-0 small fw-medium">{{ log.message }}</p>
-							<span class="text-muted smaller">{{ log.created_at|timesince }} ago</span>
-						</div>
-					</li>
-					{% empty %}
-					<li class="text-center py-5">
-						<img src="{% static 'img/empty.svg' %}" width="120" class="mb-3 opacity-50">
-						<p class="text-muted smaller">{% trans 'No recent activity' %}</p>
-					</li>
-					{% endfor %}
-				</ul>
+			<div>
+				{% for log in logs %}
+				<div class="activity-item">
+					<div class="activity-dot"><i class="fas fa-circle-info"></i></div>
+					<div>
+						<p class="mb-1 fw-semibold">{{ log.message }}</p>
+						<p class="small text-muted mb-0">{{ log.created_at|timesince }} {% trans 'ago' %}</p>
+					</div>
+				</div>
+				{% empty %}
+				<div class="text-center py-5">
+					<img src="{% static 'img/empty.svg' %}" width="120" class="mb-3 opacity-50" alt="No activity">
+					<p class="text-muted mb-0">{% trans 'No recent activity' %}</p>
+				</div>
+				{% endfor %}
 			</div>
 		</div>
 	</div>
 </div>
-<br>
-<div class="bg-white p-3">
-	<h5 class="border-bottom pb-2">{% trans 'School Demographics' %}</h5>
-	<div class="row">
-		<div class="col-md-4">
-			<i class="fas fa-expand-alt"></i>
-			<canvas id="gender"></canvas>
+
+<section class="panel-card p-3 p-md-4 mt-4">
+	<div class="d-flex align-items-center justify-content-between mb-3">
+		<h5 class="fw-bold mb-0">{% trans 'School Demographics' %}</h5>
+		<span class="small text-muted">{% trans 'Overview by gender, qualification and level' %}</span>
+	</div>
+	<div class="row g-4">
+		<div class="col-12 col-md-4 chart-col">
+			<div class="chart-wrap">
+				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
+				<canvas id="gender"></canvas>
+			</div>
 		</div>
-		<div class="col-md-4">
-			<i class="fas fa-expand-alt"></i>
-			<canvas id="ethnicity"></canvas>
+		<div class="col-12 col-md-4 chart-col">
+			<div class="chart-wrap">
+				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
+				<canvas id="ethnicity"></canvas>
+			</div>
 		</div>
-		<div class="col-md-4">
-			<i class="fas fa-expand-alt"></i>
-			<canvas id="language"></canvas>
+		<div class="col-12 col-md-4 chart-col">
+			<div class="chart-wrap">
+				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
+				<canvas id="language"></canvas>
+			</div>
 		</div>
 	</div>
-</div>
+</section>
 
 {% endblock content %}
 
@@ -161,14 +180,14 @@
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
 	$('.fa-expand-alt').click(function () {
-		if ($(this).parent('.chart-wrap').parent('.col-md-6').hasClass('expand')) {
-			$('.col-md-6.expand').removeClass('expand');
+		const cardCol = $(this).closest('.chart-col');
+		if (cardCol.hasClass('expand')) {
+			$('.chart-col.expand').removeClass('expand');
+			return;
 		}
-		else {
-			$('.col-md-6.expand')?.removeClass('expand');
-			$(this).parent('.chart-wrap').parent('.col-md-6').addClass('expand');
-		}
-	})
+		$('.chart-col.expand').removeClass('expand');
+		cardCol.addClass('expand');
+	});
 </script>
 <script>
 	const malesCount = {{ males_count }}

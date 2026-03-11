@@ -1,36 +1,12 @@
 {% extends 'base.html' %}
 
-{% block sidebar %}{% endblock %}
-
-{% block header %}
-<style>
-    body {
-        background: radial-gradient(circle at top right, var(--primary-light), transparent),
-                    radial-gradient(circle at bottom left, var(--accent-light), transparent);
-        background-color: #f8fafc;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    #main-wrapper {
-        margin-left: 0 !important;
-        padding-left: 0 !important;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .auth-container {
-        width: 100%;
-        max-width: 450px;
-        padding: 2rem;
-    }
-</style>
-{% endblock %}
+{% block topbar %}{% endblock %}
+{% block body_class %}auth-page{% endblock %}
 
 {% block maincontent %}
-  <div class="auth-container">
-    {% block content %}{% endblock content %}
-  </div>
+<div id="main" class="auth-page">
+    <div class="auth-shell w-100">
+        {% block content %}{% endblock content %}
+    </div>
+</div>
 {% endblock %}

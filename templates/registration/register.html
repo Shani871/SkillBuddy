@@ -4,68 +4,69 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="auth-box" style="max-width: 900px;">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold text-dark mb-2">{% trans 'Create Your Account' %}</h2>
-        <p class="text-secondary">{% trans 'Join our community and start your learning journey' %}</p>
+<div class="auth-box" style="max-width: 980px; margin: 0 auto;">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom gap-3">
+        <div>
+            <h1 class="h3 fw-bold mb-1">{% trans 'Create Your Account' %}</h1>
+            <p class="text-muted mb-0">{% trans 'Join SkillBuddy AI and start tracking your learning progress.' %}</p>
+        </div>
+        <a href="{% url 'login' %}" class="btn btn-outline-primary align-self-start align-self-md-center">{% trans 'Back to Sign In' %}</a>
     </div>
 
     <form action="" method="POST" id="register-form">
         {% csrf_token %}
         <div class="row g-4">
-            <!-- Account Security Section -->
             <div class="col-lg-6">
-                <div class="p-3 bg-light rounded-4 h-100">
-                    <h6 class="fw-bold text-primary mb-4 text-uppercase small"><i class="fas fa-shield-halved me-2"></i>{% trans 'Account Credentials' %}</h6>
+                <div class="auth-highlight h-100">
+                    <h2 class="h6 fw-bold mb-3 text-uppercase">{% trans 'Account Credentials' %}</h2>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">{{ form.username.label }}</label>
+                        <label class="form-label fw-semibold">{{ form.username.label }}</label>
                         {{ form.username }}
                         <div id="message-wrapper"></div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">{{ form.email.label }}</label>
+                        <label class="form-label fw-semibold">{{ form.email.label }}</label>
                         {{ form.email }}
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">{{ form.password1.label }}</label>
+                        <label class="form-label fw-semibold">{{ form.password1.label }}</label>
                         {{ form.password1 }}
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">{{ form.password2.label }}</label>
+                    <div>
+                        <label class="form-label fw-semibold">{{ form.password2.label }}</label>
                         {{ form.password2 }}
                     </div>
                 </div>
             </div>
 
-            <!-- Profile Info Section -->
             <div class="col-lg-6">
-                <div class="p-3 bg-light rounded-4 h-100">
-                    <h6 class="fw-bold text-primary mb-4 text-uppercase small"><i class="fas fa-id-card-clip me-2"></i>{% trans 'Identity Profile' %}</h6>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-bold text-muted">{{ form.first_name.label }}</label>
+                <div class="auth-highlight h-100">
+                    <h2 class="h6 fw-bold mb-3 text-uppercase">{% trans 'Identity Profile' %}</h2>
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">{{ form.first_name.label }}</label>
                             {{ form.first_name }}
                         </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold text-muted">{{ form.last_name.label }}</label>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">{{ form.last_name.label }}</label>
                             {{ form.last_name }}
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">{{ form.phone.label }}</label>
+                        <label class="form-label fw-semibold">{{ form.phone.label }}</label>
                         {{ form.phone }}
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">{{ form.address.label }}</label>
+                        <label class="form-label fw-semibold">{{ form.address.label }}</label>
                         {{ form.address }}
                     </div>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <label class="form-label small fw-bold text-muted">{{ form.gender.label }}</label>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">{{ form.gender.label }}</label>
                             {{ form.gender }}
                         </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold text-muted">{{ form.level.label }}</label>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">{{ form.level.label }}</label>
                             {{ form.level }}
                         </div>
                     </div>
@@ -73,52 +74,27 @@
             </div>
 
             <div class="col-12">
-                <div class="p-3 border rounded-4 bg-white d-flex align-items-center">
-                    <i class="fas fa-graduation-cap text-primary fs-3 me-3 opacity-50"></i>
-                    <div class="flex-grow-1">
-                        <label class="form-label small fw-bold text-muted mb-1">{{ form.program.label }}</label>
-                        {{ form.program }}
-                    </div>
-                </div>
+                <label class="form-label fw-semibold">{{ form.program.label }}</label>
+                {{ form.program }}
             </div>
         </div>
 
         {% if form.errors %}
-        <div class="alert alert-soft-danger border-0 rounded-4 mt-4 py-2 px-3 small">
-            <i class="fas fa-exclamation-triangle me-2"></i> {% trans 'Please fix the errors below to continue.' %}
+        <div class="alert alert-danger mt-4 py-2 px-3 small">
+            <i class="fas fa-exclamation-triangle me-2"></i>{% trans 'Please fix the errors below to continue.' %}
         </div>
         {% endif %}
 
-        <div class="mt-5 mb-4">
-            <button type="submit" class="btn btn-premium w-100 py-3 rounded-pill fw-bold" id="register-btn">
-                <i class="fas fa-user-plus me-2"></i> {% trans 'CREATE ACCOUNT' %}
-            </button>
-        </div>
+        <button type="submit" class="btn btn-premium w-100 py-2 mt-4" id="register-btn">
+            <i class="fas fa-user-plus me-2"></i>{% trans 'Create Account' %}
+        </button>
     </form>
 
-    <div class="text-center">
-        <p class="text-muted small mb-0">
-            {% trans 'Already have an account?' %} 
-            <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none">
-                {% trans 'Sign in here' %}
-            </a>
-        </p>
-    </div>
+    <p class="text-muted small mb-0 mt-3 text-center">
+        {% trans 'Already have an account?' %}
+        <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none">{% trans 'Sign in here' %}</a>
+    </p>
 </div>
-
-<style>
-    #register-form input, #register-form select {
-        border: none !important;
-        background: #f8fafc !important;
-        border-radius: var(--radius) !important;
-        padding: 0.6rem 1rem !important;
-        font-size: 0.9rem !important;
-    }
-    #register-form input:focus {
-        background: white !important;
-        box-shadow: 0 0 0 3px var(--primary-light) !important;
-    }
-</style>
 {% endblock content %}
 
 {% block js %}
@@ -153,4 +129,3 @@
   });
 </script>
 {% endblock %}
-

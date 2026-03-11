@@ -12,5 +12,5 @@ urlpatterns = [
     path("payment-succeed/", views.payment_succeed, name="payment-succeed"),
     path("complete/", views.paymentComplete, name="complete"),
     path("create-invoice/", views.create_invoice, name="create_invoice"),
-    path("invoice-detail/<int:id>/", views.invoice_detail, name="invoice_detail"),
+    path("invoice-detail/<str:slug>/", views.invoice_detail, name="invoice_detail"),
 ]
