@@ -9,7 +9,7 @@ from factory import SubFactory, LazyAttribute, Iterator, LazyFunction
 from core.models import ActivityLog, NewsAndEvents, Session, Semester, SEMESTER, POST
 
 # Set up Django environment
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 django.setup()
 
 fake = Faker()

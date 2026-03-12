@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -28,6 +30,8 @@ from course.models import (
     UploadVideo,
 )
 from result.models import TakenCourse
+
+logger = logging.getLogger(__name__)
 
 
 # ########################################################
@@ -118,10 +122,15 @@ def program_delete(request, pk):
 
 @login_required
 def course_single(request, slug):
-    course = get_object_or_404(Course, slug=slug)
-    files = Upload.objects.filter(course__slug=slug)
-    videos = UploadVideo.objects.filter(course__slug=slug)
-    lecturers = CourseAllocation.objects.filter(courses__pk=course.id)
+    course = get_object_or_404(Course.objects.select_related("program"), slug=slug)
+    files = Upload.objects.select_related("course").filter(course__slug=slug)
+    videos = UploadVideo.objects.select_related("course").filter(course__slug=slug)
+    lecturers = (
+        CourseAllocation.objects.select_related("lecturer")
+        .prefetch_related("courses")
+        .filter(courses__pk=course.id)
+        .distinct()
+    )
     return render(
         request,
         "course/course_single.html",
@@ -410,11 +419,13 @@ def course_registration(request):
             return render(request, "course/course_registration.html")
 
         # student = Student.objects.get(student__pk=request.user.id)
-        student = get_object_or_404(Student, student__id=request.user.id)
-        taken_courses = TakenCourse.objects.filter(student__student__id=request.user.id)
-        t = ()
-        for i in taken_courses:
-            t += (i.course.pk,)
+        student = get_object_or_404(
+            Student.objects.select_related("student", "program"), student__id=request.user.id
+        )
+        taken_courses = TakenCourse.objects.select_related("course").filter(
+            student__student__id=request.user.id
+        )
+        t = tuple(taken_courses.values_list("course__pk", flat=True))
 
         courses = (
             Course.objects.filter(
@@ -432,7 +443,9 @@ def course_registration(request):
         no_course_is_registered = False  # Check if no course is registered
         all_courses_are_registered = False
 
-        registered_courses = Course.objects.filter(level=student.level).filter(id__in=t)
+        registered_courses = Course.objects.select_related("program").filter(
+            level=student.level, id__in=t
+        )
         if (
             registered_courses.count() == 0
         ):  # Check if number of registered courses is 0
@@ -472,7 +485,7 @@ def course_drop(request):
     if request.method == "POST":
         student = get_object_or_404(Student, student__pk=request.user.id)
         course_ids = request.POST.getlist("course_ids")
-        print("course_ids", course_ids)
+        logger.debug("course_ids selected for drop by user %s: %s", request.user.pk, course_ids)
         for course_id in course_ids:
             course = get_object_or_404(Course, pk=course_id)
             TakenCourse.objects.filter(student=student, course=course).delete()
@@ -488,12 +501,18 @@ def course_drop(request):
 @login_required
 def user_course_list(request):
     if request.user.is_lecturer:
-        courses = Course.objects.filter(allocated_course__lecturer__pk=request.user.id)
+        courses = Course.objects.select_related("program").filter(
+            allocated_course__lecturer__pk=request.user.id
+        )
         return render(request, "course/user_course_list.html", {"courses": courses})
 
     if request.user.is_student:
-        student = get_object_or_404(Student, student__pk=request.user.id)
-        taken_courses = TakenCourse.objects.filter(student=student)
+        student = get_object_or_404(
+            Student.objects.select_related("student", "program"), student__pk=request.user.id
+        )
+        taken_courses = TakenCourse.objects.select_related("course", "course__program").filter(
+            student=student
+        )
         return render(
             request,
             "course/user_course_list.html",

@@ -1,13 +1,17 @@
-from django.db import models
-from django.urls import reverse
-from django.contrib.auth.models import AbstractUser, UserManager
+import logging
+
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractUser, UserManager
+from django.db import models
 from django.db.models import Q
-from PIL import Image
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from PIL import Image, UnidentifiedImageError
 
 from course.models import Program
 from .validators import ASCIIUsernameValidator
+
+logger = logging.getLogger(__name__)
 
 
 # LEVEL_COURSE = "Level course"
@@ -100,20 +104,21 @@ class User(AbstractUser):
     @property
     def get_user_role(self):
         if self.is_superuser:
-            role = _("Admin")
-        elif self.is_student:
-            role = _("Student")
-        elif self.is_lecturer:
-            role = _("Lecturer")
-        elif self.is_parent:
-            role = _("Parent")
-
-        return role
+            return _("Admin")
+        if self.is_student:
+            return _("Student")
+        if self.is_lecturer:
+            return _("Lecturer")
+        if self.is_parent:
+            return _("Parent")
+        if self.is_dep_head:
+            return _("Department Head")
+        return _("Unknown")
 
     def get_picture(self):
         try:
             return self.picture.url
-        except:
+        except (ValueError, AttributeError):
             no_picture = settings.MEDIA_URL + "default.png"
             return no_picture
 
@@ -122,18 +127,48 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+        if not self.picture or self.picture.name == "default.png":
+            return
+
         try:
             img = Image.open(self.picture.path)
             if img.height > 300 or img.width > 300:
                 output_size = (300, 300)
                 img.thumbnail(output_size)
                 img.save(self.picture.path)
-        except:
-            pass
+        except (FileNotFoundError, OSError, ValueError, UnidentifiedImageError) as exc:
+            logger.warning(
+                "Could not process profile picture for %s: %s",
+                self.username,
+                exc,
+            )
+        except Exception as exc:
+            logger.exception(
+                "Unexpected error while processing profile picture for %s: %s",
+                self.username,
+                exc,
+            )
 
     def delete(self, *args, **kwargs):
-        if self.picture.url != settings.MEDIA_URL + "default.png":
-            self.picture.delete()
+        picture_name = getattr(self.picture, "name", "")
+        if picture_name and picture_name != "default.png":
+            try:
+                storage = self.picture.storage
+                if storage.exists(picture_name):
+                    storage.delete(picture_name)
+            except (OSError, ValueError) as exc:
+                logger.warning(
+                    "Could not delete profile picture for %s: %s",
+                    self.username,
+                    exc,
+                )
+            except Exception as exc:
+                logger.exception(
+                    "Unexpected error while deleting profile picture for %s: %s",
+                    self.username,
+                    exc,
+                )
         super().delete(*args, **kwargs)
 
 

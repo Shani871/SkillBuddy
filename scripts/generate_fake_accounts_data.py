@@ -8,7 +8,7 @@ from factory import SubFactory, LazyAttribute, Iterator
 from django_extensions.management.commands import runscript
 
 # Set up Django environment
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 django.setup()
 
 from accounts.models import User, Student, Parent, DepartmentHead, LEVEL, RELATION_SHIP

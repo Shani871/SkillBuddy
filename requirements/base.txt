@@ -21,6 +21,13 @@ django-jet-reboot==1.3.5
 # Environment variable
 python-decouple==3.8
 
+# Async tasks
+celery==5.4.0
+redis==5.0.7
+
 # Payments
 stripe==5.5.0
 gopay==2.0.1
+
+# Emotion AI
+deepface==0.0.93

@@ -1,8 +1,10 @@
-import os
+import logging
 import requests
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def chatbot_view(request):
@@ -90,13 +92,17 @@ def chatbot_view(request):
                     try:
                         error_data = response.json()
                         error_message = error_data.get('error', {}).get('message', response.text)
-                    except:
+                    except ValueError:
                         error_message = response.text
                     
                     err_msg = f"API Error ({response.status_code}): {error_message}"
                     chat_history.append({"role": "model", "text": err_msg})
                     output_text = [err_msg]
-                    print(f"DEBUG: Gemini API Error: {response.status_code} - {response.text}")
+                    logger.error(
+                        "Gemini API error %s: %s",
+                        response.status_code,
+                        response.text,
+                    )
             except requests.exceptions.Timeout:
                 err_msg = "Connection Error: The request timed out. Please try again."
                 chat_history.append({"role": "model", "text": err_msg})

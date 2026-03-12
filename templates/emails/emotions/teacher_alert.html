@@ -1,0 +1,11 @@
+<html>
+<body>
+  <h2>SkillBuddy Emotional Alert</h2>
+  <p><strong>Student:</strong> {{ student_name }}</p>
+  <p><strong>Latest Emotion:</strong> {% if latest_record %}{{ latest_record.emotion }}{% else %}Unknown{% endif %}</p>
+  <p><strong>Alert Time:</strong> {{ alert.timestamp }}</p>
+  <p><strong>Message:</strong></p>
+  <p>{{ alert.message }}</p>
+  <p>Please review the student and follow up as needed.</p>
+</body>
+</html>

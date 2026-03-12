@@ -1,13 +1,18 @@
 import json
+import logging
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from accounts.models import Student
+from accounts.decorators import role_required
+from accounts.models import Parent, Student
 
 from .models import EmotionAlert, EmotionRecord
 from .services import EmotionAnalysisService
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -39,25 +44,39 @@ def capture_emotion(request):
         )
 
     try:
-        emotion_label, confidence = EmotionAnalysisService.detect_face_emotion(image_data)
+        if getattr(settings, "USE_CELERY_EMOTION_ANALYSIS", False):
+            try:
+                from .tasks import analyze_and_store_emotion_task
 
-        EmotionRecord.objects.create(
-            student=student,
-            emotion=emotion_label,
-            confidence=confidence,
-            source="face",
-        )
+                task_result = analyze_and_store_emotion_task.delay(student.id, image_data)
+                return JsonResponse(
+                    {
+                        "status": "success",
+                        "analysis": "queued",
+                        "task_id": str(getattr(task_result, "id", "")),
+                        "emotion": "Neutral",
+                        "confidence": 0.0,
+                    },
+                    status=202,
+                )
+            except Exception as exc:
+                logger.warning(
+                    "Could not queue emotion analysis task for user %s: %s. Falling back to sync mode.",
+                    request.user.id,
+                    exc,
+                )
 
-        EmotionAnalysisService.create_alerts_if_needed(student)
-
+        record = EmotionAnalysisService.analyze_and_store_emotion(student, image_data)
         return JsonResponse(
             {
                 "status": "success",
-                "emotion": emotion_label,
-                "confidence": confidence,
+                "analysis": "sync",
+                "emotion": record.emotion,
+                "confidence": record.confidence,
             }
         )
-    except Exception:
+    except Exception as exc:
+        logger.exception("Emotion capture failed for user %s: %s", request.user.id, exc)
         return JsonResponse(
             {"status": "error", "message": "Unable to process emotion data"},
             status=500,
@@ -65,11 +84,9 @@ def capture_emotion(request):
 
 
 @login_required
+@role_required(["lecturer"])
 def teacher_dashboard(request):
     """View for teachers to see emotional trends of their students."""
-    if not request.user.is_lecturer and not request.user.is_superuser:
-        return JsonResponse({"status": "error", "message": "Access denied"}, status=403)
-
     recent_records = EmotionRecord.objects.select_related("student__student").all()[:50]
     alerts = EmotionAlert.objects.select_related("student__student").filter(
         is_for_teacher=True, is_read=False
@@ -86,21 +103,25 @@ def teacher_dashboard(request):
 
 
 @login_required
+@role_required(["parent"])
 def parent_dashboard(request):
     """View for parents to see emotional summary of their child."""
-    if not request.user.is_parent:
-        return JsonResponse({"status": "error", "message": "Access denied"}, status=403)
-
-    parent = getattr(request.user, "parent", None)
-    if not parent:
+    parent = (
+        Parent.objects.select_related("student__student")
+        .filter(user=request.user)
+        .first()
+    )
+    if not parent or not parent.student:
         return JsonResponse(
             {"status": "error", "message": "Parent profile not found"}, status=403
         )
 
     student = parent.student
 
-    latest_record = EmotionRecord.objects.filter(student=student).first()
-    alerts = EmotionAlert.objects.filter(
+    latest_record = EmotionRecord.objects.select_related("student__student").filter(
+        student=student
+    ).first()
+    alerts = EmotionAlert.objects.select_related("student__student").filter(
         student=student,
         is_for_parent=True,
         is_read=False,

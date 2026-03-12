@@ -1,0 +1,10 @@
+SkillBuddy Emotional Alert
+
+Student: {{ student_name }}
+Latest Emotion: {% if latest_record %}{{ latest_record.emotion }}{% else %}Unknown{% endif %}
+Alert Time: {{ alert.timestamp }}
+
+Message:
+{{ alert.message }}
+
+Please review the student and follow up as needed.

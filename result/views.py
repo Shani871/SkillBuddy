@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -27,6 +29,8 @@ from course.models import Course
 from accounts.models import Student
 from accounts.decorators import lecturer_required, student_required
 from .models import TakenCourse, Result
+
+logger = logging.getLogger(__name__)
 
 
 CM = 2.54
@@ -119,9 +123,6 @@ def add_score_for(request, id):
             0, len(ids)
         ):  # iterate over the list of student ids gathered above
             student = TakenCourse.objects.get(id=ids[s])
-            # print(student)
-            # print(student.student)
-            # print(student.student.program.id)
             courses = (
                 Course.objects.filter(level=student.student.level)
                 .filter(program__pk=student.student.program.id)
@@ -203,12 +204,17 @@ def add_score_for(request, id):
 @login_required
 @student_required
 def grade_result(request):
-    student = Student.objects.get(student__pk=request.user.id)
-    courses = TakenCourse.objects.filter(student__student__pk=request.user.id).filter(
-        course__level=student.level
+    student = Student.objects.select_related("student", "program").get(
+        student__pk=request.user.id
+    )
+    courses = TakenCourse.objects.select_related("course", "student__student").filter(
+        student__student__pk=request.user.id,
+        course__level=student.level,
     )
     # total_credit_in_semester = 0
-    results = Result.objects.filter(student__student__pk=request.user.id)
+    results = Result.objects.select_related("student__student").filter(
+        student__student__pk=request.user.id
+    )
 
     result_set = set()
 
@@ -259,11 +265,15 @@ def grade_result(request):
 @login_required
 @student_required
 def assessment_result(request):
-    student = Student.objects.get(student__pk=request.user.id)
-    courses = TakenCourse.objects.filter(
+    student = Student.objects.select_related("student", "program").get(
+        student__pk=request.user.id
+    )
+    courses = TakenCourse.objects.select_related("course", "student__student").filter(
         student__student__pk=request.user.id, course__level=student.level
     )
-    result = Result.objects.filter(student__student__pk=request.user.id)
+    result = Result.objects.select_related("student__student").filter(
+        student__student__pk=request.user.id
+    )
 
     context = {
         "courses": courses,
@@ -279,8 +289,10 @@ def assessment_result(request):
 def result_sheet_pdf_view(request, id):
     current_semester = Semester.objects.get(is_current_semester=True)
     current_session = Session.objects.get(is_current_session=True)
-    result = TakenCourse.objects.filter(course__pk=id)
-    course = get_object_or_404(Course, id=id)
+    result = TakenCourse.objects.select_related("student__student", "course").filter(
+        course__pk=id
+    )
+    course = get_object_or_404(Course.objects.select_related("program"), id=id)
     no_of_pass = TakenCourse.objects.filter(course__pk=id, comment="PASS").count()
     no_of_fail = TakenCourse.objects.filter(course__pk=id, comment="FAIL").count()
     fname = (
@@ -320,8 +332,8 @@ def result_sheet_pdf_view(request, id):
     # im_logo.__setattr__("_offs_y", -60)
     # Story.append(im_logo)
 
-    print("\nsettings.MEDIA_ROOT", settings.MEDIA_ROOT)
-    print("\nsettings.STATICFILES_DIRS[0]", settings.STATICFILES_DIRS[0])
+    logger.debug("settings.MEDIA_ROOT: %s", settings.MEDIA_ROOT)
+    logger.debug("settings.STATICFILES_DIRS[0]: %s", settings.STATICFILES_DIRS[0])
     logo = settings.STATICFILES_DIRS[0] + "/img/brand.png"
     im = Image(logo, 1 * inch, 1 * inch)
     im.__setattr__("_offs_x", -200)
@@ -450,11 +462,11 @@ def result_sheet_pdf_view(request, id):
 @student_required
 def course_registration_form(request):
     current_session = Session.objects.get(is_current_session=True)
-    courses = TakenCourse.objects.filter(student__student__id=request.user.id)
+    courses = TakenCourse.objects.select_related("course", "student__student").filter(
+        student__student__id=request.user.id
+    )
     fname = request.user.username + ".pdf"
     fname = fname.replace("/", "-")
-    # flocation = '/tmp/' + fname
-    # print(MEDIA_ROOT + "\\" + fname)
     flocation = settings.MEDIA_ROOT + "/registration_form/" + fname
     doc = SimpleDocTemplate(
         flocation, rightMargin=15, leftMargin=15, topMargin=0, bottomMargin=0
@@ -504,7 +516,9 @@ def course_registration_form(request):
     title = "<b><u>STUDENT COURSE REGISTRATION FORM</u></b>"
     title = Paragraph(title.upper(), normal)
     Story.append(title)
-    student = Student.objects.get(student__pk=request.user.id)
+    student = Student.objects.select_related("student", "program").get(
+        student__pk=request.user.id
+    )
 
     tbl_data = [
         [
@@ -713,7 +727,9 @@ def course_registration_form(request):
     certification.fontName = "Helvetica"
     certification.fontSize = 8
     certification.leading = 18
-    student = Student.objects.get(student__pk=request.user.id)
+    student = Student.objects.select_related("student", "program").get(
+        student__pk=request.user.id
+    )
     certification_text = (
         "CERTIFICATION OF REGISTRATION: I certify that <b>"
         + str(request.user.get_full_name.upper())

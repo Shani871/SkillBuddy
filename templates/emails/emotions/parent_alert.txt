@@ -1,0 +1,9 @@
+SkillBuddy Child Well-being Update
+
+Student: {{ student_name }}
+Latest Emotion: {% if latest_record %}{{ latest_record.emotion }}{% else %}Unknown{% endif %}
+
+Message:
+{{ alert.message }}
+
+This is a supportive notification to help you stay informed.

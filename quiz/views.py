@@ -95,6 +95,8 @@ def quiz_delete(request, slug, pk):
 def quiz_list(request, slug):
     course = get_object_or_404(Course, slug=slug)
     quizzes = Quiz.objects.filter(course=course).order_by("-timestamp")
+    if not (request.user.is_superuser or request.user.is_lecturer):
+        quizzes = quizzes.filter(draft=False)
     return render(
         request, "quiz/quiz_list.html", {"quizzes": quizzes, "course": course}
     )

@@ -93,9 +93,14 @@ def profile(request):
         return render(request, "accounts/profile.html", context)
 
     if request.user.is_student:
-        student = get_object_or_404(Student, student__pk=request.user.id)
-        parent = Parent.objects.filter(student=student).first()
-        courses = TakenCourse.objects.filter(
+        student = get_object_or_404(
+            Student.objects.select_related("student", "program"),
+            student__pk=request.user.id,
+        )
+        parent = Parent.objects.select_related("user", "student__student").filter(
+            student=student
+        ).first()
+        courses = TakenCourse.objects.select_related("course", "course__program").filter(
             student__student__id=request.user.id, course__level=student.level
         )
         context.update(
@@ -134,7 +139,7 @@ def profile_single(request, user_id):
     }
 
     if user.is_lecturer:
-        courses = Course.objects.filter(
+        courses = Course.objects.select_related("program").filter(
             allocated_course__lecturer__pk=user_id, semester=current_semester
         )
         context.update(
@@ -144,8 +149,10 @@ def profile_single(request, user_id):
             }
         )
     elif user.is_student:
-        student = get_object_or_404(Student, student__pk=user_id)
-        courses = TakenCourse.objects.filter(
+        student = get_object_or_404(
+            Student.objects.select_related("student", "program"), student__pk=user_id
+        )
+        courses = TakenCourse.objects.select_related("course", "course__program").filter(
             student__student__id=user_id, course__level=student.level
         )
         context.update(
@@ -338,7 +345,7 @@ def edit_student(request, pk):
 
 @method_decorator([login_required, admin_required], name="dispatch")
 class StudentListView(FilterView):
-    queryset = Student.objects.all()
+    queryset = Student.objects.select_related("student", "program")
     filterset_class = StudentFilter
     template_name = "accounts/student_list.html"
     paginate_by = 10
@@ -352,7 +359,7 @@ class StudentListView(FilterView):
 @login_required
 @admin_required
 def render_student_pdf_list(request):
-    students = Student.objects.all()
+    students = Student.objects.select_related("student", "program").all()
     template_path = "pdf/student_list.html"
     context = {"students": students}
     response = HttpResponse(content_type="application/pdf")
@@ -368,7 +375,7 @@ def render_student_pdf_list(request):
 @login_required
 @admin_required
 def delete_student(request, pk):
-    student = get_object_or_404(Student, pk=pk)
+    student = get_object_or_404(Student.objects.select_related("student"), pk=pk)
     full_name = student.student.get_full_name
     student.delete()
     messages.success(request, f"Student {full_name} has been deleted.")
@@ -378,7 +385,9 @@ def delete_student(request, pk):
 @login_required
 @admin_required
 def edit_student_program(request, pk):
-    student = get_object_or_404(Student, student_id=pk)
+    student = get_object_or_404(
+        Student.objects.select_related("student", "program"), student_id=pk
+    )
     user = get_object_or_404(User, pk=pk)
     if request.method == "POST":
         form = ProgramUpdateForm(request.POST, request.FILES, instance=student)
