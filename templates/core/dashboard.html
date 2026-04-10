@@ -177,6 +177,11 @@
 
 <script src="{% url 'javascript-catalog' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Define global Chart.js defaults for dark theme
+    Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+</script>
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
 	$('.fa-expand-alt').click(function () {

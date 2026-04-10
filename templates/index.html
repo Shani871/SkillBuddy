@@ -1,193 +1,427 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}SkillBuddy AI - Empowering Your Learning Journey{% endblock %}
+{% block title %}SkillBuddy AI — Empowering Your Learning Journey{% endblock %}
 
 {% block header %}
 <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
 <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
 <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
-<link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+<style>
+/* ── Override main.css light variables for the landing page ── */
+:root {
+  --background-color: #080c14 !important;
+  --surface-color:    rgba(13,18,30,0.85) !important;
+  --default-color:    #f0f4ff !important;
+  --heading-color:    #ffffff !important;
+  --accent-color:     #7c3aed !important;
+  --contrast-color:   #ffffff !important;
+  --nav-color:        rgba(240,244,255,0.8) !important;
+  --nav-mobile-background-color: rgba(8,12,20,0.97) !important;
+  --nav-dropdown-background-color: rgba(13,18,30,0.95) !important;
+}
+
+.main {
+  background: transparent !important;
+}
+
+/* All sections dark */
+section {
+  background: transparent !important;
+  padding: 5rem 0;
+}
+
+/* Section titles */
+.section-title h2 {
+  font-family: "Outfit", sans-serif !important;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff !important;
+  margin-bottom: 0.5rem;
+}
+
+.section-title p {
+  color: #7c8ca3 !important;
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+.section-title span {
+  display: inline-block;
+  background: linear-gradient(130deg, #7c3aed, #2563eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(124,58,237,0.3);
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  -webkit-text-fill-color: initial;
+  color: #c4b5fd;
+  background: rgba(124,58,237,0.15);
+  margin-bottom: 0.75rem;
+}
+
+/* ── Hero ── */
+.hero {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  padding: 6rem 0 4rem;
+}
+
+.hero h1 {
+  font-family: "Outfit", sans-serif !important;
+  font-size: clamp(2.2rem, 5vw, 3.8rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.12 !important;
+  color: #fff !important;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+}
+
+.hero p.lead {
+  font-size: 1.1rem !important;
+  color: #7c8ca3 !important;
+  line-height: 1.75;
+  max-width: 520px;
+}
+
+.floating-img {
+  filter: drop-shadow(0 24px 48px rgba(124,58,237,0.25));
+  animation: heroFloat 6s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-18px); }
+}
+
+/* ── About ── */
+.about .content {
+  background: rgba(13,18,30,0.7) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 20px !important;
+  padding: 2.5rem !important;
+  backdrop-filter: blur(12px);
+}
+
+.about .content h3 {
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  color: #a78bfa !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.about .content h2 {
+  font-size: 1.6rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  color: #fff !important;
+  margin-bottom: 1rem !important;
+}
+
+.about .content p {
+  color: #7c8ca3 !important;
+  line-height: 1.75;
+}
+
+.about img {
+  border-radius: 20px !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.4) !important;
+}
+
+/* ── Stats ── */
+.stats-item {
+  background: rgba(13,18,30,0.7) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  padding: 1.75rem !important;
+  transition: transform 0.28s ease, border-color 0.28s ease !important;
+  backdrop-filter: blur(12px);
+}
+
+.stats-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(124,58,237,0.35) !important;
+}
+
+.stats-item span {
+  font-family: "Outfit", sans-serif !important;
+  font-size: 2.4rem !important;
+  font-weight: 800 !important;
+  background: linear-gradient(130deg,#a78bfa,#60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stats-item p {
+  color: #7c8ca3 !important;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ── Features ── */
+.feature-box {
+  background: rgba(13,18,30,0.7) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 14px !important;
+  padding: 1.1rem 1.25rem !important;
+  transition: transform 0.28s ease, border-color 0.28s ease !important;
+  backdrop-filter: blur(10px);
+}
+
+.feature-box:hover {
+  transform: translateY(-3px);
+  border-color: rgba(124,58,237,0.4) !important;
+}
+
+.feature-box h3 {
+  color: #f0f4ff !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+}
+
+.feature-box i.fas {
+  font-size: 1.2rem !important;
+  background: linear-gradient(130deg,#a78bfa,#60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  flex-shrink: 0;
+}
+
+/* ── Contact ── */
+.contact .info-item {
+  background: rgba(13,18,30,0.7) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  transition: transform 0.28s ease, border-color 0.28s ease !important;
+  backdrop-filter: blur(10px);
+}
+
+.contact .info-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(124,58,237,0.4) !important;
+}
+
+.contact .info-item h3 {
+  color: #fff !important;
+  font-size: 1rem !important;
+}
+
+.contact .php-email-form {
+  background: rgba(13,18,30,0.7) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 20px !important;
+  padding: 2rem !important;
+  backdrop-filter: blur(12px);
+}
+
+/* Color helpers for stats */
+.color-blue   { color: #60a5fa !important; }
+.color-orange { color: #f59e0b !important; }
+.color-green  { color: #10b981 !important; }
+.color-pink   { color: #ec4899 !important; }
+</style>
 {% endblock %}
 
 {% block content_wrapper %}
 <main class="main">
 
-  <!-- Hero Section -->
-  <section id="hero" class="hero section py-5" style="background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);">
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section id="hero" class="hero section">
     <div class="container">
       <div class="row gy-5 align-items-center">
-        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
-          <h1 data-aos="fade-up" class="display-3 fw-bolder mb-4">Empower Your Learning with <span class="text-primary">AI Innovation</span></h1>
-          <p data-aos="fade-up" data-aos-delay="100" class="lead text-secondary mb-5">SkillBuddy AI offers personalized, adaptive learning platforms designed to help you master new skills effortlessly using state-of-the-art AI solutions.</p>
-          <div class="d-flex flex-column flex-md-row gap-3" data-aos="fade-up" data-aos-delay="200">
-            <a href="#about" class="btn-premium px-5 py-3 fs-5">Get Started <i class="bi bi-arrow-right-short ms-2"></i></a>
-            <a href="#" class="glightbox btn btn-outline-primary px-5 py-3 fs-5 border-2 rounded-4 d-flex align-items-center justify-content-center transition"><i class="bi bi-play-circle me-2"></i><span>Watch Demo</span></a>
+
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-right">
+          <div class="mb-3">
+            <span class="stats-pill">🚀 AI-Powered Learning Platform</span>
+          </div>
+          <h1 class="mb-4">
+            Empower Your Learning with<br>
+            <span class="text-gradient">AI Innovation</span>
+          </h1>
+          <p class="lead mb-5">
+            SkillBuddy AI offers personalized, adaptive learning designed to help you master new skills effortlessly using state-of-the-art AI solutions.
+          </p>
+          <div class="d-flex flex-column flex-sm-row gap-3">
+            <a href="#about" class="btn btn-primary px-5 py-3 fs-6">
+              Get Started &nbsp;<i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="#features" class="btn btn-outline-primary px-5 py-3 fs-6">
+              <i class="bi bi-grid me-2"></i>Explore Features
+            </a>
           </div>
         </div>
-        <div class="col-lg-6 order-1 order-lg-2 hero-img text-center" data-aos="zoom-in" data-aos-delay="300">
-          <img src="{% static 'assets/img/hero-img.png' %}" class="img-fluid animated floating-img" style="max-height: 500px;" alt="">
+
+        <div class="col-lg-6 order-1 order-lg-2 text-center" data-aos="zoom-in" data-aos-delay="200">
+          <img src="{% static 'assets/img/hero-img.png' %}" class="img-fluid floating-img" style="max-height: 460px;" alt="SkillBuddy AI">
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ STATS ═══════════════════ -->
+  <section id="stats" class="stats section" style="padding: 3rem 0;">
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+          <div class="stats-item text-center">
+            <i class="bi bi-emoji-smile color-blue fs-2 mb-2 d-block"></i>
+            <span class="purecounter" data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1">232</span>
+            <p>Happy Learners</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+          <div class="stats-item text-center">
+            <i class="bi bi-journal-richtext color-orange fs-2 mb-2 d-block"></i>
+            <span class="purecounter" data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1">521</span>
+            <p>AI-Driven Projects</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+          <div class="stats-item text-center">
+            <i class="bi bi-headset color-green fs-2 mb-2 d-block"></i>
+            <span class="purecounter" data-purecounter-start="0" data-purecounter-end="1463" data-purecounter-duration="1">1463</span>
+            <p>Hours of AI Support</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+          <div class="stats-item text-center">
+            <i class="bi bi-people color-pink fs-2 mb-2 d-block"></i>
+            <span class="purecounter" data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1">15</span>
+            <p>Skilled Innovators</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- About Section -->
+  <!-- ═══════════════════ ABOUT ═══════════════════ -->
   <section id="about" class="about section">
-    <div class="container" data-aos="fade-up">
-      <div class="row gx-0">
-        <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
-          <div class="content p-4">
+    <div class="container">
+      <div class="row gy-5 align-items-center">
+        <div class="col-lg-6" data-aos="zoom-out" data-aos-delay="100">
+          <img src="{% static 'assets/img/about.jpg' %}" class="img-fluid" alt="About SkillBuddy">
+        </div>
+        <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-left" data-aos-delay="200">
+          <div class="content">
             <h3>At SkillBuddy AI</h3>
-            <h2>we are dedicated to revolutionizing the way you learn and grow. Our mission is to make skill development accessible, engaging, and tailored to your needs.</h2>
+            <h2>Revolutionizing the way you learn and grow.</h2>
             <p>
-              We blend the power of AI with innovative learning techniques to provide a platform that adapts to your unique goals. Whether you’re enhancing your knowledge or acquiring new skills, SkillBuddy AI is your trusted partner in success.
+              Our mission is to make skill development accessible, engaging, and tailored to your needs. We blend the power of AI with innovative learning techniques to provide a platform that adapts to your unique goals.
             </p>
-            <div class="text-center text-lg-start">
-              <a href="#" class="btn btn-primary d-inline-flex align-items-center justify-content-center align-self-center px-4 py-2">
-                <span>Read More</span>
-                <i class="bi bi-arrow-right ms-2"></i>
+            <p>
+              Whether you're enhancing your knowledge or acquiring new skills, SkillBuddy AI is your trusted partner in success.
+            </p>
+            <div class="mt-4">
+              <a href="#features" class="btn btn-primary px-4 py-2">
+                Explore Features &nbsp;<i class="bi bi-arrow-right"></i>
               </a>
             </div>
           </div>
         </div>
-        <div class="col-lg-6 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
-          <img src="{% static 'assets/img/about.jpg' %}" class="img-fluid rounded shadow" alt="">
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- Values Section -->
-  <section id="values" class="values section bg-light">
-    <div class="container section-title text-center mb-5" data-aos="fade-up">
-      <h2>Our Values</h2>
-      <p>What we value most</p>
-    </div>
+  <!-- ═══════════════════ VALUES ═══════════════════ -->
+  <section id="values" class="values section">
     <div class="container">
+      <div class="section-title text-center mb-5" data-aos="fade-up">
+        <span>Our Values</span>
+        <h2>What We Stand For</h2>
+        <p>The principles that guide everything we build</p>
+      </div>
       <div class="row gy-4">
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="premium-card h-100 p-5 text-center">
-            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle bg-primary-light" style="width: 80px; height: 80px;">
-                <i class="bi bi-person-up fs-2 text-primary"></i>
+          <div class="premium-card h-100 p-4 text-center">
+            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:68px;height:68px;border-radius:18px;">
+              <i class="bi bi-person-up fs-3"></i>
             </div>
-            <h3 class="h4 mb-3">Individual Growth</h3>
-            <p class="text-muted">Unlocking the potential of every learner through personalized and adaptive learning experiences.</p>
+            <h3 class="h5 mb-3">Individual Growth</h3>
+            <p class="text-muted mb-0">Unlocking the potential of every learner through personalized and adaptive learning experiences.</p>
           </div>
         </div>
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="premium-card h-100 p-5 text-center">
-            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle bg-primary-light" style="width: 80px; height: 80px;">
-                <i class="bi bi-lightbulb fs-2 text-primary"></i>
+          <div class="premium-card h-100 p-4 text-center">
+            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:68px;height:68px;border-radius:18px;">
+              <i class="bi bi-lightbulb fs-3"></i>
             </div>
-            <h3 class="h4 mb-3">Purposeful Innovation</h3>
-            <p class="text-muted">Creating cutting-edge AI-driven solutions that inspire and empower meaningful results.</p>
+            <h3 class="h5 mb-3">Purposeful Innovation</h3>
+            <p class="text-muted mb-0">Creating cutting-edge AI-driven solutions that inspire and empower meaningful results.</p>
           </div>
         </div>
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
-          <div class="premium-card h-100 p-5 text-center">
-            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle bg-primary-light" style="width: 80px; height: 80px;">
-                <i class="bi bi-globe fs-2 text-primary"></i>
+          <div class="premium-card h-100 p-4 text-center">
+            <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:68px;height:68px;border-radius:18px;">
+              <i class="bi bi-globe fs-3"></i>
             </div>
-            <h3 class="h4 mb-3">Brighter Future</h3>
-            <p class="text-muted">Prioritizing sustainable practices that pave the way for a more knowledgeable tomorrow.</p>
+            <h3 class="h5 mb-3">Brighter Future</h3>
+            <p class="text-muted mb-0">Prioritizing sustainable practices that pave the way for a more knowledgeable tomorrow.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Stats Section -->
-  <section id="stats" class="stats section">
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
-      <div class="row gy-4 text-center">
-        <div class="col-lg-3 col-md-6">
-          <div class="stats-item d-flex align-items-center justify-content-center p-4">
-            <i class="bi bi-emoji-smile color-blue fs-1 me-3"></i>
-            <div>
-              <span class="fs-2 fw-bold purecounter" data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1">232</span>
-              <p>Happy Learners</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-          <div class="stats-item d-flex align-items-center justify-content-center p-4">
-            <i class="bi bi-journal-richtext color-orange fs-1 me-3"></i>
-            <div>
-              <span class="fs-2 fw-bold purecounter" data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1">521</span>
-              <p>AI-Driven Projects</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-          <div class="stats-item d-flex align-items-center justify-content-center p-4">
-            <i class="bi bi-headset color-green fs-1 me-3"></i>
-            <div>
-              <span class="fs-2 fw-bold purecounter" data-purecounter-start="0" data-purecounter-end="1463" data-purecounter-duration="1">1463</span>
-              <p>Hours of AI Support</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-          <div class="stats-item d-flex align-items-center justify-content-center p-4">
-            <i class="bi bi-people color-pink fs-1 me-3"></i>
-            <div>
-              <span class="fs-2 fw-bold purecounter" data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1">15</span>
-              <p>Skilled Innovators</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section id="features" class="features section bg-light">
-    <div class="container section-title text-center mb-5" data-aos="fade-up">
-      <h2>Features</h2>
-      <p>Our Advanced Features</p>
-    </div>
+  <!-- ═══════════════════ FEATURES ═══════════════════ -->
+  <section id="features" class="features section">
     <div class="container">
-      <div class="row gy-5">
-        <div class="col-xl-6" data-aos="zoom-out" data-aos-delay="100">
-          <img src="{% static 'assets/img/features.png' %}" class="img-fluid" alt="">
+      <div class="section-title text-center mb-5" data-aos="fade-up">
+        <span>Features</span>
+        <h2>Built for Learners</h2>
+        <p>Everything you need to accelerate your skills</p>
+      </div>
+      <div class="row gy-5 align-items-center">
+        <div class="col-xl-5 text-center" data-aos="zoom-out" data-aos-delay="100">
+          <img src="{% static 'assets/img/features.png' %}" class="img-fluid" style="filter: drop-shadow(0 16px 40px rgba(124,58,237,0.3));" alt="Features">
         </div>
-        <div class="col-xl-6 d-flex align-items-center">
-          <div class="row gy-4 w-100">
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
-              <div class="feature-box d-flex align-items-center p-3 shadow-sm bg-white rounded">
-                <i class="fas fa-check-circle text-primary me-2 fs-4"></i>
-                <h3 class="mb-0 fs-6">AI-Powered Personalization</h3>
+        <div class="col-xl-7" data-aos="fade-left" data-aos-delay="200">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <div class="feature-box d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle"></i>
+                <h3>AI-Powered Personalization</h3>
               </div>
             </div>
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-              <div class="feature-box d-flex align-items-center p-3 shadow-sm bg-white rounded">
-                <i class="fas fa-check-circle text-primary me-2 fs-4"></i>
-                <h3 class="mb-0 fs-6">Interactive Skill Enhancement</h3>
+            <div class="col-md-6">
+              <div class="feature-box d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle"></i>
+                <h3>Interactive Skill Enhancement</h3>
               </div>
             </div>
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
-              <div class="feature-box d-flex align-items-center p-3 shadow-sm bg-white rounded">
-                <i class="fas fa-check-circle text-primary me-2 fs-4"></i>
-                <h3 class="mb-0 fs-6">Progress Tracking Dashboard</h3>
+            <div class="col-md-6">
+              <div class="feature-box d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle"></i>
+                <h3>Progress Tracking Dashboard</h3>
               </div>
             </div>
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
-              <div class="feature-box d-flex align-items-center p-3 shadow-sm bg-white rounded">
-                <i class="fas fa-check-circle text-primary me-2 fs-4"></i>
-                <h3 class="mb-0 fs-6">Collaborative Learning Modules</h3>
+            <div class="col-md-6">
+              <div class="feature-box d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle"></i>
+                <h3>Collaborative Learning Modules</h3>
               </div>
             </div>
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
-              <div class="feature-box d-flex align-items-center p-3 shadow-sm bg-white rounded">
-                <i class="fas fa-check-circle text-primary me-2 fs-4"></i>
-                <h3 class="mb-0 fs-6">Seamless Multi-Device Access</h3>
+            <div class="col-md-6">
+              <div class="feature-box d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle"></i>
+                <h3>Seamless Multi-Device Access</h3>
               </div>
             </div>
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="600">
-              <div class="feature-box d-flex align-items-center p-3 shadow-sm bg-white rounded">
-                <i class="fas fa-check-circle text-primary me-2 fs-4"></i>
-                <h3 class="mb-0 fs-6">24/7 AI Assistance</h3>
+            <div class="col-md-6">
+              <div class="feature-box d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle"></i>
+                <h3>24/7 AI Assistance</h3>
               </div>
             </div>
           </div>
@@ -196,64 +430,83 @@
     </div>
   </section>
 
-  <!-- Contact Section -->
+  <!-- ═══════════════════ CONTACT ═══════════════════ -->
   <section id="contact" class="contact section">
-    <div class="container section-title text-center mb-5" data-aos="fade-up">
-      <h2>Contact</h2>
-      <p>Contact Us</p>
-    </div>
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
-      <div class="row gy-4">
-        <div class="col-lg-6">
+    <div class="container">
+      <div class="section-title text-center mb-5" data-aos="fade-up">
+        <span>Contact</span>
+        <h2>Get In Touch</h2>
+        <p>We'd love to hear from you</p>
+      </div>
+      <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="col-lg-5">
           <div class="row gy-4">
-            <div class="col-md-6">
-              <div class="info-item shadow-sm p-4 rounded text-center h-100 border">
-                <i class="bi bi-geo-alt fs-2 text-primary"></i>
-                <h3 class="fs-5 mt-3">Address</h3>
-                <p>A108 Adam Street, New York, NY 535022</p>
+            <div class="col-md-6 col-lg-12">
+              <div class="info-item p-4 h-100 d-flex align-items-center gap-3">
+                <div class="icon-box flex-shrink-0" style="width:44px;height:44px;border-radius:12px;">
+                  <i class="bi bi-geo-alt"></i>
+                </div>
+                <div>
+                  <h3 class="mb-1">Address</h3>
+                  <p class="text-muted mb-0">A108 Adam Street, New York, NY 535022</p>
+                </div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="info-item shadow-sm p-4 rounded text-center h-100 border">
-                <i class="bi bi-telephone fs-2 text-primary"></i>
-                <h3 class="fs-5 mt-3">Call Us</h3>
-                <p>+1 5589 55488 55</p>
+            <div class="col-md-6 col-lg-12">
+              <div class="info-item p-4 h-100 d-flex align-items-center gap-3">
+                <div class="icon-box flex-shrink-0" style="width:44px;height:44px;border-radius:12px;">
+                  <i class="bi bi-telephone"></i>
+                </div>
+                <div>
+                  <h3 class="mb-1">Call Us</h3>
+                  <p class="text-muted mb-0">+1 5589 55488 55</p>
+                </div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="info-item shadow-sm p-4 rounded text-center h-100 border">
-                <i class="bi bi-envelope fs-2 text-primary"></i>
-                <h3 class="fs-5 mt-3">Email Us</h3>
-                <p>info@skillbuddy.ai</p>
+            <div class="col-md-6 col-lg-12">
+              <div class="info-item p-4 h-100 d-flex align-items-center gap-3">
+                <div class="icon-box flex-shrink-0" style="width:44px;height:44px;border-radius:12px;">
+                  <i class="bi bi-envelope"></i>
+                </div>
+                <div>
+                  <h3 class="mb-1">Email Us</h3>
+                  <p class="text-muted mb-0">info@skillbuddy.ai</p>
+                </div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="info-item shadow-sm p-4 rounded text-center h-100 border">
-                <i class="bi bi-clock fs-2 text-primary"></i>
-                <h3 class="fs-5 mt-3">Open Hours</h3>
-                <p>Mon - Fri: 9:00AM - 05:00PM</p>
+            <div class="col-md-6 col-lg-12">
+              <div class="info-item p-4 h-100 d-flex align-items-center gap-3">
+                <div class="icon-box flex-shrink-0" style="width:44px;height:44px;border-radius:12px;">
+                  <i class="bi bi-clock"></i>
+                </div>
+                <div>
+                  <h3 class="mb-1">Open Hours</h3>
+                  <p class="text-muted mb-0">Mon – Fri: 9:00AM – 05:00PM</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <form action="#" method="post" class="php-email-form shadow-sm p-4 rounded border">
+        <div class="col-lg-7">
+          <form action="#" method="post" class="php-email-form">
             {% csrf_token %}
             <div class="row gy-4">
               <div class="col-md-6">
                 <input type="text" name="name" class="form-control" placeholder="Your Name" required>
               </div>
               <div class="col-md-6">
-                <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                <input type="email" name="email" class="form-control" placeholder="Your Email" required>
               </div>
               <div class="col-12">
-                <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+                <input type="text" name="subject" class="form-control" placeholder="Subject" required>
               </div>
               <div class="col-12">
-                <textarea class="form-control" name="message" rows="6" placeholder="Message" required></textarea>
+                <textarea name="message" class="form-control" rows="6" placeholder="Message" required></textarea>
               </div>
-              <div class="col-12 text-center">
-                <button type="submit" class="btn btn-primary px-5 py-2">Send Message</button>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary w-100 py-3">
+                  Send Message &nbsp;<i class="bi bi-send"></i>
+                </button>
               </div>
             </div>
           </form>
@@ -261,6 +514,7 @@
       </div>
     </div>
   </section>
+
 </main>
 {% endblock %}
 
@@ -268,15 +522,9 @@
 <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
 <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
 <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
-<script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    AOS.init({
-      duration: 1000,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: false
-    });
+    AOS.init({ duration: 900, easing: 'ease-out-cubic', once: true });
     new PureCounter();
   });
 </script>

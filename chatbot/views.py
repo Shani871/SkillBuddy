@@ -36,7 +36,7 @@ def chatbot_view(request):
             output_text = ["Error: GEMINI_API_KEY not found in settings. Please check your .env file and restart the server."]
             chat_history.append({"role": "model", "text": output_text[0]})
         else:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
             headers = {"Content-Type": "application/json"}
 
             # Build content with history for context

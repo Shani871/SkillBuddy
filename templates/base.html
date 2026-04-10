@@ -13,13 +13,16 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/fontawesome-6.5.1/css/all.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap-5.3.2/css/bootstrap.min.css' %}">
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/css/main.css' %}">
+
+    {% block header %}{% endblock %}
+
     <link rel="stylesheet" type="text/css" href="{% static 'css/ui-refresh.css' %}">
 
     <style>
@@ -58,7 +61,7 @@
         }
 
         .text-primary {
-            color: var(--primary-dark) !important;
+            color: #a78bfa !important;
         }
 
         .rounded-4 {
@@ -85,11 +88,10 @@
             font-size: 0.82rem;
         }
     </style>
-
-    {% block header %}{% endblock %}
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
+
     {% block maincontent %}
     <div id="main">
         {% block topbar %}
