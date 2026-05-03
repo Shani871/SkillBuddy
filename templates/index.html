@@ -169,33 +169,170 @@ section {
 }
 
 /* ── Features ── */
-.feature-box {
-  background: rgba(13,18,30,0.7) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 14px !important;
-  padding: 1.1rem 1.25rem !important;
-  transition: transform 0.28s ease, border-color 0.28s ease !important;
-  backdrop-filter: blur(10px);
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
 }
 
-.feature-box:hover {
+.feature-pill {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  min-height: 108px;
+  padding: 1.6rem 2rem;
+  border-radius: 26px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: linear-gradient(145deg, rgba(7, 13, 29, 0.96), rgba(6, 12, 26, 0.86));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.feature-pill:hover {
   transform: translateY(-3px);
-  border-color: rgba(124,58,237,0.4) !important;
+  border-color: rgba(129, 140, 248, 0.45);
+  box-shadow: 0 18px 36px rgba(5, 10, 25, 0.45);
 }
 
-.feature-box h3 {
-  color: #f0f4ff !important;
-  font-size: 0.9rem !important;
-  font-weight: 600 !important;
-}
-
-.feature-box i.fas {
-  font-size: 1.2rem !important;
-  background: linear-gradient(130deg,#a78bfa,#60a5fa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.feature-check {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  color: #0b1022;
+  background: linear-gradient(140deg, #99a8ff, #738dff);
+  box-shadow: 0 8px 20px rgba(115,141,255,0.35);
+}
+
+.feature-check i {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.feature-pill h3 {
+  margin: 0;
+  color: #f5f7ff !important;
+  font-family: "Outfit", sans-serif !important;
+  font-size: clamp(1.15rem, 1.8vw, 1.55rem) !important;
+  line-height: 1.35;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 991.98px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .feature-pill {
+    min-height: 88px;
+    padding: 1.1rem 1.2rem;
+    border-radius: 18px;
+  }
+
+  .feature-pill h3 {
+    font-size: 1.05rem !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  section {
+    padding: 3.25rem 0;
+  }
+
+  .section-title {
+    margin-bottom: 2rem !important;
+  }
+
+  .section-title h2 {
+    font-size: 1.55rem;
+    line-height: 1.25;
+  }
+
+  .section-title p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 5rem 0 2.5rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.75rem, 8vw, 2.35rem) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.9rem !important;
+  }
+
+  .hero p.lead {
+    font-size: 1rem !important;
+    line-height: 1.65;
+    margin-bottom: 1.2rem !important;
+  }
+
+  .hero .floating-img {
+    max-height: 280px !important;
+  }
+
+  .hero .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1rem !important;
+  }
+
+  .about .content {
+    padding: 1.45rem !important;
+    border-radius: 16px !important;
+  }
+
+  .about .content h2 {
+    font-size: 1.3rem !important;
+  }
+
+  .stats-item {
+    padding: 1.1rem 0.85rem !important;
+    border-radius: 14px !important;
+  }
+
+  .stats-item span {
+    font-size: 1.7rem !important;
+  }
+
+  .feature-pill {
+    gap: 0.85rem;
+  }
+
+  .feature-check {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .contact .info-item {
+    align-items: flex-start !important;
+    padding: 1rem !important;
+    border-radius: 14px !important;
+  }
+
+  .contact .php-email-form {
+    padding: 1.15rem !important;
+    border-radius: 16px !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container {
+    padding-left: 0.95rem;
+    padding-right: 0.95rem;
+  }
+
+  .hero .stats-pill {
+    font-size: 0.72rem;
+  }
 }
 
 /* ── Contact ── */
@@ -382,51 +519,32 @@ section {
         <h2>Built for Learners</h2>
         <p>Everything you need to accelerate your skills</p>
       </div>
-      <div class="row gy-5 align-items-center">
-        <div class="col-xl-5 text-center" data-aos="zoom-out" data-aos-delay="100">
-          <img src="{% static 'assets/img/features.png' %}" class="img-fluid" style="filter: drop-shadow(0 16px 40px rgba(124,58,237,0.3));" alt="Features">
+      <div class="feature-grid" data-aos="fade-up" data-aos-delay="150">
+        <article class="feature-pill">
+          <span class="feature-check"><i class="fas fa-check"></i></span>
+          <h3>AI-Powered Personalization</h3>
+        </article>
+        <article class="feature-pill">
+          <span class="feature-check"><i class="fas fa-check"></i></span>
+          <h3>Interactive Skill Enhancement</h3>
+        </article>
+        <article class="feature-pill">
+          <span class="feature-check"><i class="fas fa-check"></i></span>
+          <h3>Progress Tracking Dashboard</h3>
+        </article>
+        <article class="feature-pill">
+          <span class="feature-check"><i class="fas fa-check"></i></span>
+          <h3>Collaborative Learning Modules</h3>
+        </article>
+        <article class="feature-pill">
+          <span class="feature-check"><i class="fas fa-check"></i></span>
+          <h3>Seamless Multi-Device Access</h3>
+        </article>
+        <article class="feature-pill">
+          <span class="feature-check"><i class="fas fa-check"></i></span>
+          <h3>24/7 AI Assistance</h3>
+        </article>
         </div>
-        <div class="col-xl-7" data-aos="fade-left" data-aos-delay="200">
-          <div class="row gy-3">
-            <div class="col-md-6">
-              <div class="feature-box d-flex align-items-center gap-3">
-                <i class="fas fa-check-circle"></i>
-                <h3>AI-Powered Personalization</h3>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="feature-box d-flex align-items-center gap-3">
-                <i class="fas fa-check-circle"></i>
-                <h3>Interactive Skill Enhancement</h3>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="feature-box d-flex align-items-center gap-3">
-                <i class="fas fa-check-circle"></i>
-                <h3>Progress Tracking Dashboard</h3>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="feature-box d-flex align-items-center gap-3">
-                <i class="fas fa-check-circle"></i>
-                <h3>Collaborative Learning Modules</h3>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="feature-box d-flex align-items-center gap-3">
-                <i class="fas fa-check-circle"></i>
-                <h3>Seamless Multi-Device Access</h3>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="feature-box d-flex align-items-center gap-3">
-                <i class="fas fa-check-circle"></i>
-                <h3>24/7 AI Assistance</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
