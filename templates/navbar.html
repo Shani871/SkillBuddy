@@ -5,7 +5,7 @@
     <div class="container-fluid px-3 px-lg-4">
         <a class="navbar-brand d-flex align-items-center fw-bold fs-5" href="{% if request.user.is_authenticated %}{% url 'home' %}{% else %}{% url 'index' %}{% endif %}">
             <span class="logo-box glass-card p-2 rounded-3 me-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                <img src="{% static 'img/skillBuddy.png' %}" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));" alt="SkillBuddy">
+                <img src="{% static 'img/skillBuddy.png' %}" style="max-width: 100%; max-height: 100%; object-fit: contain;" alt="SkillBuddy">
             </span>
             SkillBuddy<span class="text-gradient">.AI</span>
             {% if request.user.is_authenticated %}
@@ -25,6 +25,11 @@
                 {% url 'user_course_list' as library_url %}
                 {% url 'programs' as programs_url %}
                 {% url 'student_list' as directory_url %}
+                {% if request.user.is_superuser or request.user.is_lecturer %}
+                    {% url 'add_score' as result_url %}
+                {% else %}
+                    {% url 'grade_results' as result_url %}
+                {% endif %}
 
                 <ul class="navbar-nav me-auto ms-xl-3 mb-2 mb-xl-0 gap-xl-2 nav-search-hide">
                     <li class="nav-item">
@@ -63,6 +68,14 @@
                     </li>
                     {% endif %}
 
+                    {% if request.user.is_superuser or request.user.is_lecturer or request.user.is_student %}
+                    <li class="nav-item">
+                        <a class="nav-link app-menu-link px-3 py-2 {% if '/result/' in request.path %}active{% endif %}" href="{{ result_url }}">
+                            <i class="fas fa-square-poll-vertical me-2"></i>{% trans 'Results' %}
+                        </a>
+                    </li>
+                    {% endif %}
+
                     {% if request.user.is_superuser %}
                     <li class="nav-item">
                         <a class="nav-link app-menu-link px-3 py-2 {% if request.path == directory_url %}active{% endif %}" href="{{ directory_url }}">
@@ -85,6 +98,9 @@
                         </a>
                         <a href="{% url 'generate_roadmap' %}" class="helper-item" data-search-label="ai tutor roadmap">
                             <i class="fas fa-wand-magic-sparkles me-2"></i>{% trans 'Open AI Tutor' %}
+                        </a>
+                        <a href="{{ result_url }}" class="helper-item" data-search-label="results grade score assessment">
+                            <i class="fas fa-square-poll-vertical me-2"></i>{% trans 'Open Results' %}
                         </a>
                         {% if request.user.is_lecturer or request.user.is_student %}
                         <a href="{% url 'user_course_list' %}" class="helper-item" data-search-label="courses library classes">

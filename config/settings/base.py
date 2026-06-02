@@ -121,7 +121,7 @@ LANGUAGES = (
 
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 MODELTRANSLATION_DEFAULT_LANGUAGE = "en"
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
@@ -166,6 +166,7 @@ GOPAY_CLIENT_ID = config("GOPAY_CLIENT_ID", default="")
 GOPAY_CLIENT_SECRET = config("GOPAY_CLIENT_SECRET", default="")
 GOPAY_IS_PRODUCTION = config("GOPAY_IS_PRODUCTION", default=False, cast=bool)
 GEMINI_API_KEY = config("GEMINI_API_KEY", default="")
+GEMINI_MODEL = config("GEMINI_MODEL", default="gemini-2.0-flash")
 
 # Emotion analysis / async task toggles
 USE_CELERY_EMOTION_ANALYSIS = config(

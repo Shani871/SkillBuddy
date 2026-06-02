@@ -17,30 +17,27 @@
 
 {% include 'snippets/messages.html' %}
 
-<section class="page-hero mb-4">
-	<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+<section class="page-hero dashboard-hero mb-4">
+	<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 position-relative">
 		<div>
+			<span class="stats-pill mb-2">{% trans 'Admin overview' %}</span>
 			<h1 class="h3 fw-bold mb-2">{% trans 'Dashboard' %}</h1>
-			<p>{% trans 'Track users, engagement, and learning outcomes in one place.' %}</p>
+			<p class="mb-0">{% trans 'Track users, engagement, and learning outcomes in one place.' %}</p>
 		</div>
-		<div class="dropdown">
-			<button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-				<i class="fas fa-sliders me-2"></i>{% trans 'View Options' %}
-			</button>
-			<div class="dropdown-menu">
-				<h6 class="dropdown-header">{% trans 'Dashboard settings' %}</h6>
-				<button class="dropdown-item active" type="button">{% trans 'Display grid' %}</button>
-				<button class="dropdown-item" type="button">{% trans 'Display table' %}</button>
-				<hr>
-				<button class="dropdown-item" type="button">{% trans 'Manage dashboard' %}</button>
-			</div>
+		<div class="dashboard-actions">
+			<a class="btn btn-outline-primary" href="{% url 'student_list' %}">
+				<i class="fas fa-user-graduate"></i>{% trans 'Students' %}
+			</a>
+			<a class="btn btn-primary" href="{% url 'add_student' %}">
+				<i class="fas fa-plus"></i>{% trans 'Add Student' %}
+			</a>
 		</div>
 	</div>
 </section>
 
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-4 dashboard-stat-grid">
 	<div class="col-6 col-lg-3">
-		<div class="stat-card">
+		<div class="stat-card dashboard-stat dashboard-stat-students">
 			<div class="d-flex align-items-center justify-content-between mb-2">
 				<span class="icon-chip"><i class="fas fa-user-graduate"></i></span>
 				<span class="small text-muted">{% trans 'Active users' %}</span>
@@ -50,7 +47,7 @@
 		</div>
 	</div>
 	<div class="col-6 col-lg-3">
-		<div class="stat-card">
+		<div class="stat-card dashboard-stat dashboard-stat-lecturers">
 			<div class="d-flex align-items-center justify-content-between mb-2">
 				<span class="icon-chip"><i class="fas fa-chalkboard-user"></i></span>
 				<span class="small text-muted">{% trans 'Faculty' %}</span>
@@ -60,7 +57,7 @@
 		</div>
 	</div>
 	<div class="col-6 col-lg-3">
-		<div class="stat-card">
+		<div class="stat-card dashboard-stat dashboard-stat-admins">
 			<div class="d-flex align-items-center justify-content-between mb-2">
 				<span class="icon-chip"><i class="fas fa-user-shield"></i></span>
 				<span class="small text-muted">{% trans 'Access control' %}</span>
@@ -70,7 +67,7 @@
 		</div>
 	</div>
 	<div class="col-6 col-lg-3">
-		<div class="stat-card">
+		<div class="stat-card dashboard-stat dashboard-stat-support">
 			<div class="d-flex align-items-center justify-content-between mb-2">
 				<span class="icon-chip"><i class="fas fa-flask"></i></span>
 				<span class="small text-muted">{% trans 'Support' %}</span>
@@ -81,14 +78,58 @@
 	</div>
 </div>
 
+<section class="panel-card result-center p-3 p-md-4 mb-4">
+	<div class="d-flex flex-column flex-xl-row align-items-xl-center justify-content-between gap-3 mb-3">
+		<div>
+			<span class="stats-pill">{% trans 'Results' %}</span>
+			<h5 class="fw-bold mb-1 mt-2">{% trans 'Result Center' %}</h5>
+			<p class="mb-0">{% trans 'Review published GPAs, score entry progress, and result records.' %}</p>
+		</div>
+		<div class="result-actions">
+			<a class="btn btn-primary" href="{% url 'add_score' %}">
+				<i class="fas fa-clipboard-check"></i>{% trans 'Manage Scores' %}
+			</a>
+			<a class="btn btn-outline-primary" href="{% url 'admin:result_result_changelist' %}">
+				<i class="fas fa-square-poll-vertical"></i>{% trans 'Result Records' %}
+			</a>
+			<a class="btn btn-outline-secondary" href="{% url 'admin:result_takencourse_changelist' %}">
+				<i class="fas fa-list-check"></i>{% trans 'Taken Courses' %}
+			</a>
+		</div>
+	</div>
+	<div class="result-metric-grid">
+		<div class="result-metric">
+			<span>{% trans 'Published results' %}</span>
+			<strong>{{ result_summary.published_count }}</strong>
+		</div>
+		<div class="result-metric">
+			<span>{% trans 'Graded courses' %}</span>
+			<strong>{{ result_summary.graded_course_count }}</strong>
+		</div>
+		<div class="result-metric">
+			<span>{% trans 'Pass / Fail' %}</span>
+			<strong>{{ result_summary.pass_count }} / {{ result_summary.fail_count }}</strong>
+		</div>
+		<div class="result-metric">
+			<span>{% trans 'Average CGPA' %}</span>
+			<strong>{{ result_summary.avg_cgpa|default:0|floatformat:2 }}</strong>
+		</div>
+	</div>
+</section>
+
 <div class="row g-4">
 	<div class="col-12 col-xl-6 chart-col">
 		<div class="chart-wrap">
-			<div class="d-flex justify-content-between align-items-center mb-3">
-				<h5 class="fw-bold mb-0">{% trans 'Website Traffic' %}</h5>
-				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
+			<div class="chart-panel-head">
+				<div>
+					<span class="stats-pill">{% trans 'Traffic' %}</span>
+					<h5 class="fw-bold mb-0 mt-2">{% trans 'Website Traffic' %}</h5>
+				</div>
+				<button class="btn icon-btn chart-expand-btn" type="button" aria-label="{% trans 'Expand chart' %}">
+					<i class="fas fa-expand-alt"></i>
+				</button>
 			</div>
-			<div style="height: 300px;">
+			<div class="chart-canvas">
 				<canvas id="traffic"></canvas>
 			</div>
 		</div>
@@ -96,11 +137,16 @@
 
 	<div class="col-12 col-xl-6 chart-col">
 		<div class="chart-wrap">
-			<div class="d-flex justify-content-between align-items-center mb-3">
-				<h5 class="fw-bold mb-0">{% trans 'Enrollment per course' %}</h5>
-				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
+			<div class="chart-panel-head">
+				<div>
+					<span class="stats-pill">{% trans 'Courses' %}</span>
+					<h5 class="fw-bold mb-0 mt-2">{% trans 'Enrollment per course' %}</h5>
+				</div>
+				<button class="btn icon-btn chart-expand-btn" type="button" aria-label="{% trans 'Expand chart' %}">
+					<i class="fas fa-expand-alt"></i>
+				</button>
 			</div>
-			<div style="height: 300px;">
+			<div class="chart-canvas">
 				<canvas id="enrollement"></canvas>
 			</div>
 		</div>
@@ -108,35 +154,46 @@
 
 	<div class="col-12 col-xl-6 chart-col">
 		<div class="chart-wrap">
-			<div class="d-flex justify-content-between align-items-center mb-3">
-				<h5 class="fw-bold mb-0">{% trans 'Students average grade (performance)' %}</h5>
-				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
+			<div class="chart-panel-head">
+				<div>
+					<span class="stats-pill">{% trans 'Performance' %}</span>
+					<h5 class="fw-bold mb-0 mt-2">{% trans 'Students average grade' %}</h5>
+				</div>
+				<button class="btn icon-btn chart-expand-btn" type="button" aria-label="{% trans 'Expand chart' %}">
+					<i class="fas fa-expand-alt"></i>
+				</button>
 			</div>
-			<div style="height: 300px;">
+			<div class="chart-canvas">
 				<canvas id="students_grade"></canvas>
 			</div>
 		</div>
 	</div>
 
 	<div class="col-12 col-xl-6">
-		<div class="panel-card p-3 p-md-4 h-100">
-			<div class="d-flex justify-content-between align-items-center mb-2">
-				<h5 class="fw-bold mb-0">{% trans 'Latest Activities' %}</h5>
+		<div class="panel-card dashboard-activity-panel p-3 p-md-4 h-100">
+			<div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+				<div>
+					<span class="stats-pill">{% trans 'Activity' %}</span>
+					<h5 class="fw-bold mb-0 mt-2">{% trans 'Latest Logs' %}</h5>
+				</div>
 				<span class="stats-pill">{% trans 'Last 10' %}</span>
 			</div>
-			<div>
+			<div class="activity-list">
 				{% for log in logs %}
 				<div class="activity-item">
 					<div class="activity-dot"><i class="fas fa-circle-info"></i></div>
 					<div>
-						<p class="mb-1 fw-semibold">{{ log.message }}</p>
-						<p class="small text-muted mb-0">{{ log.created_at|timesince }} {% trans 'ago' %}</p>
+						<p class="log-message mb-1">{{ log.message }}</p>
+						<p class="small text-muted mb-0">
+							<i class="fas fa-clock me-1"></i>{{ log.created_at|timesince }} {% trans 'ago' %}
+						</p>
 					</div>
 				</div>
 				{% empty %}
-				<div class="text-center py-5">
-					<img src="{% static 'img/empty.svg' %}" width="120" class="mb-3 opacity-50" alt="No activity">
-					<p class="text-muted mb-0">{% trans 'No recent activity' %}</p>
+				<div class="empty-state text-center py-5">
+					<span class="empty-state-icon"><i class="fas fa-clipboard-list"></i></span>
+					<p class="fw-bold mb-1">{% trans 'No recent activity' %}</p>
+					<p class="text-muted mb-0">{% trans 'New admin actions will appear here.' %}</p>
 				</div>
 				{% endfor %}
 			</div>
@@ -145,27 +202,42 @@
 </div>
 
 <section class="panel-card p-3 p-md-4 mt-4">
-	<div class="d-flex align-items-center justify-content-between mb-3">
-		<h5 class="fw-bold mb-0">{% trans 'School Demographics' %}</h5>
+	<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3">
+		<div>
+			<span class="stats-pill">{% trans 'People' %}</span>
+			<h5 class="fw-bold mb-0 mt-2">{% trans 'School Demographics' %}</h5>
+		</div>
 		<span class="small text-muted">{% trans 'Overview by gender, qualification and level' %}</span>
 	</div>
 	<div class="row g-4">
 		<div class="col-12 col-md-4 chart-col">
 			<div class="chart-wrap">
-				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
-				<canvas id="gender"></canvas>
+				<button class="btn icon-btn chart-expand-btn" type="button" aria-label="{% trans 'Expand chart' %}">
+					<i class="fas fa-expand-alt"></i>
+				</button>
+				<div class="chart-canvas chart-canvas-sm">
+					<canvas id="gender"></canvas>
+				</div>
 			</div>
 		</div>
 		<div class="col-12 col-md-4 chart-col">
 			<div class="chart-wrap">
-				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
-				<canvas id="ethnicity"></canvas>
+				<button class="btn icon-btn chart-expand-btn" type="button" aria-label="{% trans 'Expand chart' %}">
+					<i class="fas fa-expand-alt"></i>
+				</button>
+				<div class="chart-canvas chart-canvas-sm">
+					<canvas id="ethnicity"></canvas>
+				</div>
 			</div>
 		</div>
 		<div class="col-12 col-md-4 chart-col">
 			<div class="chart-wrap">
-				<i class="fas fa-expand-alt cursor-pointer text-muted"></i>
-				<canvas id="language"></canvas>
+				<button class="btn icon-btn chart-expand-btn" type="button" aria-label="{% trans 'Expand chart' %}">
+					<i class="fas fa-expand-alt"></i>
+				</button>
+				<div class="chart-canvas chart-canvas-sm">
+					<canvas id="language"></canvas>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -178,13 +250,12 @@
 <script src="{% url 'javascript-catalog' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Define global Chart.js defaults for dark theme
-    Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
-    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+    Chart.defaults.color = '#677489';
+    Chart.defaults.borderColor = 'rgba(103, 116, 137, 0.18)';
+    Chart.defaults.maintainAspectRatio = false;
 </script>
-<script src="{% static 'js/dashboard.js' %}"></script>
 <script>
-	$('.fa-expand-alt').click(function () {
+	$('.chart-expand-btn').click(function () {
 		const cardCol = $(this).closest('.chart-col');
 		if (cardCol.hasClass('expand')) {
 			$('.chart-col.expand').removeClass('expand');

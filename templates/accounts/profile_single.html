@@ -4,48 +4,40 @@
 
 {% load static %}
 
-
 {% block content %}
 
 {% if user.is_authenticated %}
 
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{ user.get_full_name }}</li>
+        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ user.get_full_name }}</li>
     </ol>
 </nav>
 
 {% include 'snippets/messages.html' %}
 
-<div class="row">
-
-    <div class="col-md-3 mx-auto">
-        <div class="card  p-2">
-            <div class="text-center">
-                <img src="{{ user.picture.url }}" class="w-100">
-                <ul class="px-2 list-unstyled">
-                    <li>{{ user.get_full_name|title }}</li>
-                    <li><strong>{% trans 'Last login' %}: </strong>{{ user.last_login|date }}</li>
-                    <li><strong>{% trans 'Role' %}: </strong>
-                        {{ user.get_user_role }}
-                    </li>
-                </ul>
+<section class="student-profile">
+    <div class="profile-hero">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+                <span class="stats-pill mb-3"><i class="fas fa-id-card"></i> {% trans 'Profile Record' %}</span>
+                <h1 class="mb-2">{{ user.get_full_name|title }}</h1>
+                <p class="mb-0">{% trans 'A clear view of the learner profile, academic details, contact information, and account dates.' %}</p>
             </div>
-            <hr>
             {% if request.user.is_superuser %}
-            <div class="d-flex flex-column">
+            <div class="profile-hero-actions">
                 {% if user.is_student %}
-                <a href="{% url 'student_edit' pk=user.id %}">
-                    <i class="fas fa-user-edit unstyled"></i><span class="mobile-hide">{% trans 'Edit Profile' %}</span>
+                <a class="btn btn-premium" href="{% url 'student_edit' pk=user.id %}">
+                    <i class="fas fa-user-edit me-2"></i>{% trans 'Edit Profile' %}
                 </a>
-                <a href="{% url 'student_program_edit' user.id %}">
-                    <i class="fas fa-pen-to-square unstyled"></i><span class="mobile-hide">{% trans 'Change Program' %}</span>
+                <a class="btn btn-outline-primary" href="{% url 'student_program_edit' user.id %}">
+                    <i class="fas fa-pen-to-square me-2"></i>{% trans 'Program' %}
                 </a>
                 {% endif %}
                 {% if user.is_lecturer %}
-                <a href="{% url 'staff_edit' pk=user.id %}">
-                    <i class="fas fa-user-edit unstyled"></i><span class="mobile-hide">{% trans 'Edit Profile' %}</span>
+                <a class="btn btn-premium" href="{% url 'staff_edit' pk=user.id %}">
+                    <i class="fas fa-user-edit me-2"></i>{% trans 'Edit Profile' %}
                 </a>
                 {% endif %}
             </div>
@@ -53,78 +45,178 @@
         </div>
     </div>
 
-    <div class="col-md-9 mx-auto">
-        <div class="card">
-            <div class="card-body">
-                <!-- {% if user.is_student %}
-                <p class="form-title"><i class="fas fa-book-open"></i>Enrolled Courses</p>
-                <div class="dashboard-description">
-                    {% if courses %}
-                        <div class="flex">
-                            {% for course in courses %}
-                                <div class="flex"><a class="edit-btn" href="{{ course.get_absolute_url }}">{{ course }}</a></div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                            <div class="text-danger"><i class="far fa-frown"></i>No courses!</div>
-                    {% endif %}
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="premium-card profile-identity-card p-4 text-center h-100">
+                <div class="profile-avatar-wrapper mb-4">
+                    <div class="avatar-ring">
+                        <img src="{{ user.picture.url }}" alt="{{ user.get_full_name }}" class="profile-avatar">
+                    </div>
                 </div>
-                {% endif %} -->
-    
+                <h2 class="h4 fw-bold mb-1">{{ user.get_full_name|title }}</h2>
+                <p class="text-primary fw-semibold small mb-4">
+                    <span class="badge bg-primary-light text-primary rounded-pill px-3 py-2">
+                        <i class="fas fa-shield-halved me-1"></i> {{ user.get_user_role }}
+                    </span>
+                </p>
+
+                <div class="profile-score-card text-start mb-4">
+                    <span>{% trans 'ID Number' %}</span>
+                    <strong>{{ user.username }}</strong>
+                </div>
+
+                <div class="profile-mini-grid">
+                    <div>
+                        <i class="fas fa-clock text-primary"></i>
+                        <span>{% trans 'Last login' %}</span>
+                        <strong>{{ user.last_login|date }}</strong>
+                    </div>
+                    <div>
+                        <i class="fas fa-calendar-check text-primary"></i>
+                        <span>{% trans 'Registered' %}</span>
+                        <strong>{{ user.date_joined|date }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="profile-section-stack">
                 {% if user.is_lecturer %}
-                <p class="fw-bold"><i class="fas fa-book-open"></i> {% trans 'My Courses' %}</p>
-                {% if courses %}
-                <ul>
-                    {% for course in courses %}
-                    <li><a href="{{ course.get_absolute_url }}" class="text-primary">{{ course }}</a></li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <div class="text-danger">{% trans 'No courses assigned!' %}</div>
-                {% endif %}
-                <hr>
-                {% endif %}
-    
-                <p class="fw-bold"><i class="me-2 fas fa-user"></i> {% trans 'Personal Info' %}</p>
-                <div class="dashboard-description">
-                    <p><strong>{% trans 'First Name' %}:</strong> {{ user.first_name|title }}</p>
-                    <p><strong>{% trans 'Last Name' %}:</strong> {{ user.last_name|title }}</p>
-                    <p><strong>{% trans 'ID No.' %}:</strong> {{ user.username }}</p>
-                </div>
-                {% if user.is_student %}
-                <hr>
-                <p class="fw-bold"><i class="me-2 fas fa-graduation-cap"></i> {% trans 'Applicant Info' %}</p>
-                <div class="dashboard-description">
-                    <p><strong>{% trans 'School' %}: </strong>Unity College</p>
-                    <p><strong>{% trans 'Level' %}: </strong>{{ level.level }}</p>
-                    <p><strong>{% trans 'Program' %}: </strong>{{ student.program }}</p>
-                </div>
-                {% endif %}
-    
-                <hr>
-                <p class="fw-bold"><i class="me-2 fas fa-phone-square-alt"></i>{% trans 'Contact Info' %}</p>
-                <div class="dashboard-description">
-                    <p><strong>{% trans 'Email' %}:</strong> {{ user.email }}</p>
-                    <p><strong>{% trans 'Tel No.' %}:</strong> {{ user.phone }}</p>
-                    <p><strong>{% trans 'Address/city' %}:</strong> {{ user.address }}</p>
-                </div>
-    
-                <hr>
-                <p class="fw-bold"><i class="me-2 fa fa-calendar-day"></i>{% trans 'Important Dates' %}</p>
-                <div class="dashboard-description">
-                    <p><strong>{% trans 'Last login' %}:</strong> {{ user.last_login }}</p>
-                    {% if current_semester and current_session %}
-                    <p><strong>{% trans 'Academic Year' %}:</strong> {{ current_semester }} {% trans 'Semester' %} {{ current_session }}</p>
+                <div class="premium-card profile-info-card p-4">
+                    <div class="profile-section-title">
+                        <span><i class="fas fa-book-open"></i></span>
+                        <div>
+                            <h2>{% trans 'My Courses' %}</h2>
+                            <p>{% trans 'Courses assigned to this lecturer.' %}</p>
+                        </div>
+                    </div>
+                    {% if courses %}
+                    <div class="row g-3">
+                        {% for course in courses %}
+                        <div class="col-md-6">
+                            <a href="{{ course.get_absolute_url }}" class="profile-course-tile">
+                                <i class="fas fa-book"></i>{{ course }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-soft-danger border-0 rounded-4">{% trans 'No courses assigned!' %}</div>
                     {% endif %}
-                    <p><strong>{% trans 'Registered Date' %}:</strong> {{ user.date_joined|date }}</p>
+                </div>
+                {% endif %}
+
+                <div class="premium-card profile-info-card p-4">
+                    <div class="profile-section-title">
+                        <span><i class="fas fa-user"></i></span>
+                        <div>
+                            <h2>{% trans 'Personal Info' %}</h2>
+                            <p>{% trans 'Basic identity details for this profile.' %}</p>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'First Name' %}</span>
+                                <strong>{{ user.first_name|title }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'Last Name' %}</span>
+                                <strong>{{ user.last_name|title }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'ID No.' %}</span>
+                                <strong>{{ user.username }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if user.is_student %}
+                <div class="premium-card profile-info-card p-4">
+                    <div class="profile-section-title">
+                        <span><i class="fas fa-graduation-cap"></i></span>
+                        <div>
+                            <h2>{% trans 'Applicant Info' %}</h2>
+                            <p>{% trans 'School, level, and program information.' %}</p>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'School' %}</span>
+                                <strong>Unity College</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'Level' %}</span>
+                                <strong>{{ level.level }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'Program' %}</span>
+                                <strong>{{ student.program }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="premium-card profile-info-card p-4">
+                    <div class="profile-section-title">
+                        <span><i class="fas fa-phone-square-alt"></i></span>
+                        <div>
+                            <h2>{% trans 'Contact Info' %}</h2>
+                            <p>{% trans 'Reachability details connected to the profile.' %}</p>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'Email' %}</span>
+                                <strong class="text-primary">{{ user.email }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'Tel No.' %}</span>
+                                <strong>{{ user.phone|default:"Not provided" }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="profile-data-tile">
+                                <span>{% trans 'Address/city' %}</span>
+                                <strong>{{ user.address|default:"Not provided" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-term-card">
+                    <i class="fas fa-calendar-day"></i>
+                    <div>
+                        <span>{% trans 'Important Dates' %}</span>
+                        <strong>
+                            {% trans 'Last login' %}: {{ user.last_login }}
+                            {% if current_semester and current_session %}
+                            | {% trans 'Academic Year' %}: {{ current_semester }} {% trans 'Semester' %} {{ current_session }}
+                            {% endif %}
+                            | {% trans 'Registered Date' %}: {{ user.date_joined|date }}
+                        </strong>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <div class="col-md-3 mx-auto"></div>
-
-</div>
 {% endif %}
 
 {% endblock content %}

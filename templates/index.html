@@ -8,365 +8,240 @@
 <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
 <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
 <style>
-/* ── Override main.css light variables for the landing page ── */
 :root {
-  --background-color: #080c14 !important;
-  --surface-color:    rgba(13,18,30,0.85) !important;
-  --default-color:    #f0f4ff !important;
-  --heading-color:    #ffffff !important;
-  --accent-color:     #7c3aed !important;
-  --contrast-color:   #ffffff !important;
-  --nav-color:        rgba(240,244,255,0.8) !important;
-  --nav-mobile-background-color: rgba(8,12,20,0.97) !important;
-  --nav-dropdown-background-color: rgba(13,18,30,0.95) !important;
+  --background-color: var(--sb-bg) !important;
+  --surface-color: var(--sb-surface) !important;
+  --default-color: var(--sb-ink) !important;
+  --heading-color: var(--sb-ink) !important;
+  --accent-color: var(--sb-primary) !important;
+  --contrast-color: #ffffff !important;
+  --nav-color: var(--sb-ink) !important;
+  --nav-mobile-background-color: #ffffff !important;
+  --nav-dropdown-background-color: #ffffff !important;
 }
 
-.main {
-  background: transparent !important;
-}
-
-/* All sections dark */
-section {
-  background: transparent !important;
-  padding: 5rem 0;
-}
-
-/* Section titles */
-.section-title h2 {
-  font-family: "Outfit", sans-serif !important;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #fff !important;
-  margin-bottom: 0.5rem;
-}
-
-.section-title p {
-  color: #7c8ca3 !important;
-  font-size: 1rem;
-  margin-top: 0;
-}
+.main { background: transparent !important; }
+section { background: transparent !important; padding: 4.5rem 0; }
 
 .section-title span {
   display: inline-block;
-  background: linear-gradient(130deg, #7c3aed, #2563eb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  border: 1px solid rgba(124,58,237,0.3);
-  padding: 0.3rem 0.9rem;
-  border-radius: 999px;
-  -webkit-text-fill-color: initial;
-  color: #c4b5fd;
-  background: rgba(124,58,237,0.15);
   margin-bottom: 0.75rem;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid #bceeff;
+  border-radius: 999px;
+  background: #eaf7ff;
+  color: #12617d;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-/* ── Hero ── */
+.section-title h2 {
+  margin-bottom: 0.5rem;
+  color: var(--sb-ink) !important;
+  font-family: "Outfit", sans-serif !important;
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-weight: 800;
+}
+
+.section-title p {
+  margin: 0 auto;
+  max-width: 620px;
+  color: var(--sb-muted) !important;
+  font-size: 1rem;
+}
+
 .hero {
-  min-height: 90vh;
+  position: relative;
   display: flex;
   align-items: center;
-  padding: 6rem 0 4rem;
+  min-height: calc(100vh - 72px);
+  padding: 5rem 0 3rem;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 1.25rem;
+  z-index: -1;
+  border: 1px solid rgba(244, 212, 119, 0.6);
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255, 250, 231, 0.8), rgba(232, 247, 255, 0.7));
 }
 
 .hero h1 {
+  color: var(--sb-ink) !important;
   font-family: "Outfit", sans-serif !important;
-  font-size: clamp(2.2rem, 5vw, 3.8rem) !important;
+  font-size: clamp(2.35rem, 5vw, 4.7rem) !important;
   font-weight: 800 !important;
-  line-height: 1.12 !important;
-  color: #fff !important;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.5rem;
+  line-height: 1.02 !important;
+  letter-spacing: 0 !important;
 }
 
 .hero p.lead {
-  font-size: 1.1rem !important;
-  color: #7c8ca3 !important;
+  max-width: 560px;
+  color: #4f5e73 !important;
+  font-size: 1.12rem !important;
   line-height: 1.75;
-  max-width: 520px;
 }
 
-.floating-img {
-  filter: drop-shadow(0 24px 48px rgba(124,58,237,0.25));
-  animation: heroFloat 6s ease-in-out infinite;
+.hero-photo-wrap {
+  position: relative;
+  border-radius: 22px;
 }
 
-@keyframes heroFloat {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-18px); }
+.hero-photo {
+  width: 100%;
+  min-height: 390px;
+  max-height: 590px;
+  object-fit: cover;
+  object-position: center;
+  border: 8px solid #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 28px 64px rgba(31, 48, 71, 0.18);
 }
 
-/* ── About ── */
-.about .content {
-  background: rgba(13,18,30,0.7) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 20px !important;
-  padding: 2.5rem !important;
-  backdrop-filter: blur(12px);
+.hero-photo-wrap::after {
+  content: "";
+  position: absolute;
+  right: -12px;
+  bottom: -12px;
+  width: 122px;
+  height: 122px;
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, var(--sb-coral) 12px, transparent 12px) 0 0 / 30px 30px,
+    linear-gradient(var(--sb-sky) 12px, transparent 12px) 0 0 / 30px 30px,
+    #fff5d7;
+  box-shadow: var(--sb-shadow-sm);
+}
+
+.landing-mini-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--sb-border);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: var(--sb-shadow-sm);
+  color: var(--sb-ink);
+  font-weight: 800;
+}
+
+.about .content,
+.contact .info-item,
+.contact .php-email-form {
+  padding: 2rem !important;
+  border: 1px solid var(--sb-border) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: var(--sb-shadow-sm) !important;
 }
 
 .about .content h3 {
-  font-size: 0.85rem !important;
+  color: var(--sb-primary) !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.1em !important;
-  color: #a78bfa !important;
-  font-weight: 700 !important;
-  margin-bottom: 0.75rem !important;
 }
 
 .about .content h2 {
-  font-size: 1.6rem !important;
-  font-weight: 700 !important;
-  line-height: 1.35 !important;
-  color: #fff !important;
-  margin-bottom: 1rem !important;
+  color: var(--sb-ink) !important;
+  font-size: clamp(1.4rem, 2.4vw, 2rem) !important;
+  line-height: 1.25 !important;
 }
 
-.about .content p {
-  color: #7c8ca3 !important;
-  line-height: 1.75;
-}
-
+.about .content p { color: var(--sb-muted) !important; line-height: 1.75; }
 .about img {
-  border-radius: 20px !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  box-shadow: 0 24px 48px rgba(0,0,0,0.4) !important;
+  border: 8px solid #ffffff !important;
+  border-radius: 18px !important;
+  box-shadow: var(--sb-shadow) !important;
 }
 
-/* ── Stats ── */
 .stats-item {
-  background: rgba(13,18,30,0.7) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 16px !important;
-  padding: 1.75rem !important;
-  transition: transform 0.28s ease, border-color 0.28s ease !important;
-  backdrop-filter: blur(12px);
-}
-
-.stats-item:hover {
-  transform: translateY(-4px);
-  border-color: rgba(124,58,237,0.35) !important;
+  padding: 1.45rem !important;
+  text-align: center;
 }
 
 .stats-item span {
+  display: block;
+  color: var(--sb-ink) !important;
   font-family: "Outfit", sans-serif !important;
-  font-size: 2.4rem !important;
+  font-size: 2.25rem !important;
   font-weight: 800 !important;
-  background: linear-gradient(130deg,#a78bfa,#60a5fa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
-.stats-item p {
-  color: #7c8ca3 !important;
-  margin: 0;
-  font-size: 0.9rem;
-}
+.stats-item p { margin: 0; color: var(--sb-muted) !important; font-weight: 700; }
 
-/* ── Features ── */
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .feature-pill {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
-  min-height: 108px;
-  padding: 1.6rem 2rem;
-  border-radius: 26px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(145deg, rgba(7, 13, 29, 0.96), rgba(6, 12, 26, 0.86));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+  gap: 1rem;
+  min-height: 92px;
+  padding: 1.2rem;
+  border: 1px solid var(--sb-border);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: var(--sb-shadow-sm);
+  transition: var(--sb-ease);
 }
 
 .feature-pill:hover {
   transform: translateY(-3px);
-  border-color: rgba(129, 140, 248, 0.45);
-  box-shadow: 0 18px 36px rgba(5, 10, 25, 0.45);
+  border-color: #ffd36a;
+  box-shadow: var(--sb-shadow);
 }
 
 .feature-check {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #0b1022;
-  background: linear-gradient(140deg, #99a8ff, #738dff);
-  box-shadow: 0 8px 20px rgba(115,141,255,0.35);
-}
-
-.feature-check i {
-  font-size: 1rem;
-  font-weight: 800;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #fff5d7;
+  color: #9a5a00;
 }
 
 .feature-pill h3 {
   margin: 0;
-  color: #f5f7ff !important;
+  color: var(--sb-ink) !important;
   font-family: "Outfit", sans-serif !important;
-  font-size: clamp(1.15rem, 1.8vw, 1.55rem) !important;
-  line-height: 1.35;
-  font-weight: 700 !important;
+  font-size: 1.08rem !important;
+  line-height: 1.3;
+  font-weight: 800 !important;
 }
 
+.contact .info-item h3 { color: var(--sb-ink) !important; font-size: 1rem !important; }
+.color-blue { color: var(--sb-primary) !important; }
+.color-orange { color: var(--sb-sun) !important; }
+.color-green { color: var(--sb-mint) !important; }
+.color-pink { color: var(--sb-coral) !important; }
+
 @media (max-width: 991.98px) {
-  .feature-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .feature-pill {
-    min-height: 88px;
-    padding: 1.1rem 1.2rem;
-    border-radius: 18px;
-  }
-
-  .feature-pill h3 {
-    font-size: 1.05rem !important;
-  }
+  .hero { min-height: auto; padding-top: 3rem; }
+  .hero-photo { min-height: 330px; }
+  .feature-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 767.98px) {
-  section {
-    padding: 3.25rem 0;
-  }
-
-  .section-title {
-    margin-bottom: 2rem !important;
-  }
-
-  .section-title h2 {
-    font-size: 1.55rem;
-    line-height: 1.25;
-  }
-
-  .section-title p {
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-
-  .hero {
-    min-height: auto;
-    padding: 5rem 0 2.5rem;
-  }
-
-  .hero h1 {
-    font-size: clamp(1.75rem, 8vw, 2.35rem) !important;
-    line-height: 1.2 !important;
-    margin-bottom: 0.9rem !important;
-  }
-
-  .hero p.lead {
-    font-size: 1rem !important;
-    line-height: 1.65;
-    margin-bottom: 1.2rem !important;
-  }
-
-  .hero .floating-img {
-    max-height: 280px !important;
-  }
-
-  .hero .btn {
-    width: 100%;
-    justify-content: center;
-    padding: 0.85rem 1rem !important;
-  }
-
-  .about .content {
-    padding: 1.45rem !important;
-    border-radius: 16px !important;
-  }
-
-  .about .content h2 {
-    font-size: 1.3rem !important;
-  }
-
-  .stats-item {
-    padding: 1.1rem 0.85rem !important;
-    border-radius: 14px !important;
-  }
-
-  .stats-item span {
-    font-size: 1.7rem !important;
-  }
-
-  .feature-pill {
-    gap: 0.85rem;
-  }
-
-  .feature-check {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-  }
-
-  .contact .info-item {
-    align-items: flex-start !important;
-    padding: 1rem !important;
-    border-radius: 14px !important;
-  }
-
-  .contact .php-email-form {
-    padding: 1.15rem !important;
-    border-radius: 16px !important;
-  }
+  section { padding: 3rem 0; }
+  .hero::before { inset: 0.5rem; border-radius: 18px; }
+  .hero h1 { font-size: clamp(2rem, 11vw, 3rem) !important; }
+  .hero-photo { min-height: 260px; border-width: 5px; }
+  .hero-photo-wrap::after { width: 74px; height: 74px; right: -6px; bottom: -6px; opacity: 0.85; }
+  .about .content, .contact .php-email-form { padding: 1.2rem !important; }
 }
-
-@media (max-width: 575.98px) {
-  .container {
-    padding-left: 0.95rem;
-    padding-right: 0.95rem;
-  }
-
-  .hero .stats-pill {
-    font-size: 0.72rem;
-  }
-}
-
-/* ── Contact ── */
-.contact .info-item {
-  background: rgba(13,18,30,0.7) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 16px !important;
-  transition: transform 0.28s ease, border-color 0.28s ease !important;
-  backdrop-filter: blur(10px);
-}
-
-.contact .info-item:hover {
-  transform: translateY(-3px);
-  border-color: rgba(124,58,237,0.4) !important;
-}
-
-.contact .info-item h3 {
-  color: #fff !important;
-  font-size: 1rem !important;
-}
-
-.contact .php-email-form {
-  background: rgba(13,18,30,0.7) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 20px !important;
-  padding: 2rem !important;
-  backdrop-filter: blur(12px);
-}
-
-/* Color helpers for stats */
-.color-blue   { color: #60a5fa !important; }
-.color-orange { color: #f59e0b !important; }
-.color-green  { color: #10b981 !important; }
-.color-pink   { color: #ec4899 !important; }
 </style>
 {% endblock %}
 
@@ -380,27 +255,33 @@ section {
 
         <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-right">
           <div class="mb-3">
-            <span class="stats-pill">🚀 AI-Powered Learning Platform</span>
+            <span class="stats-pill">AI-powered learning for children</span>
           </div>
           <h1 class="mb-4">
-            Empower Your Learning with<br>
-            <span class="text-gradient">AI Innovation</span>
+            Make learning feel like<br>
+            <span class="text-gradient">a daily adventure</span>
           </h1>
           <p class="lead mb-5">
-            SkillBuddy AI offers personalized, adaptive learning designed to help you master new skills effortlessly using state-of-the-art AI solutions.
+            SkillBuddy helps children build confidence through playful lessons, guided practice, progress tracking, and friendly AI support for school skills.
           </p>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="landing-mini-card"><i class="bi bi-stars color-orange"></i> Smart practice</span>
+            <span class="landing-mini-card"><i class="bi bi-shield-check color-green"></i> Parent friendly</span>
+          </div>
           <div class="d-flex flex-column flex-sm-row gap-3">
             <a href="#about" class="btn btn-primary px-5 py-3 fs-6">
-              Get Started &nbsp;<i class="bi bi-arrow-right"></i>
+              Start Learning &nbsp;<i class="bi bi-arrow-right"></i>
             </a>
             <a href="#features" class="btn btn-outline-primary px-5 py-3 fs-6">
-              <i class="bi bi-grid me-2"></i>Explore Features
+              <i class="bi bi-grid me-2"></i>See Activities
             </a>
           </div>
         </div>
 
         <div class="col-lg-6 order-1 order-lg-2 text-center" data-aos="zoom-in" data-aos-delay="200">
-          <img src="{% static 'assets/img/hero-img.png' %}" class="img-fluid floating-img" style="max-height: 460px;" alt="SkillBuddy AI">
+          <div class="hero-photo-wrap">
+            <img src="{% static 'assets/img/skillbuddy-kids-hero.png' %}" class="hero-photo" alt="Children learning together in a bright classroom">
+          </div>
         </div>
 
       </div>
@@ -415,28 +296,28 @@ section {
           <div class="stats-item text-center">
             <i class="bi bi-emoji-smile color-blue fs-2 mb-2 d-block"></i>
             <span class="purecounter" data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1">232</span>
-            <p>Happy Learners</p>
+            <p>Happy learners</p>
           </div>
         </div>
         <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
           <div class="stats-item text-center">
             <i class="bi bi-journal-richtext color-orange fs-2 mb-2 d-block"></i>
             <span class="purecounter" data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1">521</span>
-            <p>AI-Driven Projects</p>
+            <p>Practice activities</p>
           </div>
         </div>
         <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
           <div class="stats-item text-center">
             <i class="bi bi-headset color-green fs-2 mb-2 d-block"></i>
             <span class="purecounter" data-purecounter-start="0" data-purecounter-end="1463" data-purecounter-duration="1">1463</span>
-            <p>Hours of AI Support</p>
+            <p>Guided study minutes</p>
           </div>
         </div>
         <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
           <div class="stats-item text-center">
             <i class="bi bi-people color-pink fs-2 mb-2 d-block"></i>
             <span class="purecounter" data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1">15</span>
-            <p>Skilled Innovators</p>
+            <p>Learning paths</p>
           </div>
         </div>
       </div>
@@ -448,21 +329,21 @@ section {
     <div class="container">
       <div class="row gy-5 align-items-center">
         <div class="col-lg-6" data-aos="zoom-out" data-aos-delay="100">
-          <img src="{% static 'assets/img/about.jpg' %}" class="img-fluid" alt="About SkillBuddy">
+          <img src="{% static 'assets/img/services.jpg' %}" class="img-fluid" alt="Students collaborating in a classroom">
         </div>
         <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-left" data-aos-delay="200">
           <div class="content">
-            <h3>At SkillBuddy AI</h3>
-            <h2>Revolutionizing the way you learn and grow.</h2>
+            <h3>Why SkillBuddy works</h3>
+            <h2>Lessons, quizzes, and progress tools designed around real classroom life.</h2>
             <p>
-              Our mission is to make skill development accessible, engaging, and tailored to your needs. We blend the power of AI with innovative learning techniques to provide a platform that adapts to your unique goals.
+              Children need clear tasks, quick encouragement, and space to try again. SkillBuddy turns daily practice into small wins while giving teachers and parents a calm view of progress.
             </p>
             <p>
-              Whether you're enhancing your knowledge or acquiring new skills, SkillBuddy AI is your trusted partner in success.
+              The platform supports courses, quizzes, emotional check-ins, announcements, and an AI tutor so learning support feels connected instead of scattered.
             </p>
             <div class="mt-4">
               <a href="#features" class="btn btn-primary px-4 py-2">
-                Explore Features &nbsp;<i class="bi bi-arrow-right"></i>
+                Explore Activities &nbsp;<i class="bi bi-arrow-right"></i>
               </a>
             </div>
           </div>
@@ -475,9 +356,9 @@ section {
   <section id="values" class="values section">
     <div class="container">
       <div class="section-title text-center mb-5" data-aos="fade-up">
-        <span>Our Values</span>
-        <h2>What We Stand For</h2>
-        <p>The principles that guide everything we build</p>
+        <span>Our Promise</span>
+        <h2>Built For Curious Children</h2>
+        <p>Friendly learning tools with the structure adults need</p>
       </div>
       <div class="row gy-4">
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
@@ -485,8 +366,8 @@ section {
             <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:68px;height:68px;border-radius:18px;">
               <i class="bi bi-person-up fs-3"></i>
             </div>
-            <h3 class="h5 mb-3">Individual Growth</h3>
-            <p class="text-muted mb-0">Unlocking the potential of every learner through personalized and adaptive learning experiences.</p>
+            <h3 class="h5 mb-3">Confidence First</h3>
+            <p class="text-muted mb-0">Small steps, clear feedback, and repeat practice help every child feel capable.</p>
           </div>
         </div>
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
@@ -494,8 +375,8 @@ section {
             <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:68px;height:68px;border-radius:18px;">
               <i class="bi bi-lightbulb fs-3"></i>
             </div>
-            <h3 class="h5 mb-3">Purposeful Innovation</h3>
-            <p class="text-muted mb-0">Creating cutting-edge AI-driven solutions that inspire and empower meaningful results.</p>
+            <h3 class="h5 mb-3">Guided Discovery</h3>
+            <p class="text-muted mb-0">AI support points learners toward the next activity without replacing the teacher.</p>
           </div>
         </div>
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
@@ -503,8 +384,8 @@ section {
             <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center" style="width:68px;height:68px;border-radius:18px;">
               <i class="bi bi-globe fs-3"></i>
             </div>
-            <h3 class="h5 mb-3">Brighter Future</h3>
-            <p class="text-muted mb-0">Prioritizing sustainable practices that pave the way for a more knowledgeable tomorrow.</p>
+            <h3 class="h5 mb-3">Real Progress</h3>
+            <p class="text-muted mb-0">Parents and educators can spot effort, improvement, and where help is needed.</p>
           </div>
         </div>
       </div>
@@ -516,33 +397,33 @@ section {
     <div class="container">
       <div class="section-title text-center mb-5" data-aos="fade-up">
         <span>Features</span>
-        <h2>Built for Learners</h2>
-        <p>Everything you need to accelerate your skills</p>
+        <h2>Everything A Learning Buddy Needs</h2>
+        <p>Playful for children, practical for teachers and parents</p>
       </div>
       <div class="feature-grid" data-aos="fade-up" data-aos-delay="150">
         <article class="feature-pill">
           <span class="feature-check"><i class="fas fa-check"></i></span>
-          <h3>AI-Powered Personalization</h3>
+          <h3>Personal Learning Roadmaps</h3>
         </article>
         <article class="feature-pill">
           <span class="feature-check"><i class="fas fa-check"></i></span>
-          <h3>Interactive Skill Enhancement</h3>
+          <h3>Colorful Quizzes And Practice</h3>
         </article>
         <article class="feature-pill">
           <span class="feature-check"><i class="fas fa-check"></i></span>
-          <h3>Progress Tracking Dashboard</h3>
+          <h3>Progress Dashboards</h3>
         </article>
         <article class="feature-pill">
           <span class="feature-check"><i class="fas fa-check"></i></span>
-          <h3>Collaborative Learning Modules</h3>
+          <h3>Course And Class Management</h3>
         </article>
         <article class="feature-pill">
           <span class="feature-check"><i class="fas fa-check"></i></span>
-          <h3>Seamless Multi-Device Access</h3>
+          <h3>Announcements And Events</h3>
         </article>
         <article class="feature-pill">
           <span class="feature-check"><i class="fas fa-check"></i></span>
-          <h3>24/7 AI Assistance</h3>
+          <h3>AI Tutor Support</h3>
         </article>
         </div>
     </div>
@@ -553,8 +434,8 @@ section {
     <div class="container">
       <div class="section-title text-center mb-5" data-aos="fade-up">
         <span>Contact</span>
-        <h2>Get In Touch</h2>
-        <p>We'd love to hear from you</p>
+        <h2>Bring SkillBuddy To Your Classroom</h2>
+        <p>Questions from parents, teachers, and school teams are welcome</p>
       </div>
       <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
         <div class="col-lg-5">
@@ -565,8 +446,8 @@ section {
                   <i class="bi bi-geo-alt"></i>
                 </div>
                 <div>
-                  <h3 class="mb-1">Address</h3>
-                  <p class="text-muted mb-0">A108 Adam Street, New York, NY 535022</p>
+                  <h3 class="mb-1">School Support</h3>
+                  <p class="text-muted mb-0">Remote onboarding for classrooms and learning centers</p>
                 </div>
               </div>
             </div>
@@ -577,7 +458,7 @@ section {
                 </div>
                 <div>
                   <h3 class="mb-1">Call Us</h3>
-                  <p class="text-muted mb-0">+1 5589 55488 55</p>
+                  <p class="text-muted mb-0">+1 555 0184 224</p>
                 </div>
               </div>
             </div>
@@ -599,7 +480,7 @@ section {
                 </div>
                 <div>
                   <h3 class="mb-1">Open Hours</h3>
-                  <p class="text-muted mb-0">Mon – Fri: 9:00AM – 05:00PM</p>
+                  <p class="text-muted mb-0">Mon - Fri: 9:00AM - 05:00PM</p>
                 </div>
               </div>
             </div>

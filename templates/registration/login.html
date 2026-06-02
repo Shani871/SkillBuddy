@@ -4,23 +4,48 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="auth-box">
-    <div class="row g-4 align-items-stretch">
+<div class="auth-box auth-student-box">
+    <div class="row g-0 align-items-stretch">
         <div class="col-lg-5">
-            <div class="auth-highlight h-100 d-flex flex-column justify-content-center p-4">
-                <span class="stats-pill align-self-start mb-3">SkillBuddy AI</span>
-                <h1 class="h3 fw-bold mb-3">{% trans 'Welcome back' %}</h1>
-                <p class="text-muted mb-4">{% trans 'Sign in to continue your personalized learning journey and access your dashboard.' %}</p>
-                <div class="d-flex align-items-center gap-2 text-muted small">
-                    <i class="fas fa-shield-heart text-primary"></i>
-                    <span>{% trans 'Secure login with optional well-being analysis' %}</span>
+            <div class="auth-student-panel h-100">
+                <span class="stats-pill mb-4"><i class="fas fa-graduation-cap"></i> SkillBuddy AI</span>
+                <h1 class="auth-title mb-3">{% trans 'Your study space is ready' %}</h1>
+                <p class="auth-lead mb-4">{% trans 'Log in to continue lessons, quizzes, progress tracking, and support made for your learning rhythm.' %}</p>
+
+                <div class="auth-mission-card mb-4">
+                    <div class="auth-mission-icon"><i class="fas fa-bolt"></i></div>
+                    <div>
+                        <p class="mb-1 fw-bold text-dark">{% trans "Today's focus" %}</p>
+                        <p class="mb-0 small">{% trans 'Pick up where you left off and keep your streak moving.' %}</p>
+                    </div>
+                </div>
+
+                <div class="auth-feature-grid">
+                    <div class="auth-feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>{% trans 'Progress' %}</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fas fa-brain"></i>
+                        <span>{% trans 'AI Tutor' %}</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fas fa-heart-pulse"></i>
+                        <span>{% trans 'Well-being' %}</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-7">
-            <form action="" method="POST" id="login-form" class="h-100 d-flex flex-column">
+            <form action="" method="POST" id="login-form" class="auth-form-panel h-100 d-flex flex-column">
                 {% csrf_token %}
+
+                <div class="mb-4">
+                    <span class="auth-eyebrow">{% trans 'Student Login' %}</span>
+                    <h2 class="h3 fw-bold mb-2">{% trans 'Welcome back' %}</h2>
+                    <p class="text-muted mb-0">{% trans 'Enter your school ID and password to open your dashboard.' %}</p>
+                </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label fw-semibold" for="username_id">{% trans 'ID Number' %}</label>
@@ -51,7 +76,7 @@
                 </div>
                 {% endif %}
 
-                <div class="auth-highlight mb-3" id="emotion-detection-section">
+                <div class="auth-wellbeing mb-3" id="emotion-detection-section">
                     <div class="form-check d-flex align-items-center mb-0">
                         <input class="form-check-input me-2" type="checkbox" id="consent-checkbox" style="width: 18px; height: 18px;">
                         <label class="form-check-label small text-muted" for="consent-checkbox">
