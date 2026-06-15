@@ -225,10 +225,41 @@ def staff_add_view(request):
             lecturer = form.save()
             full_name = lecturer.get_full_name
             email = lecturer.email
+            raw_password = form.cleaned_data.get("password1")
+
+            email_status = ""
+            if email:
+                try:
+                    from django.conf import settings
+                    from django.core.mail import send_mail
+
+                    subject = "Your SkillBuddy Teacher Account Credentials"
+                    message = (
+                        f"Hello {full_name},\n\n"
+                        f"Your teacher account has been created on SkillBuddy.\n\n"
+                        f"Here are your login credentials:\n"
+                        f"Username/User ID: {lecturer.username}\n"
+                        f"Password: {raw_password}\n\n"
+                        f"Please log in at: {request.build_absolute_uri('/')}\n\n"
+                        f"Best regards,\n"
+                        f"The SkillBuddy Admin Team"
+                    )
+                    send_mail(
+                        subject,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [email],
+                        fail_silently=False,
+                    )
+                    email_status = "An email has been sent with their credentials."
+                except Exception as e:
+                    email_status = f"However, the email could not be sent: {str(e)}"
+            else:
+                email_status = "No email address was provided."
+
             messages.success(
                 request,
-                f"Account for lecturer {full_name} has been created. "
-                f"Check your server console/logs for the credentials if email is not configured.",
+                f"Account for lecturer {full_name} has been created. {email_status}",
             )
             return redirect("lecturer_list")
     else:
@@ -310,10 +341,41 @@ def student_add_view(request):
             student = form.save()
             full_name = student.get_full_name
             email = student.email
+            raw_password = form.cleaned_data.get("password1")
+
+            email_status = ""
+            if email:
+                try:
+                    from django.conf import settings
+                    from django.core.mail import send_mail
+
+                    subject = "Your SkillBuddy Account Credentials"
+                    message = (
+                        f"Hello {full_name},\n\n"
+                        f"Your student account has been created on SkillBuddy.\n\n"
+                        f"Here are your login credentials:\n"
+                        f"Username/User ID: {student.username}\n"
+                        f"Password: {raw_password}\n\n"
+                        f"Please log in at: {request.build_absolute_uri('/')}\n\n"
+                        f"Best regards,\n"
+                        f"The SkillBuddy Admin Team"
+                    )
+                    send_mail(
+                        subject,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [email],
+                        fail_silently=False,
+                    )
+                    email_status = "An email has been sent with their credentials."
+                except Exception as e:
+                    email_status = f"However, the email could not be sent: {str(e)}"
+            else:
+                email_status = "No email address was provided."
+
             messages.success(
                 request,
-                f"Account for {full_name} has been created. "
-                f"Check your server console/logs for the credentials if email is not configured.",
+                f"Account for {full_name} has been created. {email_status}",
             )
             return redirect("student_list")
         messages.error(request, "Correct the error(s) below.")
