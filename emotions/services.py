@@ -1,8 +1,6 @@
 import base64
 import logging
 
-import numpy as np
-import cv2
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -207,6 +205,14 @@ class EmotionAnalysisService:
         """
         Convert base64-encoded image string to OpenCV image matrix.
         """
+        try:
+            import cv2
+            import numpy as np
+        except ImportError as exc:
+            raise RuntimeError(
+                "Face analysis dependencies are not installed."
+            ) from exc
+
         if not image_data_base64:
             raise ValueError("Missing image payload")
 

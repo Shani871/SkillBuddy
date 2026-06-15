@@ -1,0 +1,7 @@
+-r base.txt
+
+# Optional face-emotion analysis dependencies. The application falls back
+# gracefully when these packages are not installed.
+deepface>=0.0.93,<0.1
+numpy>=1.26,<3
+opencv-python-headless>=4.9,<5

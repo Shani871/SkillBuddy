@@ -1,15 +1,31 @@
 from django.contrib import admin
+from django.db import connection
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse
 from django.views import defaults as default_views
+from django.views.static import serve
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
+from django.urls import re_path
 
 admin.site.site_header = "SkyLearn Admin"
 
+
+def health_check(request):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+    except Exception:
+        return JsonResponse({"status": "unhealthy"}, status=503)
+    return JsonResponse({"status": "ok"})
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("health/", health_check, name="health"),
     path("i18n/", include("django.conf.urls.i18n")),
 ]
 
@@ -35,6 +51,14 @@ urlpatterns += i18n_patterns(
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+elif getattr(settings, "SERVE_MEDIA_FILES", False):
+    urlpatterns += [
+        re_path(
+            r"^media/(?P<path>.*)$",
+            serve,
+            {"document_root": settings.MEDIA_ROOT},
+        )
+    ]
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

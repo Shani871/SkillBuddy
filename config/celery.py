@@ -3,7 +3,10 @@ import logging
 
 from celery import Celery
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE",
+    os.environ.get("DJANGO_SETTINGS_MODULE", "config.settings.local"),
+)
 
 logger = logging.getLogger(__name__)
 

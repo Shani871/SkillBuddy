@@ -1,2 +1,1 @@
-dbos[otel]==2.18.0
-fastapi[standard]
+-r requirements/production.txt

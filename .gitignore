@@ -3,6 +3,8 @@
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+!.env.production.template
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -129,12 +131,14 @@ celerybeat.pid
 
 # Environments
 .env
+.env.production
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+staticfiles/
 
 # Spyder project settings
 .spyderproject

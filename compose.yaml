@@ -1,0 +1,64 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-skillbuddy}
+      POSTGRES_USER: ${POSTGRES_USER:-skillbuddy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-skillbuddy} -d ${POSTGRES_DB:-skillbuddy}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+  web:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-skillbuddy}:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-skillbuddy}
+      DB_SSL_REQUIRE: "False"
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${PORT:-8000}:8000"
+    volumes:
+      - media_data:/app/media
+
+  worker:
+    build: .
+    restart: unless-stopped
+    command: celery -A config worker --loglevel=INFO
+    env_file:
+      - .env.production
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-skillbuddy}:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-skillbuddy}
+      DB_SSL_REQUIRE: "False"
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    profiles: ["async"]
+    volumes:
+      - media_data:/app/media
+
+volumes:
+  postgres_data:
+  redis_data:
+  media_data:
