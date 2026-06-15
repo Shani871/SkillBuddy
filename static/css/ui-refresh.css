@@ -499,7 +499,7 @@ a:hover { color: #174a9d; }
 }
 
 .table-responsive {
-  overflow: hidden !important;
+  overflow-x: auto !important;
   border: 1px solid var(--sb-border) !important;
   border-radius: var(--sb-radius) !important;
   background: #ffffff !important;
@@ -845,7 +845,19 @@ hr { border-color: var(--sb-border) !important; }
   border-radius: 0 !important;
 }
 
-.manage-wrap,
+.manage-wrap {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 .filter-form,
 form.filter {
   margin-bottom: 1.15rem !important;

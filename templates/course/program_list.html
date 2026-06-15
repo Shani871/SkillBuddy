@@ -11,14 +11,14 @@
     </ol>
 </nav>
 
-{% if request.user.is_superuser %}
-<div class="manage-wrap">
-    <a class="btn btn-primary" href="{% url 'add_program' %}"><i class="fas fa-plus"></i>{% trans 'Add Program' %}</a>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div class="title-1 m-0"><i class="fas fa-book-open"></i>{% trans 'Program List' %}</div>
+    {% if request.user.is_superuser %}
+    <div class="manage-wrap">
+        <a class="btn btn-primary" href="{% url 'add_program' %}"><i class="fas fa-plus"></i>{% trans 'Add Program' %}</a>
+    </div>
+    {% endif %}
 </div>
-{% endif %}
-
-<div class="title-1"><i class="fas fa-book-open"></i>{% trans 'Program List' %}</div>
-<br><br>
 
 {% include 'snippets/messages.html' %}
 {% include 'snippets/filter_form.html' %}
