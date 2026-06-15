@@ -24,3 +24,7 @@ redis>=5.0,<6
 # Payments
 gopay>=2.0,<3
 stripe>=5.5,<15
+
+# Email API Integration
+django-anymail[resend]>=10.0,<12.0
+

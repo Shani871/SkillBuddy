@@ -84,3 +84,12 @@ if AWS_STORAGE_BUCKET_NAME:
 
 # Suitable only for a single instance with a persistent MEDIA_ROOT volume.
 SERVE_MEDIA_FILES = config("SERVE_MEDIA_FILES", default=False, cast=bool)
+
+# Anymail (Resend HTTP API email backend)
+ANYMAIL_RESEND_API_KEY = config("RESEND_API_KEY", default="")
+if ANYMAIL_RESEND_API_KEY:
+    EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+    ANYMAIL = {
+        "RESEND_API_KEY": ANYMAIL_RESEND_API_KEY,
+    }
+
