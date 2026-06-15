@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y build-essential libjpeg62-turbo-dev zlib1g-dev \
+    && apt-get install --no-install-recommends -y build-essential libjpeg62-turbo-dev zlib1g-dev pkg-config libcairo2-dev python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt requirements.txt
