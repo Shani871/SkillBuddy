@@ -519,5 +519,9 @@ def user_course_list(request):
             {"student": student, "taken_courses": taken_courses},
         )
 
+    if request.user.is_superuser:
+        courses = Course.objects.select_related("program").all()
+        return render(request, "course/user_course_list.html", {"courses": courses})
+
     # For other users
     return render(request, "course/user_course_list.html")

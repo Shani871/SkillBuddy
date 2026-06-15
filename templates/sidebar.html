@@ -58,10 +58,10 @@
 
 			<li class="nav-header small text-uppercase text-muted fw-bold mt-4 mb-2 ms-3">{% trans 'Academia' %}</li>
 
-			{% if request.user.is_lecturer or request.user.is_student %}
+			{% if request.user.is_superuser or request.user.is_lecturer or request.user.is_student %}
 			<li class="nav-item">
-				<a href="{% url 'user_course_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if '/courses/' in request.path %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
-					<i class="fas fa-book-bookmark me-3 opacity-75"></i><span>{% trans 'My Library' %}</span>
+				<a href="{% url 'user_course_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if '/courses/' in request.path or 'my_courses' in request.path %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<i class="fas fa-book-bookmark me-3 opacity-75"></i><span>{% if request.user.is_superuser %}{% trans 'System Courses' %}{% else %}{% trans 'My Library' %}{% endif %}</span>
 				</a>
 			</li>
 			{% endif %}
@@ -75,10 +75,25 @@
 			{% endif %}
 
 			{% if request.user.is_superuser %}
-			<li class="nav-header small text-uppercase text-muted fw-bold mt-4 mb-2 ms-3">{% trans 'System' %}</li>
+			<li class="nav-header small text-uppercase text-muted fw-bold mt-4 mb-2 ms-3">{% trans 'System Control' %}</li>
+			<li class="nav-item">
+				<a href="{% url 'admin_panel' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 text-secondary hover-bg-white fw-medium transition">
+					<i class="fas fa-sliders me-3 opacity-75"></i><span>{% trans 'Admin Control' %}</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{% url 'lecturer_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 text-secondary hover-bg-white fw-medium transition">
+					<i class="fas fa-chalkboard-teacher me-3 opacity-75"></i><span>{% trans 'Teachers' %}</span>
+				</a>
+			</li>
 			<li class="nav-item">
 				<a href="{% url 'student_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 text-secondary hover-bg-white fw-medium transition">
-					<i class="fas fa-users-viewfinder me-3 opacity-75"></i><span>{% trans 'User Directory' %}</span>
+					<i class="fas fa-user-graduate me-3 opacity-75"></i><span>{% trans 'Students' %}</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{% url 'course_allocation_view' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 text-secondary hover-bg-white fw-medium transition">
+					<i class="fas fa-tasks me-3 opacity-75"></i><span>{% trans 'Course Allocations' %}</span>
 				</a>
 			</li>
 			{% endif %}
