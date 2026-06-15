@@ -30,8 +30,12 @@ def new_event(request):
     }
     return render(request, "core/index.html", context)
 @login_required
-@admin_required
 def dashboard_view(request):
+    if request.user.is_lecturer:
+        return redirect("teacher_dashboard")
+    if not request.user.is_superuser:
+        return redirect("home")
+
     logs = ActivityLog.objects.all().order_by("-created_at")[:10]
     gender_count = Student.get_gender_count()
     graded_courses = TakenCourse.objects.exclude(grade="").exclude(total=0)

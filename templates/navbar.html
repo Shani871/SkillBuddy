@@ -38,9 +38,9 @@
                         </a>
                     </li>
 
-                    {% if request.user.is_superuser %}
+                    {% if request.user.is_superuser or request.user.is_lecturer %}
                     <li class="nav-item">
-                        <a class="nav-link app-menu-link px-3 py-2 {% if request.path == dashboard_url %}active{% endif %}" href="{{ dashboard_url }}">
+                        <a class="nav-link app-menu-link px-3 py-2 {% if request.path == dashboard_url or 'teacher-dashboard' in request.path %}active{% endif %}" href="{% if request.user.is_superuser %}{{ dashboard_url }}{% else %}{% url 'teacher_dashboard' %}{% endif %}">
                             <i class="fas fa-chart-line me-2"></i>{% trans 'Dashboard' %}
                         </a>
                     </li>
