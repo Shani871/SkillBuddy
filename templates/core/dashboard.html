@@ -4,6 +4,33 @@
 {% load static %}
 
 {% block header %}
+<style>
+.admin-command-center { padding: 1.25rem !important; }
+.admin-module-grid { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; }
+.admin-module { min-width: 0; padding: .85rem; border: 1px solid var(--sb-border); border-radius: 14px; background: #fffdf8; }
+.admin-module-heading { display: flex; align-items: center; gap: .65rem; min-height: 44px; margin-bottom: .65rem; }
+.admin-module-heading h5 { margin: 0; color: var(--sb-ink); font-size: 1rem; font-weight: 800; }
+.admin-module-heading small { display: block; margin-top: .12rem; color: var(--sb-muted); font-size: .72rem; line-height: 1.25; }
+.admin-module-icon { display: inline-flex !important; align-items: center; justify-content: center; flex: 0 0 38px; width: 38px; height: 38px; border-radius: 10px; color: #fff; }
+.admin-module-icon i { width: auto !important; height: auto !important; background: transparent !important; }
+.admin-module-icon.people { background: var(--sb-primary); }
+.admin-module-icon.academics { background: #27a978; }
+.admin-module-icon.planning { background: #e89b28; }
+.admin-module-icon.platform { background: #7a60c9; }
+.admin-link-list { display: grid !important; gap: .3rem; }
+.admin-link-list > a { display: flex !important; align-items: center; justify-content: space-between; gap: .5rem; min-height: 39px; padding: .42rem .5rem; border: 1px solid transparent; border-radius: 9px; color: var(--sb-ink) !important; font-size: .78rem; font-weight: 700; line-height: 1.2; transition: var(--sb-ease); }
+.admin-link-list > a:hover { border-color: #cfe0f4; background: #f3f8ff; transform: translateX(2px); }
+.admin-link-list > a > span { display: flex; align-items: center; min-width: 0; }
+.admin-link-list > a > span i { display: inline-flex; flex: 0 0 24px; width: 24px !important; height: 24px !important; margin-right: .25rem; color: var(--sb-primary); background: transparent !important; font-size: .78rem; }
+.admin-link-list > a > i { flex: 0 0 auto; width: auto !important; height: auto !important; color: var(--sb-muted); background: transparent !important; font-size: .65rem; }
+.admin-link-list strong { flex: 0 0 auto; padding: .12rem .4rem; border-radius: 999px; background: var(--sb-primary-light); color: var(--sb-primary); font-size: .68rem; }
+@media (max-width: 1399.98px) { .admin-module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767.98px) {
+  .admin-command-center { padding: .9rem !important; }
+  .admin-command-center > div:first-child .btn { width: 100%; }
+  .admin-module-grid { grid-template-columns: 1fr; }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -25,6 +52,9 @@
 			<p class="mb-0">{% trans 'Track users, engagement, and learning outcomes in one place.' %}</p>
 		</div>
 		<div class="dashboard-actions">
+			<a class="btn btn-outline-secondary" href="{% url 'admin:index' %}">
+				<i class="fas fa-screwdriver-wrench"></i>{% trans 'Django Admin' %}
+			</a>
 			<a class="btn btn-outline-primary" href="{% url 'student_list' %}">
 				<i class="fas fa-user-graduate"></i>{% trans 'Students' %}
 			</a>
@@ -69,14 +99,64 @@
 	<div class="col-6 col-lg-3">
 		<div class="stat-card dashboard-stat dashboard-stat-support">
 			<div class="d-flex align-items-center justify-content-between mb-2">
-				<span class="icon-chip"><i class="fas fa-flask"></i></span>
-				<span class="small text-muted">{% trans 'Support' %}</span>
+				<span class="icon-chip"><i class="fas fa-book-open"></i></span>
+				<span class="small text-muted">{% trans 'Academic' %}</span>
 			</div>
-			<p class="small text-muted mb-1">{% trans 'Lab Assistance' %}</p>
-			<h2 class="h3 fw-bold mb-0">500</h2>
+			<p class="small text-muted mb-1">{% trans 'Courses' %}</p>
+			<h2 class="h3 fw-bold mb-0">{{ course_count }}</h2>
 		</div>
 	</div>
 </div>
+
+<section class="panel-card admin-command-center p-3 p-md-4 mb-4">
+	<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-2 mb-4">
+		<div><span class="stats-pill">{% trans 'Management' %}</span><h4 class="fw-bold mt-2 mb-1">{% trans 'Admin Command Center' %}</h4><p class="text-muted mb-0">{% trans 'All school management functions, organized by area.' %}</p></div>
+		<a class="btn btn-outline-primary" href="{% url 'admin:index' %}"><i class="fas fa-database"></i>{% trans 'Open full database admin' %}</a>
+	</div>
+	<div class="admin-module-grid">
+		<article class="admin-module">
+			<div class="admin-module-heading"><span class="admin-module-icon people"><i class="fas fa-users"></i></span><div><h5>{% trans 'People' %}</h5><small>{% trans 'Students, faculty and families' %}</small></div></div>
+			<div class="admin-link-list">
+				<a href="{% url 'student_list' %}"><span><i class="fas fa-user-graduate"></i>{% trans 'Students' %}</span><strong>{{ student_count }}</strong></a>
+				<a href="{% url 'add_student' %}"><span><i class="fas fa-user-plus"></i>{% trans 'Add student' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'lecturer_list' %}"><span><i class="fas fa-chalkboard-user"></i>{% trans 'Faculty' %}</span><strong>{{ lecturer_count }}</strong></a>
+				<a href="{% url 'add_lecturer' %}"><span><i class="fas fa-user-tie"></i>{% trans 'Add faculty' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'admin:accounts_parent_changelist' %}"><span><i class="fas fa-people-roof"></i>{% trans 'Parents' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'admin:accounts_user_changelist' %}"><span><i class="fas fa-user-shield"></i>{% trans 'All user accounts' %}</span><i class="fas fa-chevron-right"></i></a>
+			</div>
+		</article>
+		<article class="admin-module">
+			<div class="admin-module-heading"><span class="admin-module-icon academics"><i class="fas fa-graduation-cap"></i></span><div><h5>{% trans 'Academics' %}</h5><small>{% trans 'Programs, courses and results' %}</small></div></div>
+			<div class="admin-link-list">
+				<a href="{% url 'programs' %}"><span><i class="fas fa-layer-group"></i>{% trans 'Programs and courses' %}</span><strong>{{ program_count }} / {{ course_count }}</strong></a>
+				<a href="{% url 'course_allocation_view' %}"><span><i class="fas fa-person-chalkboard"></i>{% trans 'Faculty course allocations' %}</span><strong>{{ allocation_count }}</strong></a>
+				<a href="{% url 'admin:result_takencourse_changelist' %}"><span><i class="fas fa-list-check"></i>{% trans 'Student course enrollments' %}</span><strong>{{ enrollment_count }}</strong></a>
+				<a href="{% url 'add_score' %}"><span><i class="fas fa-clipboard-check"></i>{% trans 'Scores and results' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'admin:quiz_quiz_changelist' %}"><span><i class="fas fa-circle-question"></i>{% trans 'Quizzes and assessments' %}</span><i class="fas fa-chevron-right"></i></a>
+			</div>
+		</article>
+		<article class="admin-module">
+			<div class="admin-module-heading"><span class="admin-module-icon planning"><i class="fas fa-calendar-days"></i></span><div><h5>{% trans 'Planning' %}</h5><small>{% trans 'Schedules, attendance and dates' %}</small></div></div>
+			<div class="admin-link-list">
+				<a href="{% url 'admin:course_classschedule_changelist' %}"><span><i class="fas fa-clock"></i>{% trans 'Class schedules' %}</span><strong>{{ schedule_count }}</strong></a>
+				<a href="{% url 'admin:result_courseattendance_changelist' %}"><span><i class="fas fa-user-check"></i>{% trans 'Course attendance' %}</span><strong>{{ attendance_count }}</strong></a>
+				<a href="{% url 'admin:course_academicevent_changelist' %}"><span><i class="fas fa-calendar-check"></i>{% trans 'Academic events' %}</span><strong>{{ academic_event_count }}</strong></a>
+				<a href="{% url 'session_list' %}"><span><i class="fas fa-calendar-range"></i>{% trans 'Academic sessions' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'semester_list' %}"><span><i class="fas fa-hourglass-half"></i>{% trans 'Semesters' %}</span><i class="fas fa-chevron-right"></i></a>
+			</div>
+		</article>
+		<article class="admin-module">
+			<div class="admin-module-heading"><span class="admin-module-icon platform"><i class="fas fa-gears"></i></span><div><h5>{% trans 'Learning Platform' %}</h5><small>{% trans 'Content, AI and communication' %}</small></div></div>
+			<div class="admin-link-list">
+				<a href="{% url 'home' %}"><span><i class="fas fa-newspaper"></i>{% trans 'News and announcements' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'add_item' %}"><span><i class="fas fa-bullhorn"></i>{% trans 'Publish announcement' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'admin:ai_tutor_roadmap_changelist' %}"><span><i class="fas fa-wand-magic-sparkles"></i>{% trans 'AI learning roadmaps' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'admin:course_upload_changelist' %}"><span><i class="fas fa-folder-open"></i>{% trans 'Course resources' %}</span><i class="fas fa-chevron-right"></i></a>
+				<a href="{% url 'admin:index' %}"><span><i class="fas fa-shield-halved"></i>{% trans 'Advanced system administration' %}</span><i class="fas fa-chevron-right"></i></a>
+			</div>
+		</article>
+	</div>
+</section>
 
 <section class="panel-card result-center p-3 p-md-4 mb-4">
 	<div class="d-flex flex-column flex-xl-row align-items-xl-center justify-content-between gap-3 mb-3">

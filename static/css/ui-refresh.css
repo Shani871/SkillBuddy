@@ -610,6 +610,42 @@ a:hover { color: #174a9d; }
   z-index: 1;
 }
 
+.admin-module-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-module {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--sb-border);
+  border-radius: 16px;
+  background: #fffdf8;
+}
+
+.admin-module-heading { display: flex; align-items: center; gap: .8rem; margin-bottom: .9rem; }
+.admin-module-heading h5 { margin: 0; color: var(--sb-ink); font-weight: 800; }
+.admin-module-heading small { color: var(--sb-muted); }
+.admin-module-icon { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 46px; width: 46px; height: 46px; border-radius: 13px; color: #fff; }
+.admin-module-icon.people { background: var(--sb-primary); }
+.admin-module-icon.academics { background: #27a978; }
+.admin-module-icon.planning { background: #e89b28; }
+.admin-module-icon.platform { background: #7a60c9; }
+.admin-link-list { display: grid; gap: .45rem; }
+.admin-link-list > a { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 46px; padding: .58rem .7rem; border: 1px solid transparent; border-radius: 11px; color: var(--sb-ink); font-size: .9rem; font-weight: 700; transition: var(--sb-ease); }
+.admin-link-list > a:hover { border-color: #cfe0f4; background: #f3f8ff; transform: translateX(2px); }
+.admin-link-list > a > span { display: flex; align-items: center; min-width: 0; }
+.admin-link-list > a > span i { flex: 0 0 30px; margin-right: .45rem; color: var(--sb-primary); background: transparent; }
+.admin-link-list > a > i { flex: 0 0 auto; color: var(--sb-muted); background: transparent; }
+.admin-link-list strong { flex: 0 0 auto; padding: .16rem .5rem; border-radius: 999px; background: var(--sb-primary-light); color: var(--sb-primary); font-size: .76rem; }
+
+@media (max-width: 767.98px) {
+  .admin-module-grid { grid-template-columns: 1fr; }
+  .admin-module { padding: .8rem; }
+  .admin-link-list > a { font-size: .84rem; }
+}
+
 .result-center {
   position: relative;
   overflow: hidden;
@@ -1347,4 +1383,3 @@ body.auth-page {
     padding: 0.75rem !important;
   }
 }
-

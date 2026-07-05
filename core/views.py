@@ -8,8 +8,8 @@ from django.utils import timezone
 
 from accounts.decorators import admin_required, lecturer_required, student_required
 from accounts.models import User, Student
-from result.models import Result, TakenCourse
-from course.models import AcademicEvent, ClassSchedule
+from result.models import CourseAttendance, Result, TakenCourse
+from course.models import AcademicEvent, ClassSchedule, Course, CourseAllocation, Program
 from .forms import SessionForm, SemesterForm, NewsAndEventsForm
 from .models import NewsAndEvents, ActivityLog, Session, Semester
 
@@ -220,6 +220,13 @@ def dashboard_view(request):
         "females_count": gender_count["F"],
         "result_summary": result_summary,
         "logs": logs,
+        "program_count": Program.objects.count(),
+        "course_count": Course.objects.count(),
+        "allocation_count": CourseAllocation.objects.count(),
+        "enrollment_count": TakenCourse.objects.count(),
+        "schedule_count": ClassSchedule.objects.count(),
+        "attendance_count": CourseAttendance.objects.count(),
+        "academic_event_count": AcademicEvent.objects.count(),
     }
     return render(request, "core/dashboard.html", context)
 

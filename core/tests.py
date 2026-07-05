@@ -13,6 +13,27 @@ from result.models import CourseAttendance, TakenCourse
 User = get_user_model()
 
 
+class AdminDashboardTests(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_superuser(
+            username="dashboard-admin", password="password"
+        )
+        self.client.force_login(self.admin)
+
+    def test_dashboard_exposes_structured_management_modules(self):
+        response = self.client.get(reverse("dashboard"))
+        self.assertEqual(response.status_code, 200)
+        for heading in ("People", "Academics", "Planning", "Learning Platform"):
+            self.assertContains(response, heading)
+        self.assertContains(response, "Student course enrollments")
+        self.assertContains(response, "Class schedules")
+        self.assertContains(response, "Course attendance")
+
+    def test_old_admin_panel_redirects_to_dashboard(self):
+        response = self.client.get(reverse("admin_panel"))
+        self.assertRedirects(response, reverse("dashboard"))
+
+
 class StudentAcademicDashboardTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(

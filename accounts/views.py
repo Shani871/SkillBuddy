@@ -177,7 +177,7 @@ def profile_single(request, user_id):
 @login_required
 @admin_required
 def admin_panel(request):
-    return render(request, "setting/admin_panel.html", {"title": "Admin Panel"})
+    return redirect("dashboard")
 
 
 # ########################################################
