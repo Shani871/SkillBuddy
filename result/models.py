@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.conf import settings
+from django.core.validators import MaxValueValidator
 
 from django.db import models
 from django.urls import reverse
@@ -187,3 +188,37 @@ class Result(models.Model):
 
     def __str__(self):
         return f"Result for {self.student} - Semester: {self.semester}, Level: {self.level}"
+
+
+class CourseAttendance(models.Model):
+    enrollment = models.OneToOneField(
+        TakenCourse, on_delete=models.CASCADE, related_name="attendance_summary"
+    )
+    total_classes = models.PositiveIntegerField(default=0)
+    classes_attended = models.PositiveIntegerField(default=0)
+    required_percentage = models.PositiveSmallIntegerField(
+        default=75, validators=[MaxValueValidator(100)]
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Course attendance"
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(classes_attended__lte=models.F("total_classes")),
+                name="attendance_not_above_total",
+            )
+        ]
+
+    @property
+    def percentage(self):
+        if not self.total_classes:
+            return 0
+        return round((self.classes_attended / self.total_classes) * 100, 1)
+
+    @property
+    def is_below_required(self):
+        return self.percentage < self.required_percentage
+
+    def __str__(self):
+        return f"{self.enrollment}: {self.percentage}%"

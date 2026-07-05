@@ -4,7 +4,7 @@
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
 
-<nav id="top-navbar" class="navbar navbar-expand-xl glass-nav py-2 sticky-top">
+<nav id="top-navbar" class="navbar navbar-expand-xxl glass-nav py-2 sticky-top">
     <div class="container-fluid px-3 px-lg-4">
         <a class="navbar-brand d-flex align-items-center fw-bold fs-5" href="{% if request.user.is_authenticated %}{% url 'home' %}{% else %}{% url 'index' %}{% endif %}">
             <span class="logo-box glass-card p-2 rounded-3 me-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
@@ -17,7 +17,7 @@
         </a>
 
         {% if request.user.is_authenticated %}
-        <div class="d-flex align-items-center gap-2 d-xl-none ms-auto me-2">
+        <div class="d-flex align-items-center gap-2 d-xxl-none ms-auto me-2">
             <div class="dropdown">
                 <button class="btn p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="avatar border border-2 rounded-circle p-1 d-inline-block" style="border-color: rgba(139, 92, 246, 0.5) !important; background: rgba(255,255,255,0.05); width: 42px; height: 42px;">
@@ -54,7 +54,7 @@
             </div>
         </div>
         {% else %}
-        <div class="d-flex align-items-center gap-2 d-xl-none ms-auto me-2">
+        <div class="d-flex align-items-center gap-2 d-xxl-none ms-auto me-2">
             <a class="btn btn-sm btn-outline-primary" href="{% url 'login' %}">{% trans 'Sign In' %}</a>
         </div>
         {% endif %}
@@ -122,6 +122,13 @@
                     </li>
                     {% endif %}
 
+                    {% if request.user.is_student %}
+                    <li class="nav-item"><a class="nav-link app-menu-link px-2 py-2 {% if request.resolver_match.url_name == 'student_schedule' %}active{% endif %}" href="{% url 'student_schedule' %}"><i class="fas fa-clock me-1"></i>{% trans 'Schedule' %}</a></li>
+                    <li class="nav-item"><a class="nav-link app-menu-link px-2 py-2 {% if request.resolver_match.url_name == 'student_attendance' %}active{% endif %}" href="{% url 'student_attendance' %}"><i class="fas fa-user-check me-1"></i>{% trans 'Attendance' %}</a></li>
+                    <li class="nav-item"><a class="nav-link app-menu-link px-2 py-2 {% if request.resolver_match.url_name == 'student_calendar' %}active{% endif %}" href="{% url 'student_calendar' %}"><i class="fas fa-calendar-days me-1"></i>{% trans 'Calendar' %}</a></li>
+                    <li class="nav-item"><a class="nav-link app-menu-link px-2 py-2 {% if request.resolver_match.url_name == 'academic_calendar' %}active{% endif %}" href="{% url 'academic_calendar' %}"><i class="fas fa-calendar-check me-1"></i>{% trans 'Academic Calendar' %}</a></li>
+                    {% endif %}
+
                     {% if request.user.is_superuser %}
                     <li class="nav-item dropdown">
                         <a class="nav-link app-menu-link dropdown-toggle px-3 py-2 {% if 'admin_panel' in request.path or 'lecturer' in request.path or 'student' in request.path or 'allocation' in request.path %}active{% endif %}" href="#" id="adminNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -153,7 +160,7 @@
                     {% endif %}
                 </ul>
 
-                <form class="d-flex search-container align-items-center my-3 my-xl-0 position-relative" action="{% url 'query' %}" method="GET">
+                <form class="d-flex search-container align-items-center my-3 my-xxl-0 position-relative" action="{% url 'query' %}" method="GET">
                     <span class="position-absolute ms-3 text-muted" style="pointer-events: none;">
                         <i class="fas fa-search"></i>
                     </span>

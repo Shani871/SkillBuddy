@@ -14,6 +14,10 @@ from .views import (
     semester_update_view,
     semester_delete_view,
     dashboard_view, new_event,
+    student_schedule,
+    student_attendance,
+    student_calendar,
+    academic_calendar,
 )
 
 
@@ -33,4 +37,8 @@ urlpatterns = [
     path("semester/<int:pk>/edit/", semester_update_view, name="edit_semester"),
     path("semester/<int:pk>/delete/", semester_delete_view, name="delete_semester"),
     path("dashboard/", dashboard_view, name="dashboard"),
+    path("student/schedule/", student_schedule, name="student_schedule"),
+    path("student/attendance/", student_attendance, name="student_attendance"),
+    path("student/calendar/", student_calendar, name="student_calendar"),
+    path("student/academic-calendar/", academic_calendar, name="academic_calendar"),
 ]

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Attendance' %} | SkillBuddy{% endblock %}
+{% block header %}<link rel="stylesheet" href="{% static 'css/student-dashboard.css' %}">{% endblock %}
+{% block content %}
+<div class="student-page">
+  <div class="mb-4"><h2 class="page-heading mb-1"><i class="fas fa-user-check me-2"></i>{% trans 'Attendance' %}</h2><p class="text-muted mb-0">{% trans 'Attendance across your enrolled courses' %}</p></div>
+  <div class="row g-4">
+    {% for row in attendance_rows %}
+    <div class="col-12 col-lg-6"><article class="feature-card h-100 p-4">
+      <div class="d-flex justify-content-between gap-3 mb-3"><div><span class="small text-muted">{{ row.course.code }}</span><h5 class="fw-bold mb-0">{{ row.course.title }}</h5></div><div class="metric {% if row.below_required %}text-danger{% endif %}">{{ row.percentage }}%</div></div>
+      <div class="progress mb-3" role="progressbar" aria-label="Attendance percentage" aria-valuenow="{{ row.percentage }}" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar {% if row.below_required %}bg-danger{% else %}bg-success{% endif %}" style="width: {{ row.percentage }}%"></div></div>
+      <div class="row text-center g-2"><div class="col"><div class="small text-muted">{% trans 'Total Classes' %}</div><strong>{{ row.total }}</strong></div><div class="col"><div class="small text-muted">{% trans 'Attended' %}</div><strong>{{ row.attended }}</strong></div><div class="col"><div class="small text-muted">{% trans 'Required' %}</div><strong>{{ row.required }}%</strong></div></div>
+      {% if row.below_required %}<div class="alert alert-danger py-2 mt-3 mb-0 small"><i class="fas fa-triangle-exclamation me-1"></i>{% trans 'Attendance is below the required percentage.' %}</div>{% endif %}
+    </article></div>
+    {% empty %}<div class="col-12"><div class="feature-card empty-state"><i class="fas fa-clipboard-check"></i><h5>{% trans 'No attendance records yet' %}</h5></div></div>{% endfor %}
+  </div>
+</div>
+{% endblock %}

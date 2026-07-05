@@ -61,7 +61,35 @@
 			{% if request.user.is_superuser or request.user.is_lecturer or request.user.is_student %}
 			<li class="nav-item">
 				<a href="{% url 'user_course_list' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if '/courses/' in request.path or 'my_courses' in request.path %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
-					<i class="fas fa-book-bookmark me-3 opacity-75"></i><span>{% if request.user.is_superuser %}{% trans 'System Courses' %}{% else %}{% trans 'My Library' %}{% endif %}</span>
+					<i class="fas fa-book-bookmark me-3 opacity-75"></i><span>{% if request.user.is_superuser %}{% trans 'System Courses' %}{% elif request.user.is_student %}{% trans 'Courses' %}{% else %}{% trans 'My Library' %}{% endif %}</span>
+				</a>
+			</li>
+			{% endif %}
+
+			{% if request.user.is_student %}
+			<li class="nav-item">
+				<a href="{% url 'grade_results' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if '/result/grade/' in request.path %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<i class="fas fa-chart-column me-3 opacity-75"></i><span>{% trans 'Results' %}</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{% url 'student_schedule' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if '/student/schedule/' in request.path %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<i class="fas fa-clock me-3 opacity-75"></i><span>{% trans 'Schedule' %}</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{% url 'student_attendance' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if '/student/attendance/' in request.path %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<i class="fas fa-user-check me-3 opacity-75"></i><span>{% trans 'Attendance' %}</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{% url 'student_calendar' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if request.resolver_match.url_name == 'student_calendar' %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<i class="fas fa-calendar-days me-3 opacity-75"></i><span>{% trans 'Calendar' %}</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{% url 'academic_calendar' %}" class="nav-link d-flex align-items-center py-2 px-3 rounded-4 {% if request.resolver_match.url_name == 'academic_calendar' %}bg-white text-primary border border-primary-light shadow-sm{% else %}text-secondary hover-bg-white{% endif %} fw-medium transition">
+					<i class="fas fa-calendar-check me-3 opacity-75"></i><span>{% trans 'Academic Calendar' %}</span>
 				</a>
 			</li>
 			{% endif %}

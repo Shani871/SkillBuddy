@@ -7,9 +7,36 @@ from django.contrib.auth.forms import (
 from django.contrib.auth.forms import PasswordResetForm
 from course.models import Program
 from .models import User, Student, Parent, RELATION_SHIP, LEVEL, GENDERS
+from .utils import generate_lecturer_credentials, generate_student_credentials
 
 
-class StaffAddForm(UserCreationForm):
+class GeneratedCredentialsMixin:
+    """Generate both credentials when the admin leaves them blank."""
+
+    credentials_generator = None
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+
+        if not username or not password1:
+            generated_username, generated_password = self.credentials_generator()
+            if not username:
+                cleaned_data["username"] = generated_username
+            if not password1 and not password2:
+                cleaned_data["password1"] = generated_password
+                cleaned_data["password2"] = generated_password
+            elif not password1 or not password2:
+                self.add_error(
+                    "password2", "Enter both password fields or leave both blank."
+                )
+        return cleaned_data
+
+
+class StaffAddForm(GeneratedCredentialsMixin, UserCreationForm):
+    credentials_generator = staticmethod(generate_lecturer_credentials)
     username = forms.CharField(
         max_length=30,
         widget=forms.TextInput(
@@ -75,11 +102,11 @@ class StaffAddForm(UserCreationForm):
         label="Mobile No.",
     )
 
-    email = forms.CharField(
-        max_length=30,
+    email = forms.EmailField(
+        max_length=254,
         widget=forms.TextInput(
             attrs={
-                "type": "text",
+                "type": "email",
                 "class": "form-control",
             }
         ),
@@ -129,7 +156,8 @@ class StaffAddForm(UserCreationForm):
         return user
 
 
-class StudentAddForm(UserCreationForm):
+class StudentAddForm(GeneratedCredentialsMixin, UserCreationForm):
+    credentials_generator = staticmethod(generate_student_credentials)
     username = forms.CharField(
         max_length=30,
         widget=forms.TextInput(

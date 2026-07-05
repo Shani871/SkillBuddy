@@ -5,6 +5,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template, render_to_string
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView
 from django_filters.views import FilterView
@@ -20,9 +21,11 @@ from accounts.forms import (
     StudentAddForm,
 )
 from accounts.models import Parent, Student, User
+from accounts.utils import send_new_account_email
 from core.models import Semester, Session
 from course.models import Course
 from result.models import TakenCourse
+
 
 # ########################################################
 # Utility Functions
@@ -224,38 +227,17 @@ def staff_add_view(request):
         if form.is_valid():
             lecturer = form.save()
             full_name = lecturer.get_full_name
-            email = lecturer.email
             raw_password = form.cleaned_data.get("password1")
 
-            email_status = ""
-            if email:
-                try:
-                    from django.conf import settings
-                    from django.core.mail import send_mail
-
-                    subject = "Your SkillBuddy Teacher Account Credentials"
-                    message = (
-                        f"Hello {full_name},\n\n"
-                        f"Your teacher account has been created on SkillBuddy.\n\n"
-                        f"Here are your login credentials:\n"
-                        f"Username/User ID: {lecturer.username}\n"
-                        f"Password: {raw_password}\n\n"
-                        f"Please log in at: {request.build_absolute_uri('/')}\n\n"
-                        f"Best regards,\n"
-                        f"The SkillBuddy Admin Team"
-                    )
-                    send_mail(
-                        subject,
-                        message,
-                        settings.DEFAULT_FROM_EMAIL,
-                        [email],
-                        fail_silently=False,
-                    )
-                    email_status = "An email has been sent with their credentials."
-                except Exception as e:
-                    email_status = f"However, the email could not be sent: {str(e)}"
-            else:
-                email_status = "No email address was provided."
+            try:
+                send_new_account_email(
+                    lecturer,
+                    raw_password,
+                    request.build_absolute_uri(reverse("login")),
+                )
+                email_status = "An email has been sent with their credentials."
+            except Exception:
+                email_status = "The credentials email could not be sent; the issue has been logged."
 
             messages.success(
                 request,
@@ -340,38 +322,17 @@ def student_add_view(request):
         if form.is_valid():
             student = form.save()
             full_name = student.get_full_name
-            email = student.email
             raw_password = form.cleaned_data.get("password1")
 
-            email_status = ""
-            if email:
-                try:
-                    from django.conf import settings
-                    from django.core.mail import send_mail
-
-                    subject = "Your SkillBuddy Account Credentials"
-                    message = (
-                        f"Hello {full_name},\n\n"
-                        f"Your student account has been created on SkillBuddy.\n\n"
-                        f"Here are your login credentials:\n"
-                        f"Username/User ID: {student.username}\n"
-                        f"Password: {raw_password}\n\n"
-                        f"Please log in at: {request.build_absolute_uri('/')}\n\n"
-                        f"Best regards,\n"
-                        f"The SkillBuddy Admin Team"
-                    )
-                    send_mail(
-                        subject,
-                        message,
-                        settings.DEFAULT_FROM_EMAIL,
-                        [email],
-                        fail_silently=False,
-                    )
-                    email_status = "An email has been sent with their credentials."
-                except Exception as e:
-                    email_status = f"However, the email could not be sent: {str(e)}"
-            else:
-                email_status = "No email address was provided."
+            try:
+                send_new_account_email(
+                    student,
+                    raw_password,
+                    request.build_absolute_uri(reverse("login")),
+                )
+                email_status = "An email has been sent with their credentials."
+            except Exception:
+                email_status = "The credentials email could not be sent; the issue has been logged."
 
             messages.success(
                 request,

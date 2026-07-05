@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Academic Calendar' %} | SkillBuddy{% endblock %}
+{% block header %}<link rel="stylesheet" href="{% static 'css/student-dashboard.css' %}">{% endblock %}
+{% block content %}
+<div class="student-page">
+  <div class="mb-4"><h2 class="page-heading mb-1"><i class="fas fa-calendar-check me-2"></i>{% trans 'Academic Calendar' %}</h2><p class="text-muted mb-0">{% trans 'Important dates for your academic year' %}</p></div>
+  <div class="accordion d-grid gap-3" id="academicCalendar">
+    {% for label, events in event_groups %}
+    <div class="accordion-item feature-card overflow-hidden border"><h2 class="accordion-header"><button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#eventGroup{{ forloop.counter }}"><i class="fas fa-calendar-day text-primary me-3"></i>{{ label }}</button></h2>
+      <div id="eventGroup{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#academicCalendar"><div class="accordion-body p-0"><div class="list-group list-group-flush">
+        {% for event in events %}<div class="list-group-item p-3 d-flex flex-column flex-sm-row justify-content-between gap-2"><div><h6 class="fw-bold mb-1">{{ event.title }}</h6><span class="small text-muted">{% if event.course %}{{ event.course }}{% else %}{% trans 'All students' %}{% endif %}{% if event.location %} • {{ event.location }}{% endif %}</span></div><div class="text-sm-end text-primary fw-bold text-nowrap">{{ event.start_at|date:'M j, Y' }}{% if event.end_at %}<div class="small text-muted fw-normal">{% trans 'to' %} {{ event.end_at|date:'M j, Y' }}</div>{% endif %}</div></div>{% empty %}<div class="p-4 text-center text-muted">{% trans 'No dates announced.' %}</div>{% endfor %}
+      </div></div></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

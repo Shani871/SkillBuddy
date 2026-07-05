@@ -254,3 +254,91 @@ class CourseOffer(models.Model):
 
     def __str__(self):
         return str(self.dep_head)
+
+
+class ClassSchedule(models.Model):
+    WEEKDAYS = (
+        (0, _("Monday")),
+        (1, _("Tuesday")),
+        (2, _("Wednesday")),
+        (3, _("Thursday")),
+        (4, _("Friday")),
+        (5, _("Saturday")),
+        (6, _("Sunday")),
+    )
+
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="class_schedules"
+    )
+    faculty = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="teaching_schedule",
+        limit_choices_to={"is_lecturer": True},
+    )
+    day_of_week = models.PositiveSmallIntegerField(choices=WEEKDAYS)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    classroom = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ("day_of_week", "start_time")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("course", "day_of_week", "start_time"),
+                name="unique_course_class_time",
+            ),
+            models.CheckConstraint(
+                check=Q(end_time__gt=models.F("start_time")),
+                name="class_ends_after_it_starts",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.course} - {self.get_day_of_week_display()} {self.start_time}"
+
+
+class AcademicEvent(models.Model):
+    SEMESTER_START = "semester_start"
+    SEMESTER_END = "semester_end"
+    HOLIDAY = "holiday"
+    EXAM = "exam"
+    INTERNAL = "internal"
+    ASSIGNMENT = "assignment"
+    PRACTICAL = "practical"
+    RESULT = "result"
+    COLLEGE_EVENT = "college_event"
+    WORKSHOP = "workshop"
+    EVENT_TYPES = (
+        (SEMESTER_START, _("Semester Start")),
+        (SEMESTER_END, _("Semester End")),
+        (HOLIDAY, _("Holiday")),
+        (EXAM, _("Examination")),
+        (INTERNAL, _("Internal Assessment")),
+        (ASSIGNMENT, _("Assignment Deadline")),
+        (PRACTICAL, _("Practical/Lab Exam")),
+        (RESULT, _("Result Declaration")),
+        (COLLEGE_EVENT, _("College Event")),
+        (WORKSHOP, _("Workshop")),
+    )
+
+    title = models.CharField(max_length=200)
+    event_type = models.CharField(max_length=30, choices=EVENT_TYPES)
+    start_at = models.DateTimeField()
+    end_at = models.DateTimeField(blank=True, null=True)
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="academic_events",
+        blank=True,
+        null=True,
+        help_text=_("Leave blank for an institution-wide event."),
+    )
+    location = models.CharField(max_length=150, blank=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ("start_at", "title")
+
+    def __str__(self):
+        return self.title

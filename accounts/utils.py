@@ -1,8 +1,13 @@
-import threading
+import logging
 from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from core.utils import send_html_email
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
+
+logger = logging.getLogger(__name__)
 
 
 def generate_password():
@@ -10,17 +15,32 @@ def generate_password():
 
 
 def generate_student_id():
-    # Generate a username based on first and last name and registration date
     registered_year = datetime.now().strftime("%Y")
-    students_count = get_user_model().objects.filter(is_student=True).count()
-    return f"{settings.STUDENT_ID_PREFIX}-{registered_year}-{students_count}"
+    prefix = f"{settings.STUDENT_ID_PREFIX}-{registered_year}-"
+    return _next_available_username(prefix)
 
 
 def generate_lecturer_id():
-    # Generate a username based on first and last name and registration date
     registered_year = datetime.now().strftime("%Y")
-    lecturers_count = get_user_model().objects.filter(is_lecturer=True).count()
-    return f"{settings.LECTURER_ID_PREFIX}-{registered_year}-{lecturers_count}"
+    prefix = f"{settings.LECTURER_ID_PREFIX}-{registered_year}-"
+    return _next_available_username(prefix)
+
+
+def _next_available_username(prefix):
+    """Return the first unused numeric ID, even when earlier users were deleted."""
+    usernames = get_user_model().objects.filter(
+        username__startswith=prefix
+    ).values_list("username", flat=True)
+    used_numbers = set()
+    for username in usernames:
+        suffix = username.removeprefix(prefix)
+        if suffix.isdigit():
+            used_numbers.add(int(suffix))
+
+    number = 0
+    while number in used_numbers:
+        number += 1
+    return f"{prefix}{number}"
 
 
 def generate_student_credentials():
@@ -31,32 +51,31 @@ def generate_lecturer_credentials():
     return generate_lecturer_id(), generate_password()
 
 
-class EmailThread(threading.Thread):
-    def __init__(self, subject, recipient_list, template_name, context):
-        self.subject = subject
-        self.recipient_list = recipient_list
-        self.template_name = template_name
-        self.context = context
-        threading.Thread.__init__(self)
+def send_new_account_email(user, password, login_url):
+    """Send the one-time credential message after an account has been saved.
 
-    def run(self):
-        send_html_email(
-            subject=self.subject,
-            recipient_list=self.recipient_list,
-            template=self.template_name,
-            context=self.context,
-        )
-
-
-def send_new_account_email(user, password):
+    The raw password is used only to render this message. It is never persisted;
+    Django stores only the password hash on ``user``.
+    """
     if user.is_student:
         template_name = "accounts/email/new_student_account_confirmation.html"
     else:
         template_name = "accounts/email/new_lecturer_account_confirmation.html"
-    email = {
-        "subject": "Your SkyLearn account confirmation and credentials",
-        "recipient_list": [user.email],
-        "template_name": template_name,
-        "context": {"user": user, "password": password},
-    }
-    EmailThread(**email).start()
+
+    context = {"user": user, "password": password, "login_url": login_url}
+    html_body = render_to_string(template_name, context)
+    message = EmailMultiAlternatives(
+        subject="Your Account Login Credentials",
+        body=strip_tags(html_body),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[user.email],
+    )
+    message.attach_alternative(html_body, "text/html")
+
+    try:
+        message.send(fail_silently=False)
+    except Exception:
+        logger.exception(
+            "Failed to send initial login credentials for user_id=%s", user.pk
+        )
+        raise

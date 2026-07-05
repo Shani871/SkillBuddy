@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 
-from .models import TakenCourse, Result
+from .models import CourseAttendance, TakenCourse, Result
 
 
 class ScoreAdmin(admin.ModelAdmin):
@@ -21,3 +21,4 @@ class ScoreAdmin(admin.ModelAdmin):
 
 admin.site.register(TakenCourse, ScoreAdmin)
 admin.site.register(Result)
+admin.site.register(CourseAttendance)

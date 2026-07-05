@@ -1,13 +1,177 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
+from datetime import datetime, timedelta
 
-from accounts.decorators import admin_required, lecturer_required
+from django.db.models import Avg, Q
+from django.utils import timezone
+
+from accounts.decorators import admin_required, lecturer_required, student_required
 from accounts.models import User, Student
 from result.models import Result, TakenCourse
+from course.models import AcademicEvent, ClassSchedule
 from .forms import SessionForm, SemesterForm, NewsAndEventsForm
 from .models import NewsAndEvents, ActivityLog, Session, Semester
+
+
+def _student_enrollments(request):
+    return TakenCourse.objects.select_related("course", "student__student").filter(
+        student__student=request.user
+    )
+
+
+def _student_events(request):
+    course_ids = _student_enrollments(request).values_list("course_id", flat=True)
+    return AcademicEvent.objects.select_related("course").filter(
+        Q(course__isnull=True) | Q(course_id__in=course_ids)
+    )
+
+
+@login_required
+@student_required
+def student_schedule(request):
+    now = timezone.localtime()
+    selected_day = request.GET.get("day")
+    try:
+        selected_day = int(selected_day) if selected_day is not None else now.weekday()
+    except (TypeError, ValueError):
+        selected_day = now.weekday()
+    if selected_day not in range(7):
+        selected_day = now.weekday()
+
+    mode = request.GET.get("view", "day")
+    course_ids = _student_enrollments(request).values_list("course_id", flat=True)
+    schedule_query = ClassSchedule.objects.select_related("course", "faculty").filter(
+        course_id__in=course_ids
+    )
+    if mode == "day":
+        schedule_query = schedule_query.filter(day_of_week=selected_day)
+    else:
+        mode = "week"
+    schedules = list(schedule_query)
+    for item in schedules:
+        item.is_current = (
+            item.day_of_week == now.weekday()
+            and item.start_time <= now.time() <= item.end_time
+        )
+        item.is_upcoming = False
+    if not any(item.is_current for item in schedules):
+        upcoming_today = [
+            item
+            for item in schedules
+            if item.day_of_week == now.weekday() and item.start_time > now.time()
+        ]
+        if upcoming_today:
+            min(upcoming_today, key=lambda item: item.start_time).is_upcoming = True
+
+    return render(
+        request,
+        "student/schedule.html",
+        {
+            "title": "Schedule",
+            "schedules": schedules,
+            "selected_day": selected_day,
+            "mode": mode,
+            "weekdays": ClassSchedule.WEEKDAYS,
+            "today": now.weekday(),
+        },
+    )
+
+
+@login_required
+@student_required
+def student_attendance(request):
+    rows = []
+    for enrollment in _student_enrollments(request):
+        summary = getattr(enrollment, "attendance_summary", None)
+        total = summary.total_classes if summary else 0
+        attended = summary.classes_attended if summary else 0
+        required = summary.required_percentage if summary else 75
+        percentage = summary.percentage if summary else 0
+        rows.append(
+            {
+                "course": enrollment.course,
+                "total": total,
+                "attended": attended,
+                "required": required,
+                "percentage": percentage,
+                "below_required": percentage < required,
+            }
+        )
+    return render(
+        request,
+        "student/attendance.html",
+        {"title": "Attendance", "attendance_rows": rows},
+    )
+
+
+@login_required
+@student_required
+def student_calendar(request):
+    today = timezone.localdate()
+    try:
+        focus_date = datetime.strptime(request.GET.get("date", ""), "%Y-%m-%d").date()
+    except ValueError:
+        focus_date = today
+    mode = request.GET.get("view", "month")
+    if mode == "day":
+        range_start, range_end = focus_date, focus_date
+    elif mode == "week":
+        range_start = focus_date - timedelta(days=focus_date.weekday())
+        range_end = range_start + timedelta(days=6)
+    else:
+        mode = "month"
+        range_start = focus_date.replace(day=1)
+        next_month = (range_start.replace(day=28) + timedelta(days=4)).replace(day=1)
+        range_end = next_month - timedelta(days=1)
+    events = _student_events(request).filter(
+        start_at__date__gte=range_start, start_at__date__lte=range_end
+    )
+    course_ids = _student_enrollments(request).values_list("course_id", flat=True)
+    weekly_classes = list(
+        ClassSchedule.objects.select_related("course", "faculty").filter(
+            course_id__in=course_ids
+        )
+    )
+    class_occurrences = []
+    date_cursor = range_start
+    while date_cursor <= range_end:
+        for class_schedule in weekly_classes:
+            if class_schedule.day_of_week == date_cursor.weekday():
+                class_occurrences.append(
+                    {"date": date_cursor, "schedule": class_schedule}
+                )
+        date_cursor += timedelta(days=1)
+    return render(
+        request,
+        "student/calendar.html",
+        {
+            "title": "Calendar",
+            "events": events,
+            "class_occurrences": class_occurrences,
+            "mode": mode,
+            "focus_date": focus_date,
+            "range_start": range_start,
+            "range_end": range_end,
+            "previous_date": range_start - timedelta(days=1),
+            "next_date": range_end + timedelta(days=1),
+        },
+    )
+
+
+@login_required
+@student_required
+def academic_calendar(request):
+    events = _student_events(request)
+    event_groups = [
+        (label, events.filter(event_type=value))
+        for value, label in AcademicEvent.EVENT_TYPES
+    ]
+    return render(
+        request,
+        "student/academic_calendar.html",
+        {"title": "Academic Calendar", "event_groups": event_groups},
+    )
 
 
 # ########################################################

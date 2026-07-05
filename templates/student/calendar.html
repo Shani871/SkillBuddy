@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Calendar' %} | SkillBuddy{% endblock %}
+{% block header %}<link rel="stylesheet" href="{% static 'css/student-dashboard.css' %}">{% endblock %}
+{% block content %}
+<div class="student-page">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div><h2 class="page-heading mb-1"><i class="fas fa-calendar-days me-2"></i>{% trans 'Calendar' %}</h2><p class="text-muted mb-0">{{ range_start|date:'M j' }} – {{ range_end|date:'M j, Y' }}</p></div>
+    <div class="toolbar view-switch d-flex gap-2"><a class="btn {% if mode == 'month' %}btn-primary{% else %}btn-light{% endif %}" href="?view=month&date={{ focus_date|date:'Y-m-d' }}">{% trans 'Month' %}</a><a class="btn {% if mode == 'week' %}btn-primary{% else %}btn-light{% endif %}" href="?view=week&date={{ focus_date|date:'Y-m-d' }}">{% trans 'Week' %}</a><a class="btn {% if mode == 'day' %}btn-primary{% else %}btn-light{% endif %}" href="?view=day&date={{ focus_date|date:'Y-m-d' }}">{% trans 'Day' %}</a></div>
+  </div>
+  <div class="toolbar d-flex justify-content-between align-items-center mb-4"><a class="btn btn-light" href="?view={{ mode }}&date={{ previous_date|date:'Y-m-d' }}"><i class="fas fa-chevron-left"></i></a><a class="btn btn-outline-primary" href="?view={{ mode }}">{% trans 'Today' %}</a><a class="btn btn-light" href="?view={{ mode }}&date={{ next_date|date:'Y-m-d' }}"><i class="fas fa-chevron-right"></i></a></div>
+  <div class="d-grid gap-3">
+    {% for occurrence in class_occurrences %}
+    <article class="feature-card event-card p-3 d-flex gap-3 align-items-center" data-bs-toggle="modal" data-bs-target="#classModal{{ forloop.counter }}">
+      <div class="event-date"><span class="small text-uppercase">{{ occurrence.date|date:'M' }}</span><strong>{{ occurrence.date|date:'d' }}</strong></div>
+      <div class="flex-grow-1"><span class="badge bg-success mb-1">{% trans 'Class' %}</span><h5 class="fw-bold mb-1">{{ occurrence.schedule.course.title }}</h5><div class="small text-muted"><i class="far fa-clock me-1"></i>{{ occurrence.schedule.start_time|time:'g:i A' }} – {{ occurrence.schedule.end_time|time:'g:i A' }} <span class="mx-2">•</span><i class="fas fa-location-dot me-1"></i>{{ occurrence.schedule.classroom }}</div></div>
+    </article>
+    <div class="modal fade" id="classModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-4 border-0"><div class="modal-header"><h5 class="modal-title fw-bold">{{ occurrence.schedule.course.title }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p><strong>{% trans 'Faculty' %}:</strong> {{ occurrence.schedule.faculty.get_full_name }}</p><p><strong>{% trans 'When' %}:</strong> {{ occurrence.date|date:'M j, Y' }}, {{ occurrence.schedule.start_time|time:'g:i A' }} – {{ occurrence.schedule.end_time|time:'g:i A' }}</p><p class="mb-0"><strong>{% trans 'Classroom' %}:</strong> {{ occurrence.schedule.classroom }}</p></div></div></div></div>
+    {% endfor %}
+    {% for event in events %}
+    <article class="feature-card event-card p-3 d-flex gap-3 align-items-center" data-bs-toggle="modal" data-bs-target="#eventModal{{ event.pk }}">
+      <div class="event-date"><span class="small text-uppercase">{{ event.start_at|date:'M' }}</span><strong>{{ event.start_at|date:'d' }}</strong></div>
+      <div class="flex-grow-1"><span class="badge bg-primary-light text-primary mb-1">{{ event.get_event_type_display }}</span><h5 class="fw-bold mb-1">{{ event.title }}</h5><div class="small text-muted"><i class="far fa-clock me-1"></i>{{ event.start_at|date:'g:i A' }}{% if event.location %}<span class="mx-2">•</span><i class="fas fa-location-dot me-1"></i>{{ event.location }}{% endif %}</div></div>
+    </article>
+    <div class="modal fade" id="eventModal{{ event.pk }}" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-4 border-0"><div class="modal-header"><h5 class="modal-title fw-bold">{{ event.title }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p><strong>{% trans 'Type' %}:</strong> {{ event.get_event_type_display }}</p><p><strong>{% trans 'When' %}:</strong> {{ event.start_at|date:'M j, Y, g:i A' }}{% if event.end_at %} – {{ event.end_at|date:'M j, Y, g:i A' }}{% endif %}</p>{% if event.course %}<p><strong>{% trans 'Course' %}:</strong> {{ event.course }}</p>{% endif %}{% if event.location %}<p><strong>{% trans 'Location' %}:</strong> {{ event.location }}</p>{% endif %}<p class="mb-0">{% if event.description %}{{ event.description }}{% else %}{% trans 'No additional details.' %}{% endif %}</p></div></div></div></div>
+    {% empty %}{% if not class_occurrences %}<div class="feature-card empty-state"><i class="far fa-calendar"></i><h5>{% trans 'No events in this period' %}</h5><p class="mb-0">{% trans 'Try another calendar range.' %}</p></div>{% endif %}{% endfor %}
+  </div>
+</div>
+{% endblock %}

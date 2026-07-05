@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Schedule' %} | SkillBuddy{% endblock %}
+{% block header %}<link rel="stylesheet" href="{% static 'css/student-dashboard.css' %}">{% endblock %}
+{% block content %}
+<div class="student-page">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div><h2 class="page-heading mb-1"><i class="fas fa-clock me-2"></i>{% trans 'Class Schedule' %}</h2><p class="text-muted mb-0">{% trans 'Your enrolled course timetable' %}</p></div>
+    <div class="toolbar view-switch d-flex gap-2">
+      <a class="btn {% if mode == 'day' %}btn-primary{% else %}btn-light{% endif %}" href="?view=day&day={{ selected_day }}">{% trans 'Day' %}</a>
+      <a class="btn {% if mode == 'week' %}btn-primary{% else %}btn-light{% endif %}" href="?view=week">{% trans 'Week' %}</a>
+    </div>
+  </div>
+  {% if mode == 'day' %}
+  <div class="toolbar d-flex gap-2 overflow-auto mb-4">
+    {% for value, label in weekdays %}<a href="?view=day&day={{ value }}" class="btn text-nowrap {% if value == selected_day %}btn-primary{% else %}btn-light{% endif %}">{{ label }}</a>{% endfor %}
+  </div>
+  {% endif %}
+  <div class="d-grid gap-3">
+    {% for item in schedules %}
+    <article class="feature-card schedule-row d-flex flex-column flex-md-row align-items-center gap-3 {% if item.is_current %}current{% elif item.is_upcoming %}upcoming{% endif %}">
+      <div class="time-pill"><span class="d-block small text-muted">{{ item.get_day_of_week_display }}</span>{{ item.start_time|time:'g:i A' }}<br><span class="small text-muted">{{ item.end_time|time:'g:i A' }}</span></div>
+      <div class="flex-grow-1"><h5 class="fw-bold mb-1">{{ item.course.title }}</h5><div class="text-muted small"><i class="fas fa-chalkboard-user me-1"></i>{{ item.faculty.get_full_name }} <span class="mx-2">•</span><i class="fas fa-location-dot me-1"></i>{{ item.classroom }}</div></div>
+      {% if item.is_current %}<span class="badge rounded-pill bg-success px-3 py-2">{% trans 'In progress' %}</span>{% elif item.is_upcoming %}<span class="badge rounded-pill bg-warning text-dark px-3 py-2">{% trans 'Upcoming' %}</span>{% endif %}
+    </article>
+    {% empty %}<div class="feature-card empty-state"><i class="fas fa-mug-hot"></i><h5>{% trans 'No classes scheduled' %}</h5><p class="mb-0">{% trans 'There are no classes for this selection.' %}</p></div>{% endfor %}
+  </div>
+</div>
+{% endblock %}
