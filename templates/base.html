@@ -108,10 +108,57 @@
     </div>
     {% endblock %}
 
+    {% if latest_announcement %}
+    <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true" data-announcement-id="{{ latest_announcement.pk }}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 overflow-hidden" style="border-radius: 22px; box-shadow: 0 28px 80px rgba(18,35,63,.25);">
+                <div class="position-relative p-4 pb-3 text-white" style="background: linear-gradient(125deg,#142746,#3769e8);">
+                    <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill" style="background:rgba(255,255,255,.14);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;">
+                        <i class="fas {% if latest_announcement.posted_as == 'Event' %}fa-calendar-star{% else %}fa-bullhorn{% endif %}"></i>
+                        {{ latest_announcement.get_posted_as_display }}
+                    </div>
+                    <h2 class="h4 fw-bold mb-1" id="announcementModalLabel">{{ latest_announcement.title }}</h2>
+                    <p class="small mb-0" style="color:rgba(255,255,255,.72);">{% trans 'New from SkillBuddy' %} · {{ latest_announcement.upload_time|date:'M j, Y' }}</p>
+                </div>
+                <div class="p-4">
+                    <p class="mb-4" style="color:#536176;line-height:1.7;">{{ latest_announcement.summary|default:_('No additional details were provided.')|linebreaksbr }}</p>
+                    <div class="d-flex flex-wrap justify-content-end gap-2">
+                        <a href="{% url 'news_event_detail' latest_announcement.pk %}" class="btn btn-light px-4 rounded-pill fw-bold">{% trans 'Read More' %}</a>
+                        {% if request.user.is_superuser %}
+                        <a href="{% url 'edit_post' latest_announcement.pk %}" class="btn btn-outline-primary px-4 rounded-pill fw-bold">
+                            <i class="fas fa-pen-to-square me-2"></i>{% trans 'Edit announcement' %}
+                        </a>
+                        {% endif %}
+                        <button type="button" class="btn btn-primary px-4 rounded-pill fw-bold" data-bs-dismiss="modal">{% trans 'Got it' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <script src="{% url 'javascript-catalog' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/jquery-3.7.1/jquery-3.7.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/bootstrap-5.3.2/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+
+    {% if latest_announcement %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const element = document.getElementById('announcementModal');
+        if (!element) return;
+        const storageKey = 'skillbuddy-announcement-' + element.dataset.announcementId;
+        if (localStorage.getItem(storageKey) !== 'seen') {
+            const modal = new bootstrap.Modal(element);
+            modal.show();
+            element.addEventListener('hidden.bs.modal', function () {
+                localStorage.setItem(storageKey, 'seen');
+            }, {once: true});
+        }
+    });
+    </script>
+    {% endif %}
 
     {% block js %}{% endblock js %}
 </body>

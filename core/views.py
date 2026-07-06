@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 
-from django.db.models import Avg, Q
+from django.db.models import Avg, Count, Q
 from django.utils import timezone
 
 from accounts.decorators import admin_required, lecturer_required, student_required
@@ -179,20 +180,42 @@ def academic_calendar(request):
 # ########################################################
 @login_required
 def home_view(request):
-    items = NewsAndEvents.objects.all().order_by("-updated_date")
-    context = {
-        "title": "News & Events",
-        "items": items,
-    }
-    return render(request, "index.html", context)
+    if request.user.is_superuser:
+        return redirect("dashboard")
+    if request.user.is_lecturer:
+        return redirect("teacher_dashboard")
+    if request.user.is_student:
+        return redirect("user_course_list")
+    return redirect("profile")
 
+@login_required
 def new_event(request):
-    items = NewsAndEvents.objects.all().order_by("-updated_date")
+    items = NewsAndEvents.objects.all().order_by("-upload_time", "-pk")
+    query = request.GET.get("q", "").strip()
+    category = request.GET.get("category", "").strip()
+    if query:
+        items = items.filter(
+            Q(title__icontains=query)
+            | Q(summary__icontains=query)
+            | Q(content__icontains=query)
+        )
+    if category in {"News", "Event"}:
+        items = items.filter(posted_as=category)
+    page_obj = Paginator(items, 9).get_page(request.GET.get("page"))
     context = {
         "title": "News & Events",
-        "items": items,
+        "items": page_obj,
+        "page_obj": page_obj,
+        "query": query,
+        "category": category,
     }
     return render(request, "core/index.html", context)
+
+
+@login_required
+def news_event_detail(request, pk):
+    item = get_object_or_404(NewsAndEvents, pk=pk)
+    return render(request, "core/news_event_detail.html", {"title": item.title, "item": item})
 @login_required
 def dashboard_view(request):
     if request.user.is_lecturer:
@@ -212,6 +235,29 @@ def dashboard_view(request):
             avg_cgpa=Avg("cgpa")
         )["avg_cgpa"],
     }
+    top_courses = list(
+        Course.objects.annotate(student_total=Count("taken_courses"))
+        .order_by("-student_total", "title")
+        .values("title", "student_total")[:6]
+    )
+    chart_data = {
+        "course_labels": [item["title"] for item in top_courses],
+        "course_values": [item["student_total"] for item in top_courses],
+        "role_labels": ["Students", "Lecturers", "Administrators"],
+        "role_values": [
+            User.objects.filter(is_student=True).count(),
+            User.objects.filter(is_lecturer=True).count(),
+            User.objects.filter(is_superuser=True).count(),
+        ],
+        "outcome_labels": ["Passed", "Failed", "Awaiting grade"],
+        "outcome_values": [
+            result_summary["pass_count"],
+            result_summary["fail_count"],
+            TakenCourse.objects.filter(grade="").count(),
+        ],
+        "gender_labels": ["Male", "Female"],
+        "gender_values": [gender_count["M"], gender_count["F"]],
+    }
     context = {
         "student_count": User.objects.get_student_count(),
         "lecturer_count": User.objects.get_lecturer_count(),
@@ -227,19 +273,22 @@ def dashboard_view(request):
         "schedule_count": ClassSchedule.objects.count(),
         "attendance_count": CourseAttendance.objects.count(),
         "academic_event_count": AcademicEvent.objects.count(),
+        "announcement_count": NewsAndEvents.objects.count(),
+        "chart_data": chart_data,
     }
     return render(request, "core/dashboard.html", context)
 
 
 @login_required
+@admin_required
 def post_add(request):
     if request.method == "POST":
-        form = NewsAndEventsForm(request.POST)
+        form = NewsAndEventsForm(request.POST, request.FILES)
         title = form.cleaned_data.get("title", "Post") if form.is_valid() else None
         if form.is_valid():
             form.save()
             messages.success(request, f"{title} has been uploaded.")
-            return redirect("home")
+            return redirect("news_event_detail", pk=form.instance.pk)
         messages.error(request, "Please correct the error(s) below.")
     else:
         form = NewsAndEventsForm()
@@ -247,16 +296,16 @@ def post_add(request):
 
 
 @login_required
-@lecturer_required
+@admin_required
 def edit_post(request, pk):
     instance = get_object_or_404(NewsAndEvents, pk=pk)
     if request.method == "POST":
-        form = NewsAndEventsForm(request.POST, instance=instance)
+        form = NewsAndEventsForm(request.POST, request.FILES, instance=instance)
         title = form.cleaned_data.get("title", "Post") if form.is_valid() else None
         if form.is_valid():
             form.save()
             messages.success(request, f"{title} has been updated.")
-            return redirect("home")
+            return redirect("news_event_detail", pk=instance.pk)
         messages.error(request, "Please correct the error(s) below.")
     else:
         form = NewsAndEventsForm(instance=instance)
@@ -264,13 +313,13 @@ def edit_post(request, pk):
 
 
 @login_required
-@lecturer_required
+@admin_required
 def delete_post(request, pk):
     post = get_object_or_404(NewsAndEvents, pk=pk)
     post_title = post.title
     post.delete()
     messages.success(request, f"{post_title} has been deleted.")
-    return redirect("home")
+    return redirect("news_event")
 
 
 # ########################################################

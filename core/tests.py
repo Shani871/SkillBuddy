@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from accounts.models import Student
 from course.models import AcademicEvent, ClassSchedule, Course, Program
+from core.models import NewsAndEvents
 from result.models import CourseAttendance, TakenCourse
 
 
@@ -32,6 +33,70 @@ class AdminDashboardTests(TestCase):
     def test_old_admin_panel_redirects_to_dashboard(self):
         response = self.client.get(reverse("admin_panel"))
         self.assertRedirects(response, reverse("dashboard"))
+
+    def test_announcement_popup_gives_admin_an_edit_action(self):
+        announcement = NewsAndEvents.objects.create(
+            title="Admin Notice", summary="For learners.", posted_as="News"
+        )
+        response = self.client.get(reverse("dashboard"))
+        self.assertContains(response, 'id="announcementModal"')
+        self.assertContains(response, reverse("edit_post", args=[announcement.pk]))
+        self.assertContains(response, "Edit announcement")
+
+
+class LecturerAnnouncementTests(TestCase):
+    def test_latest_announcement_is_available_to_lecturers(self):
+        lecturer = User.objects.create_user(
+            username="announcement-lecturer", password="password", is_lecturer=True
+        )
+        NewsAndEvents.objects.create(
+            title="Faculty Briefing", summary="Briefing starts at ten.", posted_as="Event"
+        )
+        self.client.force_login(lecturer)
+        response = self.client.get(reverse("profile"))
+        self.assertContains(response, 'id="announcementModal"')
+        self.assertContains(response, "Faculty Briefing")
+
+
+class NewsAndEventsPageTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="news-reader", password="password")
+        self.client.force_login(self.user)
+        self.news = NewsAndEvents.objects.create(
+            title="Library Reopens",
+            summary="The renovated library is ready.",
+            content="Full opening hours and borrowing information.",
+            posted_as="News",
+        )
+        self.event = NewsAndEvents.objects.create(
+            title="Science Fair",
+            summary="Student projects on display.",
+            content="Visit the main hall for the complete programme.",
+            posted_as="Event",
+        )
+
+    def test_list_displays_all_posts_and_detail_links(self):
+        response = self.client.get(reverse("news_event"))
+        self.assertContains(response, self.news.title)
+        self.assertContains(response, self.event.title)
+        self.assertContains(response, reverse("news_event_detail", args=[self.news.pk]))
+
+    def test_search_and_category_filter(self):
+        response = self.client.get(reverse("news_event"), {"q": "library", "category": "News"})
+        self.assertContains(response, self.news.title)
+        self.assertNotContains(response, self.event.title)
+
+    def test_detail_displays_full_content(self):
+        response = self.client.get(reverse("news_event_detail", args=[self.event.pk]))
+        self.assertContains(response, self.event.title)
+        self.assertContains(response, self.event.content)
+
+    def test_list_is_paginated(self):
+        for index in range(10):
+            NewsAndEvents.objects.create(title=f"Post {index}", posted_as="News")
+        response = self.client.get(reverse("news_event"))
+        self.assertEqual(len(response.context["items"]), 9)
+        self.assertTrue(response.context["page_obj"].has_next())
 
 
 class StudentAcademicDashboardTests(TestCase):
@@ -99,5 +164,14 @@ class StudentAcademicDashboardTests(TestCase):
         self.client.force_login(self.faculty)
         response = self.client.get(reverse("student_attendance"))
         self.assertEqual(response.status_code, 302)
+
+    def test_latest_announcement_is_available_to_students(self):
+        announcement = NewsAndEvents.objects.create(
+            title="Campus Festival", summary="Join us on Friday.", posted_as="Event"
+        )
+        response = self.client.get(reverse("student_calendar"))
+        self.assertContains(response, 'id="announcementModal"')
+        self.assertContains(response, announcement.title)
+        self.assertContains(response, announcement.summary)
 
 # Create your tests here.

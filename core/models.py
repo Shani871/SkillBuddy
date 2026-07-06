@@ -54,6 +54,10 @@ class NewsAndEventsManager(models.Manager):
 class NewsAndEvents(models.Model):
     title = models.CharField(max_length=200, null=True)
     summary = models.TextField(max_length=200, blank=True, null=True)
+    content = models.TextField(blank=True, help_text=_("Full article or event details"))
+    featured_image = models.ImageField(
+        upload_to="news_events/%Y/%m/", blank=True, null=True
+    )
     posted_as = models.CharField(choices=POST, max_length=10)
     updated_date = models.DateTimeField(auto_now=True, auto_now_add=False, null=True)
     upload_time = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
@@ -62,6 +66,9 @@ class NewsAndEvents(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+    def get_absolute_url(self):
+        return reverse("news_event_detail", kwargs={"pk": self.pk})
 
 
 class Session(models.Model):

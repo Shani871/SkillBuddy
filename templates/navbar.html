@@ -78,12 +78,6 @@
                 {% endif %}
 
                 <ul class="navbar-nav me-auto ms-xl-3 mb-2 mb-xl-0 gap-xl-2 nav-search-hide">
-                    <li class="nav-item">
-                        <a class="nav-link app-menu-link px-3 py-2 {% if request.path == home_url %}active{% endif %}" href="{{ home_url }}">
-                            <i class="fas fa-house me-2"></i>{% trans 'Home' %}
-                        </a>
-                    </li>
-
                     {% if request.user.is_superuser or request.user.is_lecturer %}
                     <li class="nav-item">
                         <a class="nav-link app-menu-link px-3 py-2 {% if request.path == dashboard_url or 'teacher-dashboard' in request.path %}active{% endif %}" href="{% if request.user.is_superuser %}{{ dashboard_url }}{% else %}{% url 'teacher_dashboard' %}{% endif %}">
@@ -91,6 +85,12 @@
                         </a>
                     </li>
                     {% endif %}
+
+                    <li class="nav-item">
+                        <a class="nav-link app-menu-link px-3 py-2 {% if request.resolver_match.url_name == 'news_event' or request.resolver_match.url_name == 'news_event_detail' %}active{% endif %}" href="{% url 'news_event' %}">
+                            <i class="fas fa-newspaper me-2"></i>{% trans 'Events & News' %}
+                        </a>
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link app-menu-link px-3 py-2 {% if request.path == roadmap_url %}active{% endif %}" href="{{ roadmap_url }}">
@@ -168,9 +168,7 @@
 
                     <div id="search-helper" class="search-helper-panel shadow-sm rounded-4" aria-hidden="true">
                         <div class="helper-label">{% trans 'Quick Access' %}</div>
-                        <a href="{% url 'home' %}" class="helper-item" data-search-label="home dashboard">
-                            <i class="fas fa-house me-2"></i>{% trans 'Go to Home' %}
-                        </a>
+                        {% if request.user.is_superuser %}<a href="{% url 'dashboard' %}" class="helper-item" data-search-label="dashboard insights"><i class="fas fa-chart-line me-2"></i>{% trans 'Open Dashboard' %}</a>{% endif %}
                         <a href="{% url 'generate_roadmap' %}" class="helper-item" data-search-label="ai tutor roadmap">
                             <i class="fas fa-wand-magic-sparkles me-2"></i>{% trans 'Open AI Tutor' %}
                         </a>

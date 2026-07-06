@@ -7,5 +7,6 @@ class NewsAndEventsTranslationOptions(TranslationOptions):
     fields = (
         "title",
         "summary",
+        "content",
     )
     empty_values = None

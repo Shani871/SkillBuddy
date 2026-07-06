@@ -9,6 +9,8 @@ class NewsAndEventsForm(forms.ModelForm):
         fields = (
             "title",
             "summary",
+            "content",
+            "featured_image",
             "posted_as",
         )
 
@@ -16,6 +18,8 @@ class NewsAndEventsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["title"].widget.attrs.update({"class": "form-control"})
         self.fields["summary"].widget.attrs.update({"class": "form-control"})
+        self.fields["content"].widget.attrs.update({"class": "form-control", "rows": 8})
+        self.fields["featured_image"].widget.attrs.update({"class": "form-control"})
         self.fields["posted_as"].widget.attrs.update({"class": "form-control"})
 
 

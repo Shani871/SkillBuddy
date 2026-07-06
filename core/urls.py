@@ -13,7 +13,7 @@ from .views import (
     semester_add_view,
     semester_update_view,
     semester_delete_view,
-    dashboard_view, new_event,
+    dashboard_view, new_event, news_event_detail,
     student_schedule,
     student_attendance,
     student_calendar,
@@ -24,7 +24,8 @@ from .views import (
 urlpatterns = [
     # Accounts url
     path("", home_view, name="home"),
-    path("news_event/",new_event,name="news_event"),
+    path("news-events/", new_event, name="news_event"),
+    path("news-events/<int:pk>/", news_event_detail, name="news_event_detail"),
     path("add_item/", post_add, name="add_item"),
     path("item/<int:pk>/edit/", edit_post, name="edit_post"),
     path("item/<int:pk>/delete/", delete_post, name="delete_post"),
