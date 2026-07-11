@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Count, Q, Sum
 from django.utils import timezone
 
 from accounts.decorators import admin_required, lecturer_required, student_required
@@ -13,6 +13,8 @@ from result.models import CourseAttendance, Result, TakenCourse
 from course.models import AcademicEvent, ClassSchedule, Course, CourseAllocation, Program
 from .forms import SessionForm, SemesterForm, NewsAndEventsForm
 from .models import NewsAndEvents, ActivityLog, Session, Semester
+from .role_workspaces import ROLE_WORKSPACES, allowed_features, feature_label, feature_slug
+from enterprise.models import College, PlacementApplication, PlacementCompany, PlacementDrive, SupportTicket
 
 
 def _student_enrollments(request):
@@ -180,6 +182,8 @@ def academic_calendar(request):
 # ########################################################
 @login_required
 def home_view(request):
+    if request.user.effective_role in ROLE_WORKSPACES:
+        return redirect("role_dashboard")
     if request.user.is_superuser:
         return redirect("dashboard")
     if request.user.is_lecturer:
@@ -187,6 +191,119 @@ def home_view(request):
     if request.user.is_student:
         return redirect("user_course_list")
     return redirect("profile")
+
+
+def _workspace_metric_values(request):
+    user_scope = User.objects.all()
+    tenant = None if request.user.effective_role == User.ROLE_SUPER_ADMIN else request.user.college
+    if tenant:
+        user_scope = user_scope.filter(college=tenant)
+    elif request.user.effective_role != User.ROLE_SUPER_ADMIN:
+        user_scope = user_scope.filter(pk=request.user.pk)
+    students = user_scope.filter(Q(is_student=True) | Q(role="student")).distinct().count()
+    faculty = user_scope.filter(Q(is_lecturer=True) | Q(role="faculty")).distinct().count()
+    users = user_scope.filter(is_active=True, login_disabled=False).count()
+    colleges = College.objects.count()
+    revenue = College.objects.filter(status="active").aggregate(total=Sum("monthly_price"))["total"] or 0
+    company_scope = request.user.effective_role == User.ROLE_SUPER_ADMIN
+    courses = Course.objects.count() if company_scope else 0
+    placement_companies = PlacementCompany.objects.filter(is_active=True)
+    placement_drives = PlacementDrive.objects.all()
+    placement_applications = PlacementApplication.objects.all()
+    tickets = SupportTicket.objects.exclude(status="resolved")
+    if tenant:
+        placement_companies = placement_companies.filter(college=tenant)
+        placement_drives = placement_drives.filter(college=tenant)
+        placement_applications = placement_applications.filter(drive__college=tenant)
+        tickets = tickets.filter(college=tenant)
+    elif not company_scope:
+        placement_companies = placement_companies.none()
+        placement_drives = placement_drives.none()
+        placement_applications = placement_applications.none()
+        tickets = tickets.none()
+    return {
+        "Total Colleges": colleges, "Active Colleges": College.objects.filter(status="active").count(), "Trial Colleges": College.objects.filter(status="trial").count(),
+        "Subscription Revenue": f"₹{revenue:,.0f}", "Active Users": users, "Total Students": students,
+        "Total Faculty": faculty, "Total Courses": courses, "AI Usage": "0 credits",
+        "Storage Usage": "0 GB", "Server Health": "Operational", "Payment Status": "Current",
+        "Support Tickets": tickets.count(), "Departments": user_scope.exclude(department_name="").values("department_name").distinct().count(), "Attendance": CourseAttendance.objects.count() if tenant is None else 0,
+        "Results": Result.objects.count(), "Placement Rate": "0%", "Fees": "₹0",
+        "High Risk Students": 0, "Notifications": NewsAndEvents.objects.count(),
+        "Department Students": students, "Faculty": faculty, "Department Analytics": "View",
+        "Risk Students": 0, "Approvals": 0, "Reports": Result.objects.count(),
+        "Today's Classes": ClassSchedule.objects.filter(day_of_week=timezone.localtime().weekday()).count(),
+        "Assignments": 0, "Quizzes": 0, "Student Performance": "View",
+        "Courses": courses, "Certificates": 0, "Placement Tracker": "View",
+        "Eligible Students": students, "Companies": placement_companies.count(),
+        "Interviews": placement_drives.filter(status="interview").count(),
+        "Offers": placement_applications.filter(status__in=("offered", "accepted")).count(),
+        "Placed Students": placement_applications.filter(status="accepted").values("student_id").distinct().count(), "Resume Reviews": 0,
+    }
+
+
+@login_required
+def role_dashboard(request):
+    role = request.user.effective_role
+    workspace = ROLE_WORKSPACES.get(role)
+    if not workspace:
+        return redirect("profile")
+    values = _workspace_metric_values(request)
+    sections = [
+        {"name": name, "features": [{"label": label, "slug": feature_slug(label)} for label in labels]}
+        for name, labels in workspace["sections"].items()
+    ]
+    metrics = [{"label": label, "value": values.get(label, 0), "slug": feature_slug(label)} for label in workspace["metrics"]]
+    return render(request, "core/role_dashboard.html", {
+        "workspace": workspace, "sections": sections, "metrics": metrics,
+        "recent_users": User.objects.all()[:6], "recent_activity": ActivityLog.objects.all().order_by("-created_at")[:6],
+    })
+
+
+@login_required
+def role_module(request, feature):
+    role = request.user.effective_role
+    custom_permissions = set(request.user.custom_role.permissions) if request.user.custom_role_id and request.user.custom_role.is_active else set()
+    if feature not in allowed_features(role) and feature not in custom_permissions:
+        return render(request, "403.html", status=403)
+    label = feature_label(role, feature)
+    real_routes = {
+        "add-college": "enterprise:college_create",
+        "edit-college": "enterprise:college_list", "delete-college": "enterprise:college_list",
+        "activate-college": "enterprise:college_list", "suspend-college": "enterprise:college_list",
+        "extend-subscription": "enterprise:college_list", "upgrade-plan": "enterprise:college_list",
+        "change-domain": "enterprise:college_list", "assign-storage": "enterprise:college_list",
+        "view-college-analytics": "enterprise:college_list", "total-colleges": "enterprise:college_list",
+        "active-colleges": "enterprise:college_list", "trial-colleges": "enterprise:college_list",
+        "view-college-users": "enterprise:user_list", "create-student": "enterprise:user_create",
+        "create-faculty": "enterprise:user_create", "reset-password": "enterprise:user_list",
+        "lock-user": "enterprise:user_list", "unlock-user": "enterprise:user_list",
+        "disable-login": "enterprise:user_list", "activate-user": "enterprise:user_list",
+        "assign-role": "enterprise:user_list", "change-department": "enterprise:user_list",
+        "verify-email": "enterprise:user_list", "force-logout": "enterprise:user_list",
+        "students": "enterprise:user_list", "faculty": "enterprise:user_list",
+        "placements": "enterprise:placement_dashboard", "eligible-students": "enterprise:placement_dashboard",
+        "companies": "enterprise:placement_dashboard", "interviews": "enterprise:placement_dashboard",
+        "offers": "enterprise:placement_dashboard", "placed-students": "enterprise:placement_dashboard",
+        "placement-tracker": "enterprise:placement_dashboard",
+        "server-reports": "enterprise:reports", "active-users": "enterprise:reports",
+        "support-tickets": "enterprise:ticket_list",
+        "college-logo": "enterprise:tenant_settings", "theme": "enterprise:tenant_settings",
+        "email-settings": "enterprise:tenant_settings", "sms-settings": "enterprise:tenant_settings",
+        "ai-settings": "enterprise:tenant_settings", "payment-settings": "enterprise:tenant_settings",
+        "branding": "enterprise:tenant_settings",
+        "create-roles": "enterprise:role_create", "assign-roles": "enterprise:user_list",
+        "edit-roles": "enterprise:role_list", "delete-roles": "enterprise:role_list",
+        "permission-matrix": "enterprise:role_list",
+        "revenue": "enterprise:reports", "subscriptions": "enterprise:reports",
+        "renewals": "enterprise:reports", "reports": "enterprise:reports",
+        "analytics": "enterprise:reports", "department-analytics": "enterprise:reports",
+    }
+    if feature in real_routes:
+        return redirect(real_routes[feature])
+    records = User.objects.all()[:8] if any(word in feature for word in ("user", "student", "faculty", "role")) else Course.objects.all()[:8]
+    return render(request, "core/role_module.html", {
+        "workspace": ROLE_WORKSPACES[role], "feature": label, "records": records,
+    })
 
 @login_required
 def new_event(request):

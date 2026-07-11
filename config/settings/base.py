@@ -14,6 +14,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1", cast=Csv())
 
 # Custom user model
 AUTH_USER_MODEL = "accounts.User"
+AUTHENTICATION_BACKENDS = ["enterprise.access.TenantAwareAuthBackend"]
 
 # Application definition
 DJANGO_APPS = [
@@ -36,6 +37,7 @@ THIRD_PARTY_APPS = [
 ]
 
 PROJECT_APPS = [
+    "enterprise.apps.EnterpriseConfig",
     "core.apps.CoreConfig",
     "accounts.apps.AccountsConfig",
     "course.apps.CourseConfig",
@@ -56,6 +58,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "enterprise.access.TenantAccessMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -88,6 +91,20 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+    }
+}
+
+# Shared cache enables consistent login throttling across multiple web workers.
+CACHE_URL = config("CACHE_URL", default="")
+CACHES = {
+    "default": {
+        "BACKEND": (
+            "django.core.cache.backends.redis.RedisCache"
+            if CACHE_URL
+            else "django.core.cache.backends.locmem.LocMemCache"
+        ),
+        "LOCATION": CACHE_URL or "skillbuddy-local-cache",
+        "TIMEOUT": 300,
     }
 }
 

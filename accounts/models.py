@@ -72,6 +72,21 @@ GENDERS = ((_("M"), _("Male")), (_("F"), _("Female")))
 
 
 class User(AbstractUser):
+    ROLE_SUPER_ADMIN = "super_admin"
+    ROLE_COLLEGE_ADMIN = "college_admin"
+    ROLE_HOD = "hod"
+    ROLE_FACULTY = "faculty"
+    ROLE_STUDENT = "student"
+    ROLE_PLACEMENT = "placement_officer"
+    ROLE_CHOICES = (
+        (ROLE_SUPER_ADMIN, _("Super Admin")),
+        (ROLE_COLLEGE_ADMIN, _("College Admin / Principal")),
+        (ROLE_HOD, _("Head of Department")),
+        (ROLE_FACULTY, _("Faculty")),
+        (ROLE_STUDENT, _("Student")),
+        (ROLE_PLACEMENT, _("Placement Officer")),
+    )
+
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
     is_parent = models.BooleanField(default=False)
@@ -83,6 +98,19 @@ class User(AbstractUser):
         upload_to="profile_pictures/%y/%m/%d/", default="default.png", null=True
     )
     email = models.EmailField(blank=True, null=True)
+    role = models.CharField(max_length=32, choices=ROLE_CHOICES, blank=True)
+    college_name = models.CharField(max_length=160, blank=True)
+    department_name = models.CharField(max_length=120, blank=True)
+    college = models.ForeignKey(
+        "enterprise.College", related_name="users", null=True, blank=True,
+        on_delete=models.PROTECT,
+    )
+    login_disabled = models.BooleanField(default=False)
+    email_verified_at = models.DateTimeField(null=True, blank=True)
+    custom_role = models.ForeignKey(
+        "enterprise.CustomRole", related_name="users", null=True, blank=True,
+        on_delete=models.SET_NULL,
+    )
 
     username_validator = ASCIIUsernameValidator()
 
@@ -103,6 +131,8 @@ class User(AbstractUser):
 
     @property
     def get_user_role(self):
+        if self.role:
+            return dict(self.ROLE_CHOICES).get(self.role, _("Unknown"))
         if self.is_superuser:
             return _("Admin")
         if self.is_student:
@@ -114,6 +144,21 @@ class User(AbstractUser):
         if self.is_dep_head:
             return _("Department Head")
         return _("Unknown")
+
+    @property
+    def effective_role(self):
+        """Return one canonical role while remaining compatible with legacy flags."""
+        if self.is_superuser:
+            return self.ROLE_SUPER_ADMIN
+        if self.role:
+            return self.role
+        if self.is_dep_head:
+            return self.ROLE_HOD
+        if self.is_student:
+            return self.ROLE_STUDENT
+        if self.is_lecturer:
+            return self.ROLE_FACULTY
+        return ""
 
     def get_picture(self):
         try:

@@ -9,29 +9,29 @@
         <div class="col-lg-5">
             <div class="auth-student-panel h-100">
                 <span class="stats-pill mb-4"><i class="fas fa-graduation-cap"></i> SkillBuddy AI</span>
-                <h1 class="auth-title mb-3">{% trans 'Your study space is ready' %}</h1>
-                <p class="auth-lead mb-4">{% trans 'Log in to continue lessons, quizzes, progress tracking, and support made for your learning rhythm.' %}</p>
+                <h1 class="auth-title mb-3">{% trans 'Your campus workspace is ready' %}</h1>
+                <p class="auth-lead mb-4">{% trans 'One secure workspace for learning, teaching, administration, placements, and institutional operations.' %}</p>
 
                 <div class="auth-mission-card mb-4">
                     <div class="auth-mission-icon"><i class="fas fa-bolt"></i></div>
                     <div>
-                        <p class="mb-1 fw-bold text-dark">{% trans "Today's focus" %}</p>
-                        <p class="mb-0 small">{% trans 'Pick up where you left off and keep your streak moving.' %}</p>
+                        <p class="mb-1 fw-bold text-dark">{% trans "Role-aware access" %}</p>
+                        <p class="mb-0 small">{% trans 'Your dashboard and permissions are tailored automatically after sign-in.' %}</p>
                     </div>
                 </div>
 
                 <div class="auth-feature-grid">
                     <div class="auth-feature">
                         <i class="fas fa-chart-line"></i>
-                        <span>{% trans 'Progress' %}</span>
+                        <span>{% trans 'Academics' %}</span>
                     </div>
                     <div class="auth-feature">
                         <i class="fas fa-brain"></i>
-                        <span>{% trans 'AI Tutor' %}</span>
+                        <span>{% trans 'AI tools' %}</span>
                     </div>
                     <div class="auth-feature">
                         <i class="fas fa-heart-pulse"></i>
-                        <span>{% trans 'Well-being' %}</span>
+                        <span>{% trans 'Operations' %}</span>
                     </div>
                 </div>
             </div>
@@ -42,16 +42,16 @@
                 {% csrf_token %}
 
                 <div class="mb-4">
-                    <span class="auth-eyebrow">{% trans 'Student Login' %}</span>
+                    <span class="auth-eyebrow">{% trans 'Secure Sign In' %}</span>
                     <h2 class="h3 fw-bold mb-2">{% trans 'Welcome back' %}</h2>
-                    <p class="text-muted mb-0">{% trans 'Enter your school ID and password to open your dashboard.' %}</p>
+                    <p class="text-muted mb-0">{% trans 'Enter your username or institutional ID to open your authorized workspace.' %}</p>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label fw-semibold" for="username_id">{% trans 'ID Number' %}</label>
+                    <label class="form-label fw-semibold" for="username_id">{% trans 'Username or ID' %}</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                        <input type="text" name="username" id="username_id" class="form-control" placeholder="e.g. UGR-1234-56" required>
+                        <input type="text" name="username" id="username_id" class="form-control" placeholder="e.g. principal or UGR-1234-56" autocomplete="username" required>
                     </div>
                     <div id="message-wrapper" class="pt-1"></div>
                 </div>
@@ -60,7 +60,7 @@
                     <label class="form-label fw-semibold" for="password_id">{% trans 'Password' %}</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-key"></i></span>
-                        <input type="password" name="password" id="password_id" class="form-control" placeholder="••••••••" required>
+                        <input type="password" name="password" id="password_id" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
                     </div>
                 </div>
 

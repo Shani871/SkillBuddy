@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ workspace.title }} | SkillBuddy{% endblock %}
+{% block header %}
+<style>
+.role-shell{--accent:{{ workspace.accent }};max-width:1500px;margin:auto}.role-hero{position:relative;overflow:hidden;padding:2rem;border-radius:26px;color:#fff;background:linear-gradient(125deg,#111827,var(--accent));box-shadow:0 22px 55px color-mix(in srgb,var(--accent) 25%,transparent)}.role-hero:after{content:"";position:absolute;right:-70px;top:-95px;width:310px;height:310px;border:52px solid rgba(255,255,255,.08);border-radius:50%}.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.72)}.scope-pill{position:relative;z-index:1;padding:.65rem 1rem;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(255,255,255,.12);font-weight:700}.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem}.metric{display:block;padding:1.15rem;border:1px solid #e8ebf1;border-radius:18px;background:#fff;color:inherit;box-shadow:0 8px 24px rgba(17,24,39,.055);transition:.2s}.metric:hover{color:inherit;transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 35%,#e8ebf1)}.metric-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,white);color:var(--accent)}.metric small{color:#7b8495;font-weight:700}.metric strong{display:block;margin-top:.35rem;color:#172033;font-size:1.35rem}.workspace-panel{height:100%;padding:1.35rem;border:1px solid #e8ebf1;border-radius:21px;background:#fff;box-shadow:0 8px 24px rgba(17,24,39,.05)}.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}.feature{display:flex;align-items:center;justify-content:space-between;padding:.78rem .85rem;border-radius:12px;background:#f8fafc;color:#455066;font-size:.86rem;font-weight:700}.feature:hover{background:color-mix(in srgb,var(--accent) 9%,white);color:var(--accent)}.access-card{padding:1rem;border-radius:16px;background:#f8fafc}.access-row{display:flex;gap:.6rem;align-items:flex-start;padding:.4rem 0;font-size:.84rem}.avatar-stack img{width:34px;height:34px;object-fit:cover;border:3px solid #fff;margin-left:-9px}.avatar-stack img:first-child{margin-left:0}@media(max-width:767px){.role-hero{padding:1.4rem}.feature-grid{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+{% block content %}
+<main class="role-shell">
+  <section class="role-hero mb-4">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 position-relative">
+      <div><div class="eyebrow mb-2">SkillBuddy command center</div><h1 class="h2 fw-bold mb-2">{{ workspace.title }}</h1><p class="mb-0 opacity-75">Welcome back, {{ request.user.get_full_name }}. Everything in your scope is ready.</p></div>
+      <div class="scope-pill"><i class="fas fa-shield-halved me-2"></i>{% if request.user.college %}{{ request.user.college }}{% else %}{{ workspace.scope }}{% endif %}</div>
+    </div>
+  </section>
+
+  <section class="metric-grid mb-4">
+    {% for metric in metrics %}<a class="metric" href="{% url 'role_module' metric.slug %}"><div class="d-flex justify-content-between gap-2"><div><small>{{ metric.label }}</small><strong>{{ metric.value }}</strong></div><span class="metric-icon"><i class="fas fa-chart-line"></i></span></div></a>{% endfor %}
+  </section>
+
+  <div class="row g-4">
+    <div class="col-12 col-xl-9"><div class="row g-4">
+      {% for section in sections %}<div class="col-12 col-lg-6"><section class="workspace-panel"><div class="d-flex align-items-center gap-2 mb-3"><span class="metric-icon"><i class="fas fa-layer-group"></i></span><div><h5 class="fw-bold mb-0">{{ section.name }}</h5><small class="text-muted">{{ section.features|length }} tools available</small></div></div><div class="feature-grid">{% for feature in section.features %}<a class="feature" href="{% url 'role_module' feature.slug %}"><span>{{ feature.label }}</span><i class="fas fa-arrow-right small"></i></a>{% endfor %}</div></section></div>{% endfor %}
+    </div></div>
+    <div class="col-12 col-xl-3">
+      <section class="workspace-panel mb-4"><h6 class="fw-bold mb-3">Access summary</h6>
+        {% for item in workspace.capabilities %}<div class="access-row text-success"><i class="fas fa-circle-check mt-1"></i><span>{{ item }}</span></div>{% endfor %}
+        {% for item in workspace.restrictions %}<div class="access-row text-danger"><i class="fas fa-circle-xmark mt-1"></i><span>{{ item }}</span></div>{% endfor %}
+        {% if not workspace.capabilities and not workspace.restrictions %}<div class="access-card"><i class="fas fa-lock me-2" style="color:var(--accent)"></i><span class="small fw-semibold">Access is limited to your assigned role and scope.</span></div>{% endif %}
+      </section>
+      <section class="workspace-panel"><h6 class="fw-bold mb-3">People online</h6><div class="avatar-stack mb-3">{% for user in recent_users %}<img src="{{ user.get_picture }}" class="rounded-circle" title="{{ user.get_full_name }}">{% empty %}<span class="text-muted small">No users yet</span>{% endfor %}</div><a href="{% url 'role_dashboard' %}" class="small fw-bold" style="color:var(--accent)">Refresh activity <i class="fas fa-rotate ms-1"></i></a></section>
+    </div>
+  </div>
+</main>
+{% endblock %}

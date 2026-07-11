@@ -78,6 +78,11 @@
                 {% endif %}
 
                 <ul class="navbar-nav me-auto ms-xl-3 mb-2 mb-xl-0 gap-xl-2 nav-search-hide">
+                    <li class="nav-item">
+                        <a class="nav-link app-menu-link px-3 py-2 {% if '/workspace/' in request.path %}active{% endif %}" href="{% url 'role_dashboard' %}">
+                            <i class="fas fa-table-columns me-2"></i>{% trans 'Workspace' %}
+                        </a>
+                    </li>
                     {% if request.user.is_superuser or request.user.is_lecturer %}
                     <li class="nav-item">
                         <a class="nav-link app-menu-link px-3 py-2 {% if request.path == dashboard_url or 'teacher-dashboard' in request.path %}active{% endif %}" href="{% if request.user.is_superuser %}{{ dashboard_url }}{% else %}{% url 'teacher_dashboard' %}{% endif %}">

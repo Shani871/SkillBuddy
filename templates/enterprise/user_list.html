@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}User Management | SkillBuddy{% endblock %}
+{% block content %}
+<main style="max-width:1500px;margin:auto">
+  {% include 'snippets/messages.html' %}
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+    <div><span class="badge text-bg-primary-subtle text-primary mb-2">Secure administration</span><h1 class="h2 fw-bold mb-1">User management</h1><p class="text-muted mb-0">Tenant-scoped accounts, roles, login controls, and security actions.</p></div>
+    <div class="d-flex gap-2"><a href="{% url 'enterprise:audit_log' %}" class="btn btn-light"><i class="fas fa-clock-rotate-left me-2"></i>Audit log</a><a href="{% url 'enterprise:user_create' %}" class="btn btn-primary"><i class="fas fa-user-plus me-2"></i>Create user</a></div>
+  </div>
+  <section class="bg-white border rounded-4 p-3 p-lg-4">
+    <form class="mb-3"><div class="input-group" style="max-width:440px"><span class="input-group-text bg-white"><i class="fas fa-search"></i></span><input class="form-control" name="q" value="{{ query }}" placeholder="Search name, username, or email"><button class="btn btn-dark">Search</button></div></form>
+    <div class="table-responsive"><table class="table align-middle enterprise-table">
+      <thead><tr><th>User</th><th>Role</th><th>College / Department</th><th>Access</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>{% for user in page_obj %}<tr>
+        <td data-label="User"><div class="d-flex align-items-center gap-2"><img src="{{ user.get_picture }}" class="rounded-circle" width="38" height="38" style="object-fit:cover"><div><div class="fw-bold">{{ user.get_full_name }}</div><small class="text-muted">{{ user.username }} · {{ user.email|default:'No email' }}</small></div></div></td>
+        <td data-label="Role"><span class="badge text-bg-light">{{ user.get_user_role }}</span>{% if user.custom_role %}<small class="d-block text-primary mt-1">{{ user.custom_role }}</small>{% endif %}</td>
+        <td data-label="Scope">{{ user.college|default:'Company-wide' }}<small class="d-block text-muted">{{ user.department_name|default:'No department' }}</small></td>
+        <td data-label="Access">{% if not user.is_active %}<span class="badge text-bg-danger">Locked</span>{% elif user.login_disabled %}<span class="badge text-bg-warning">Login disabled</span>{% else %}<span class="badge text-bg-success">Active</span>{% endif %}{% if user.email_verified_at %}<small class="d-block text-success mt-1"><i class="fas fa-circle-check"></i> Verified</small>{% endif %}</td>
+        <td data-label="Actions" class="text-end"><div class="dropdown"><button class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown">Manage</button><div class="dropdown-menu dropdown-menu-end">
+          <a class="dropdown-item" href="{% url 'enterprise:user_edit' user.pk %}"><i class="fas fa-pen me-2"></i>Edit role & scope</a>
+          {% if user.is_active %}<form method="post" action="{% url 'enterprise:user_action' user.pk 'lock' %}">{% csrf_token %}<button class="dropdown-item text-danger"><i class="fas fa-lock me-2"></i>Lock user</button></form>{% else %}<form method="post" action="{% url 'enterprise:user_action' user.pk 'unlock' %}">{% csrf_token %}<button class="dropdown-item"><i class="fas fa-lock-open me-2"></i>Unlock user</button></form>{% endif %}
+          {% if user.login_disabled %}<form method="post" action="{% url 'enterprise:user_action' user.pk 'enable' %}">{% csrf_token %}<button class="dropdown-item">Enable login</button></form>{% else %}<form method="post" action="{% url 'enterprise:user_action' user.pk 'disable' %}">{% csrf_token %}<button class="dropdown-item">Disable login</button></form>{% endif %}
+          <form method="post" action="{% url 'enterprise:user_action' user.pk 'verify' %}">{% csrf_token %}<button class="dropdown-item">Verify email</button></form>
+          <form method="post" action="{% url 'enterprise:user_action' user.pk 'reset-password' %}">{% csrf_token %}<button class="dropdown-item">Send password reset</button></form>
+          <form method="post" action="{% url 'enterprise:user_action' user.pk 'force-logout' %}">{% csrf_token %}<button class="dropdown-item">Force logout</button></form>
+        </div></div></td>
+      </tr>{% empty %}<tr><td colspan="5" class="text-center text-muted py-5">No matching users.</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if page_obj.has_other_pages %}<nav><ul class="pagination justify-content-center">{% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ query }}">Previous</a></li>{% endif %}<li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>{% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ query }}">Next</a></li>{% endif %}</ul></nav>{% endif %}
+  </section>
+</main>
+{% endblock %}

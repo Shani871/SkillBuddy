@@ -18,6 +18,8 @@ from .views import (
     student_attendance,
     student_calendar,
     academic_calendar,
+    role_dashboard,
+    role_module,
 )
 
 
@@ -38,6 +40,8 @@ urlpatterns = [
     path("semester/<int:pk>/edit/", semester_update_view, name="edit_semester"),
     path("semester/<int:pk>/delete/", semester_delete_view, name="delete_semester"),
     path("dashboard/", dashboard_view, name="dashboard"),
+    path("workspace/", role_dashboard, name="role_dashboard"),
+    path("workspace/<slug:feature>/", role_module, name="role_module"),
     path("student/schedule/", student_schedule, name="student_schedule"),
     path("student/attendance/", student_attendance, name="student_attendance"),
     path("student/calendar/", student_calendar, name="student_calendar"),

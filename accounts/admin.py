@@ -7,12 +7,17 @@ class UserAdmin(admin.ModelAdmin):
         "get_full_name",
         "username",
         "email",
+        "role",
+        "college_name",
+        "college",
+        "login_disabled",
         "is_active",
         "is_student",
         "is_lecturer",
         "is_parent",
         "is_staff",
     ]
+    list_filter = ["role", "college", "is_active", "login_disabled"]
     search_fields = [
         "username",
         "first_name",
