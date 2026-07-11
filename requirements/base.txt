@@ -28,3 +28,8 @@ stripe>=5.5,<15
 # Email API Integration
 django-anymail[resend]>=10.0,<12.0
 
+# REST APIs & CORS
+djangorestframework>=3.14.0,<4
+django-cors-headers>=4.3.1,<5
+djangorestframework-simplejwt>=5.3.1,<6
+

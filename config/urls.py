@@ -23,10 +23,29 @@ def health_check(request):
     return JsonResponse({"status": "ok"})
 
 
+from rest_framework_simplejwt.views import TokenRefreshView
+from core.api_views import (
+    login_api,
+    dashboard_metrics_api,
+    chatbot_api,
+    student_courses_api,
+    register_course_api,
+    capture_emotion_api,
+)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("health/", health_check, name="health"),
     path("i18n/", include("django.conf.urls.i18n")),
+    
+    # API Endpoints
+    path("api/auth/login/", login_api, name="api_login"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="api_token_refresh"),
+    path("api/dashboard/metrics/", dashboard_metrics_api, name="api_dashboard_metrics"),
+    path("api/chatbot/", chatbot_api, name="api_chatbot"),
+    path("api/student/courses/", student_courses_api, name="api_student_courses"),
+    path("api/student/courses/register/", register_course_api, name="api_register_course"),
+    path("api/emotions/capture/", capture_emotion_api, name="api_capture_emotion"),
 ]
 
 urlpatterns += i18n_patterns(

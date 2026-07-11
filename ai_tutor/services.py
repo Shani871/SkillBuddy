@@ -85,23 +85,27 @@ class GeminiClient:
         return text
 
 
-def build_chat_contents(chat_history, user_input, max_history=10):
+def build_chat_contents(chat_history, user_input, max_history=10, system_context=None):
+    system_text = (
+        "You are SkillBuddy AI Assistant, a friendly academic tutor. "
+        "Answer clearly, keep students focused, and avoid inventing details "
+        "about their account or courses unless they provide them."
+    )
+    if system_context:
+        system_text += f"\n\nHere is verified information about the current user, their academics, and their college:\n{system_context}"
+
     contents = [
         {
             "role": "user",
             "parts": [
                 {
-                    "text": (
-                        "You are SkillBuddy AI Assistant, a friendly academic tutor. "
-                        "Answer clearly, keep students focused, and avoid inventing details "
-                        "about their account or courses unless they provide them."
-                    )
+                    "text": system_text
                 }
             ],
         },
         {
             "role": "model",
-            "parts": [{"text": "Understood. I will help as a clear and practical tutor."}],
+            "parts": [{"text": "Understood. I will help as a clear and practical tutor using the provided context."}],
         },
     ]
 
@@ -120,9 +124,9 @@ def build_chat_contents(chat_history, user_input, max_history=10):
     return contents
 
 
-def generate_chat_reply(chat_history, user_input):
+def generate_chat_reply(chat_history, user_input, system_context=None):
     client = GeminiClient(timeout=20)
-    contents = build_chat_contents(chat_history, user_input)
+    contents = build_chat_contents(chat_history, user_input, system_context=system_context)
     return client.generate_content(contents)
 
 
